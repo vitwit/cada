@@ -1,0 +1,26 @@
+syntax = "proto3";
+package sdk.avail.v1beta1;
+
+import "cosmos/msg/v1/msg.proto";
+
+option go_package = "github.com/vitiwit/avail-da-module/types";
+
+// Msg service for the zk-giv service
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // SetAvailAddress
+  rpc SetAvailAddress(MsgSetAvailAddress) returns (MsgSetAvailAddressResponse);
+}
+
+// MsgSetCelestiaAddress defines a SDK message for validators to set their avail address
+message MsgSetAvailAddress {
+  option (cosmos.msg.v1.signer) = "validator_address";
+
+  string validator_address = 1;
+
+  string avail_address = 2;
+}
+
+// MsgSetAvailAddressResponse is the response type for the Msg/SetAvailAddress RPC method.
+message MsgSetAvailAddressResponse {}
