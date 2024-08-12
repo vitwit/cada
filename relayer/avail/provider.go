@@ -43,11 +43,6 @@ func NewProvider(rpcURL string, keyDir string, timeout time.Duration, chainID st
 		return nil, err
 	}
 
-	// rpcClient, err := celestiarpc.NewWithTimeout(rpcURL, "/websocket", uint(timeout.Seconds()))
-	// if err != nil {
-	// 	return nil, err
-	// }
-
 	cp := &CosmosProvider{
 		cdc:           makeCodec(ModuleBasics),
 		lightProvider: lightProvider,

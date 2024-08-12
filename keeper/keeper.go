@@ -34,7 +34,7 @@ type Keeper struct {
 
 	publishToAvailBlockInterval int
 	injectedProofsLimit         int
-	appId                       int
+	app_id                      int
 
 	unprovenBlocks map[int64][]byte
 
@@ -52,12 +52,7 @@ func NewKeeper(
 	appId int,
 
 ) *Keeper {
-	// cfg := availblob1.AvailConfigFromAppOpts(appOpts)
 	sb := collections.NewSchemaBuilder(storeService)
-
-	// if cfg.OverridePubInterval > 0 {
-	// 	publishToAvailBlockInterval = cfg.OverridePubInterval
-	// }
 
 	return &Keeper{
 		// stakingKeeper: sk,
@@ -74,8 +69,7 @@ func NewKeeper(
 		cdc: cdc,
 
 		publishToAvailBlockInterval: publishToAvailBlockInterval,
-		// injectedProofsLimit:            cfg.MaxFlushSize,
-		appId: appId,
+		app_id:                      appId,
 
 		unprovenBlocks: make(map[int64][]byte),
 	}

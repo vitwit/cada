@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
@@ -16,17 +17,17 @@ import (
 	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
 )
 
-func (r *Relayer) SubmitDataToClient(ApiURL string, Seed string, AppID int, data []byte, blocks []int64) error {
+func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) error {
 	handler := NewHTTPClientHandler()
 
 	datab := base64.StdEncoding.EncodeToString(data)
 
 	jsonData := []byte(fmt.Sprintf(`{"data":"%s"}`, datab))
 
-	fmt.Println("urllll..........configggggg.........", r.rpcClient.config)
-
 	// Define the URL
-	url := "http://127.0.0.1:8000/v2/submit"
+	//url := "http://127.0.0.1:8000/v2/submit"
+
+	url := fmt.Sprintf("%s/v2/submit", lightClientUrl)
 
 	// Make the POST request
 	responseBody, err := handler.Post(url, jsonData)
@@ -61,24 +62,29 @@ func (r *Relayer) SubmitDataToClient(ApiURL string, Seed string, AppID int, data
 
 	fmt.Println("submitted block info........", blockInfo)
 
+	return nil
+}
+
+func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) {
+	handler := NewHTTPClientHandler()
 	// get submitted block data using light client api with avail block height
 	// time.Sleep(20 * time.Second) // wait upto data to be submitted data to be included in the avail blocks
-	// url = fmt.Sprintf("http://127.0.0.1:8000/v2/blocks/%v/data?feilds=data", blockInfo.BlockNumber)
-	// // fmt.Println("get url......", url)
-	// body, err := handler.Get(url)
-	// if err != nil {
-	// 	log.Fatal("Error: %v\n", err)
-	// 	return err
-	// }
 
-	// if body != nil {
-	// 	// log.Println("submitted data verfied successfully")
-	// 	r.logger.Info("submitted data to Avail verfied successfully at",
-	// 		"block_height", blockInfo.BlockNumber,
-	// 	)
-	// }
+	url := fmt.Sprintf("%s/v2/blocks/%v/data?feilds=data", lightClientUrl)
+	url = fmt.Sprintf(url, blockNumber)
 
-	return nil
+	body, err := handler.Get(url)
+	if err != nil {
+		log.Fatal("Error: %v\n", err)
+		// return err
+	}
+
+	if body != nil {
+		// log.Println("submitted data verfied successfully")
+		r.logger.Info("submitted data to Avail verfied successfully at",
+			"block_height", blockNumber,
+		)
+	}
 }
 
 // Define the struct that matches the JSON structure
@@ -88,7 +94,7 @@ type GetBlock struct {
 }
 
 // submitData creates a transaction and makes a Avail data submission
-func (r *Relayer) SubmitDataUsingSupstrateAPI(ApiURL string, Seed string, AppID int, data []byte, blocks []int64) error {
+func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte, blocks []int64) error {
 
 	// handler := NewHTTPClientHandler()
 

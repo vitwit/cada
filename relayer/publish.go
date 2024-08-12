@@ -1,16 +1,7 @@
 package relayer
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
-const (
-	CelestiaPublishKeyName  = "blob"
-	CelestiaFeegrantKeyName = "feegrant"
-	celestiaBech32Prefix    = "celestia"
-	celestiaBlobPostMemo    = "Posted by tiablob https://rollchains.com"
 )
 
 // PostNextBlocks is called by the current proposing validator during PrepareProposal.
@@ -18,7 +9,6 @@ const (
 // It will not publish the block being proposed.
 func (r *Relayer) ProposePostNextBlocks(ctx sdk.Context, provenHeight int64) []int64 {
 	height := ctx.BlockHeight()
-	fmt.Println("publish block intervallllllllllll............", r.availPublishBlockInterval)
 
 	if height <= 1 {
 		return nil
@@ -80,21 +70,7 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64) {
 		bb = append(bb, blockBz...)
 	}
 
-	// fmt.Println("block dataaa.......", ctx.)
-	// hash, err := r.rpcClient.SubmitData(r.rpcClient.config.AppRpcURL, r.rpcClient.config.Seed, r.rpcClient.config.AppID, bb)
-	// if err == nil {
-	// 	r.logger.Info("Posted block(s) to Avail DA",
-	// 		"height_start", blocks[0],
-	// 		"height_end", blocks[len(blocks)-1],
-	// 		"appID", string(r.rpcClient.config.AppID),
-	// 		"hash", hash,
-	// 		// "tx_hash", hex.EncodeToString(res.Hash),
-	// 		// "url", fmt.Sprintf("https://mocha.celenium.io/tx/%s", hex.EncodeToString(res.Hash)),
-	// 	)
-	// 	// return
-	// }
-
-	err := r.SubmitDataToClient(r.rpcClient.config.AppRpcURL, r.rpcClient.config.Seed, r.rpcClient.config.AppID, bb, blocks)
+	err := r.SubmitDataToClient(r.rpcClient.config.Seed, r.rpcClient.config.AppID, bb, blocks, r.rpcClient.config.LightClientURL)
 	if err != nil {
 		r.logger.Error("Error while submitting block(s) to Avail DA",
 			"height_start", blocks[0],

@@ -41,10 +41,3 @@ type ModuleOutputs struct {
 	Module appmodule.AppModule
 	// Keeper *keeper.Keeper
 }
-
-// func ProvideModule(in ModuleInputs) ModuleOutputs {
-// 	k := keeper.NewKeeper(in.Cdc, in.appOpts, in.StoreService, &in.StakingKeeper, &in.UpgradeKeeper, in.storeKey, in.publishToAvailBlockInterval)
-// 	m := NewAppModule(in.Cdc, k)
-
-// 	return ModuleOutputs{Module: m, Keeper: k}
-// }

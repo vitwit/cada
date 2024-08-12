@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	// Window for a transaction to be committed on avail
-	AvailResubmissionTime = 75 * time.Second
+	// Window for a transaction to be committed
+	ResubmissionTime = 75 * time.Second
 
 	// Buffer for relayer polling logic to retrieve a proof
 	RelayerPollingBuffer = 15 * time.Second
@@ -105,7 +105,7 @@ func (k *Keeper) AddUpdatePendingBlock(ctx context.Context, pendingBlock int64, 
 			return err
 		}
 	}
-	expiration := currentBlockTime.Add(AvailResubmissionTime + RelayerPollingBuffer).UnixNano()
+	expiration := currentBlockTime.Add(ResubmissionTime + RelayerPollingBuffer).UnixNano()
 	if err = k.PendingBlocksToTimeouts.Set(ctx, pendingBlock, expiration); err != nil {
 		return fmt.Errorf("add/update pending block, set pending block (%d) to timeout (%d)", pendingBlock, expiration)
 	}
@@ -134,7 +134,7 @@ func (k *Keeper) AddPendingBlockToTimeoutsMap(ctx context.Context, height int64,
 	return nil
 }
 
-// RemovePendingBlock removes proven block from pending state
+// // RemovePendingBlock removes proven block from pending state
 // This function will remove the proven block from the PendingBlocksToTimeouts map and TimeoutsToPendingBlocks map
 func (k *Keeper) RemovePendingBlock(ctx context.Context, provenBlock int64) error {
 	found, err := k.PendingBlocksToTimeouts.Has(ctx, provenBlock)

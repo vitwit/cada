@@ -10,7 +10,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	// "github.com/rollchains/tiablob/lightclients/celestia"
 )
 
 // GetBlockAtHeight queries the block at a given height
@@ -44,24 +43,6 @@ func (cc *CosmosProvider) QueryABCI(ctx context.Context, path string, data []byt
 
 	return result.Response, nil
 }
-
-// func (cc *CosmosProvider) QueryCelestiaClientState(ctx context.Context) (*celestia.ClientState, error) {
-// 	path := fmt.Sprintf("store/%s/key", tiablob.StoreKey)
-// 	key := []byte(fmt.Sprintf("%s%s", tiablob.ClientStoreKey, celestia.KeyClientState))
-
-// 	res, err := cc.QueryABCI(ctx, path, key)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	var clientState celestia.ClientState
-// 	if err = cc.cdc.Unmarshal(res.Value, &clientState); err != nil {
-// 		return nil, err
-// 	}
-
-// 	return &clientState, nil
-
-// }
 
 func sdkErrorToGRPCError(resp abci.ResponseQuery) error {
 	switch resp.Code {

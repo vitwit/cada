@@ -26,6 +26,8 @@ func (k *Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) error {
 	// TODO: client state
 	k.SetAvailGenesisState(ctx, data)
 
+	// log.Fatal("dataaa...........", data)
+
 	return nil
 }
 
@@ -50,7 +52,6 @@ func (k *Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 		Validators:   vals.Validators,
 		ProvenHeight: provenHeight,
 
-		// TODO: client state
 		PendingBlocks: pendingBlocks,
 	}
 }

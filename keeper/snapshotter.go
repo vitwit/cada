@@ -8,10 +8,9 @@ import (
 	storetypes "cosmossdk.io/store/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	availblob1 "github.com/vitwit/avail-da-module"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-
-	availblob1 "github.com/vitwit/avail-da-module"
 )
 
 var _ snapshot.ExtensionSnapshotter = &AvailBlobSnapshotter{}
@@ -20,7 +19,7 @@ var _ snapshot.ExtensionSnapshotter = &AvailBlobSnapshotter{}
 // SnapshotFormat 1 is a proto marshalled UnprovenBlock type.
 const SnapshotFormat = 1
 
-// TiaBlobSnapshotter implements the snapshot.ExtensionSnapshotter interface and is used to
+// AvailBlobSnapshotter implements the snapshot.ExtensionSnapshotter interface and is used to
 // import and export unproven blocks so they can be proven when needed.
 // State sync would otherwise missed these blocks and the node would panic.
 type AvailBlobSnapshotter struct {
@@ -28,7 +27,7 @@ type AvailBlobSnapshotter struct {
 	keeper *Keeper
 }
 
-// NewTiablobSnapshotter creates and returns a new snapshot.ExtensionSnapshotter implementation for tiablob.
+// NewAvailblobSnapshotter creates and returns a new snapshot.ExtensionSnapshotter implementation for availblob.
 func NewAvailblobSnapshotter(cms storetypes.MultiStore, keeper *Keeper) snapshot.ExtensionSnapshotter {
 	return &AvailBlobSnapshotter{
 		cms:    cms,
@@ -97,7 +96,7 @@ func (s *AvailBlobSnapshotter) SnapshotExtension(height uint64, payloadWriter sn
 }
 
 // RestoreExtension implements the snapshot.ExtensionSnapshotter interface.
-// RestoreExtension is used to read data from an existing extension state snapshot into the tiablob keeper.
+// RestoreExtension is used to read data from an existing extension state snapshot into the availblob keeper.
 // The payload reader returns io.EOF when it has reached the end of the extension state snapshot.
 func (s *AvailBlobSnapshotter) RestoreExtension(height uint64, format uint32, payloadReader snapshot.ExtensionPayloadReader) error {
 	if format == s.SnapshotFormat() {

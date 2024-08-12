@@ -5,7 +5,6 @@ go 1.22.5
 replace (
 	cosmossdk.io/core => cosmossdk.io/core v0.11.0
 	//	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v1.1.0
-	github.com/cosmos/cosmos-sdk => ../
 	github.com/prometheus/common => github.com/prometheus/common v0.47.0
 	github.com/spf13/viper => github.com/spf13/viper v1.17.0 // v1.18+ breaks app overrides
 	// github.com/tendermint/tendermint => github.com/celestiaorg/celestia-core v1.35.0-tm-v0.34.29

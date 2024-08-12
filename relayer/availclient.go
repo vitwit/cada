@@ -1,8 +1,6 @@
 package relayer
 
 import (
-	"fmt"
-
 	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
 )
 
@@ -14,10 +12,10 @@ type AvailClient struct {
 
 // NewAvailClient initializes a new AvailClient
 func NewAvailClient(config AvailConfig) (*AvailClient, error) {
-	api, err := gsrpc.NewSubstrateAPI(config.AppRpcURL)
-	if err != nil {
-		return nil, fmt.Errorf("cannot create api:%w", err)
-	}
+	// api, err := gsrpc.NewSubstrateAPI(config.AppRpcURL)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("cannot create api:%w", err)
+	// }
 
-	return &AvailClient{api: api, config: config}, nil
+	return &AvailClient{config: config}, nil
 }

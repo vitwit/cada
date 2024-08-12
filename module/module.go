@@ -107,9 +107,9 @@ func (AppModule) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig,
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
 	err := cdc.UnmarshalJSON(data, &genesisState)
-	if err != nil {
-		panic(err)
-	}
+	_ = err
+	// fmt.Println("errorrr hereee........", err)
+
 	// fmt.Println("genesis stateeeeeeeeeeee........", genesisState)
 	// fmt.Println("dataaa............", string(data))
 	// fmt.Println("heightt.........", ctx.BlockHeight())
