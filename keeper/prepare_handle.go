@@ -20,7 +20,6 @@ func (k *Keeper) addAvailblobDataToTxs(injectDataBz []byte, maxTxBytes int64, tx
 	if len(injectDataBz) > 0 {
 		var finalTxs [][]byte
 		totalTxBytes := int64(len(injectDataBz))
-		// fmt.Println("Injected data size: ", totalTxBytes) // TODO: remove, debug only
 		finalTxs = append(finalTxs, injectDataBz)
 		for _, tx := range txs {
 			totalTxBytes += int64(len(tx))
@@ -71,11 +70,6 @@ func (k *Keeper) shouldGetExpiredBlock(ctx sdk.Context) bool {
 	return ctx.BlockHeight() >= lastUpgradeHeight+DelayAfterUpgrade
 }
 
-// marshalMaxBytes will marshal the injected data ensuring it fits within the max bytes.
-// If it does not fit, it will decrement the number of proofs to inject by 1 and retry.
-// This new configuration will persist until the node is restarted. If a decrement is required,
-// there was most likely a misconfiguration for block proof cache limit.
-// Injected data is roughly 1KB/proof
 func (k *Keeper) marshalMaxBytes(injectData *types.InjectedData, maxBytes int64, latestProvenHeight int64) []byte {
 	if len(injectData.PendingBlocks.BlockHeights) != 0 {
 		return nil

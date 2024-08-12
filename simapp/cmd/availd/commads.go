@@ -41,7 +41,6 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	availblobcli "github.com/vitwit/avail-da-module/client/cli"
 	"github.com/vitwit/avail-da-module/relayer"
-	//"github.com/rollchains/tiablob/tiasync"
 )
 
 // initCometBFTConfig helps to override default CometBFT Config values.
@@ -65,7 +64,6 @@ func initAppConfig() (string, interface{}) {
 		serverconfig.Config
 
 		Avail *relayer.AvailConfig `mapstructure:"avail"`
-		//Tiasync *tiasync.TiasyncConfig `mapstructure:"tiasync"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default

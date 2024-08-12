@@ -26,10 +26,6 @@ func (k Keeper) processPendingBlocks(ctx sdk.Context, currentBlockTime time.Time
 			if k.IsBlockPending(ctx, pendingBlock) && !k.IsBlockExpired(ctx, currentBlockTime, pendingBlock) {
 				return fmt.Errorf("process pending blocks, block height (%d) is pending, but not expired", pendingBlock)
 			}
-			// Check if we have a proof for this block
-			// if k.relayer.HasCachedProof(pendingBlock) {
-			// 	return fmt.Errorf("process pending blocks, cached proof exists for block %d", pendingBlock)
-			// }
 		}
 		// Ensure publish boundries includes new blocks, once they are on-chain, they will be tracked appropriately
 		provenHeight, err := k.GetProvenHeight(ctx)

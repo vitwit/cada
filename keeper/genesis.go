@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"log"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/vitwit/avail-da-module/types"
 )
@@ -16,7 +14,6 @@ func (k *Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) error {
 	}
 
 	// Set proven height to genesis height, we do not init any pending block on a genesis init/restart
-	log.Println("init genesiss.........,", ctx.HeaderInfo().Height, ctx.BlockHeight())
 	if err := k.SetProvenHeight(ctx, ctx.HeaderInfo().Height); err != nil {
 		return err
 	}
@@ -25,8 +22,6 @@ func (k *Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) error {
 
 	// TODO: client state
 	k.SetAvailGenesisState(ctx, data)
-
-	// log.Fatal("dataaa...........", data)
 
 	return nil
 }

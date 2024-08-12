@@ -10,7 +10,6 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	// stakingkeeper "cosmossdk.io/x/staking/keeper"
 
 	storetypes "cosmossdk.io/core/store"
 

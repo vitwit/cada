@@ -46,15 +46,7 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.
 	injectedData := h.keeper.getInjectedData(req.Txs)
 	if injectedData != nil {
 		req.Txs = req.Txs[1:] // Pop the injected data for the default handler
-		// if err := h.keeper.processCreateClient(ctx, injectedData.CreateClient); err != nil {
-		// 	return nil, err
-		// }
-		// if err := h.keeper.processHeaders(ctx, injectedData.Headers); err != nil {
-		// 	return nil, err
-		// }
-		// if err := h.keeper.processProofs(ctx, injectedData.Headers, injectedData.Proofs); err != nil {
-		// 	return nil, err
-		// }
+
 		if err := h.keeper.processPendingBlocks(ctx, req.Time, &injectedData.PendingBlocks); err != nil {
 			return nil, err
 		}
@@ -63,23 +55,10 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
-	// injectedData := k.getInjectedData(req.Txs)
 	injectedData := k.prepareInjectData(ctx, req.Time, req.Height)
 
 	injectDataBz := k.marshalMaxBytes(&injectedData, int64(req.Size()), req.Height)
 	_ = k.addAvailblobDataToTxs(injectDataBz, int64(req.Size()), req.Txs)
-	// fmt.Println("injected dataaa in preblockerrrr.........", injectedData)
-	// fmt.Println("injected dataaa.........", injectedData, req.Txs)
-	// if injectedData != nil {
-	// if err := k.preblockerCreateClient(ctx, injectedData.CreateClient); err != nil {
-	// 	return err
-	// }
-	// if err := k.preblockerHeaders(ctx, injectedData.Headers); err != nil {
-	// 	return err
-	// }
-	// if err := k.preblockerProofs(ctx, injectedData.Proofs); err != nil {
-	// 	return err
-	// }
 
 	if err := k.preblockerPendingBlocks(ctx, req.Time, req.ProposerAddress, &injectedData.PendingBlocks); err != nil {
 		return err

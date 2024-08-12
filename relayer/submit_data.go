@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
@@ -75,12 +74,10 @@ func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) {
 
 	body, err := handler.Get(url)
 	if err != nil {
-		log.Fatal("Error: %v\n", err)
-		// return err
+		return
 	}
 
 	if body != nil {
-		// log.Println("submitted data verfied successfully")
 		r.logger.Info("submitted data to Avail verfied successfully at",
 			"block_height", blockNumber,
 		)
@@ -95,22 +92,6 @@ type GetBlock struct {
 
 // submitData creates a transaction and makes a Avail data submission
 func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte, blocks []int64) error {
-
-	// handler := NewHTTPClientHandler()
-
-	// // Example GET request
-	// url := "http://localhost:8000/v2/blocks/47/header"
-	// body, err := handler.Get(url)
-	// // log.Fatal("here body and err......", string(body), err)
-	// if err != nil {
-	// 	log.Fatal("Error: %v\n", err)
-	// 	return err
-	// }
-	// fmt.Printf("GET Response: %s\n", body)
-
-	// handler.PstData(data)
-	// log.Fatal()
-
 	api, err := gsrpc.NewSubstrateAPI(ApiURL)
 	if err != nil {
 		r.logger.Error("cannot create api:%w", err)
@@ -350,12 +331,6 @@ func getData1(hash types.Hash, api *gsrpc.SubstrateAPI, data string) error {
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
-
-	// Convert the byte slice to a string and print it
-	// jsonString := string(jsonData)
-	// fmt.Println("blockheader", jsonString)
-
-	// fmt.Println("retrieved block", block.Block.Header)
 
 	// fmt.Println("length of extrinsics: ", len(block.Block.Extrinsics))
 	for _, ext := range block.Block.Extrinsics {
