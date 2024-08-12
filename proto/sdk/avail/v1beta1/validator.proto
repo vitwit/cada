@@ -7,7 +7,7 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/vitwit/avail-da-module/types";
 
-// Validator is a mapping of a local validator's address to its Celestia transaction posting address 
+// Validator is a mapping of a local validator's address to its Avail transaction posting address 
 // for the purpose of feegranting blob posting on the DA layer.
 message Validator {
     option (amino.name) = "availblob/Validator";

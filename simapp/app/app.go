@@ -713,21 +713,6 @@ func NewChainApp(
 		AddRoute(icahosttypes.SubModuleName, icaHostStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	// nodeNamespace, err := nodens.NewBlobNamespaceV0([]byte(CelestiaNamespace))
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// app.TiaBlobKeeper = tiablobkeeper.NewKeeper(
-	// 	appCodec,
-	// 	appOpts,
-	// 	runtime.NewKVStoreService(keys[tiablob.StoreKey]),
-	// 	app.StakingKeeper,
-	// 	app.UpgradeKeeper,
-	// 	keys[tiablob.StoreKey],
-	// 	publishToCelestiaBlockInterval,
-	// 	nodeNamespace,
-	// )
-
 	app.AvailBlobKeeper = availblobkeeper.NewKeeper(
 		appCodec,
 		appOpts,
@@ -737,18 +722,6 @@ func NewChainApp(
 		publishToAvailBlockInterval,
 		AvailAppID,
 	)
-
-	// app.TiaBlobRelayer, err = tiablobrelayer.NewRelayer(
-	// 	logger,
-	// 	appCodec,
-	// 	appOpts,
-	// 	appns.MustNewV0([]byte(CelestiaNamespace)),
-	// 	homePath,
-	// 	publishToCelestiaBlockInterval,
-	// )
-	// if err != nil {
-	// 	panic(err)
-	// }
 
 	app.Availblobrelayer, err = availblobrelayer.NewRelayer(
 		logger,

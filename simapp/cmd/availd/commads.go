@@ -181,33 +181,9 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 
 	startCmd := server.StartCmdWithOptions(appCreator, defaultNodeHome, server.StartCmdOptions{
 		PostSetup: func(svrCtx *server.Context, clientCtx client.Context, ctx context.Context, g *errgroup.Group) error {
-			// go tiasync.TiasyncRoutine(svrCtx, clientCtx, app.CelestiaNamespace)
 
 			// TODO Start relayer here instead of in NewChainApp
 			// cannot access app here until v0.51
-
-			// latestProvenHeight, err := app.TiaBlobKeeper.GetProvenHeight(context.TODO())
-			// if err != nil {
-			// 	panic(err)
-			// }
-
-			// appInfo, err := app.Info(nil)
-			// if err != nil {
-			// 	panic(err)
-			// }
-
-			// app.TiaBlobRelayer = tiablobrelayer.NewRelayer(
-			// 	"https://rpc.celestia.strange.love:443", // Celestia RPC URL. TODO config var
-			// 	latestProvenHeight,
-			// 	uint64(appInfo.LastBlockHeight),
-			// 	3*time.Second, // query Celestia for new block proofs this often. TODO config var
-			// 	32,            // only flush at most this many block proofs in an injected tx per block proposal. TODO config var
-			// )
-
-			// // must be done after relayer is created
-			// app.TiaBlobKeeper.SetRelayer(app.TiaBlobRelayer)
-
-			// go app.TiaBlobRelayer.StartRelayer(ctx)
 
 			return nil
 

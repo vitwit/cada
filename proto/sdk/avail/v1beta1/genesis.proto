@@ -10,7 +10,7 @@ option go_package = "github.com/vitwit/avail-da-module/types";
 message GenesisState { 
     repeated Validator validators = 1 [ (gogoproto.nullable) = false ];
 
-    // the height of the last block that was proven to be posted to Celestia.
+    // the height of the last block that was proven to be posted to Avail.
     // increment only, never skipping heights.
     int64 proven_height = 2;
     repeated BlockWithExpiration pending_blocks = 3;

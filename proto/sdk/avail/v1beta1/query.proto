@@ -16,8 +16,8 @@ service Query {
     option (google.api.http).get = "/availblob/v1beta1/validators";
   }
 
-  rpc CelestiaAddress(QueryAvailAddressRequest) returns (QueryAvailAddressResponse) {
-    option (google.api.http).get = "/availblob/v1beta1/celestia_address";
+  rpc AvailAddress(QueryAvailAddressRequest) returns (QueryAvailAddressResponse) {
+    option (google.api.http).get = "/availblob/v1beta1/avail_address";
   }
 
   rpc ProvenHeight(QueryProvenHeightRequest) returns (QueryProvenHeightResponse) {
@@ -42,14 +42,14 @@ message QueryValidatorsResponse {
   repeated Validator validators = 1 [ (gogoproto.nullable) = false ];
 }
 
-// QueryCelestiaAddressRequest is the request type for the Query/CelestiaAddress RPC method.
+// QueryAvailAddressRequest is the request type for the Query/AvailAddress RPC method.
 message QueryAvailAddressRequest {
   string validator_address = 1;
 }
 
-// QueryCelestiaAddressResponse is the response type for the Query/CelestiaAddress RPC method.
+// QueryAvailAddressResponse is the response type for the Query/AvailAddress RPC method.
 message QueryAvailAddressResponse {
-  string celestia_address = 1;
+  string avail_address = 1;
 }
 
 message QueryProvenHeightRequest {}

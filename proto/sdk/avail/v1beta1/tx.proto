@@ -13,7 +13,7 @@ service Msg {
   rpc SetAvailAddress(MsgSetAvailAddress) returns (MsgSetAvailAddressResponse);
 }
 
-// MsgSetCelestiaAddress defines a SDK message for validators to set their Celestia address
+// MsgSetAvailAddress defines a SDK message for validators to set their Avail address
 message MsgSetAvailAddress {
   option (cosmos.msg.v1.signer) = "validator_address";
 
@@ -22,5 +22,5 @@ message MsgSetAvailAddress {
   string avail_address = 2;
 }
 
-// MsgSetCelestiaAddressResponse is the response type for the Msg/SetCelestiaAddress RPC method.
+// MsgSetAvailAddressResponse is the response type for the Msg/SetAvailAddress RPC method.
 message MsgSetAvailAddressResponse {}
