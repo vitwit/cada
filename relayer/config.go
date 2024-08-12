@@ -31,11 +31,6 @@ const (
 
 	# Overrides the expected chain's publish-to-avail block interval, test-only
 	override-pub-interval = 5
-	
-	# Only flush at most this many block proofs in an injected tx per block proposal
-	# Must be greater than 0 and less than 100, proofs are roughly 1KB each
-	# availblob will try to aggregate multiple blobs published at the same height w/ a single proof
-	max-flush-size = 32
 
 	# Seed for avail
 	seed = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
