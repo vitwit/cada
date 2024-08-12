@@ -1,0 +1,19 @@
+syntax = "proto3";
+package sdk.avail.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+option go_package =  "github.com/vitwit/avail-da-module/types";
+
+message InjectedData {
+    PendingBlocks pending_blocks = 1 [ (gogoproto.nullable) = false ];
+}
+
+message PendingBlocks {
+    repeated int64 block_heights = 1;
+}
+
+message UnprovenBlock {
+    int64 height = 1;
+    bytes block = 2;
+}
