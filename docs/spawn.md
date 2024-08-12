@@ -1,8 +1,8 @@
-# availblob1
+# Avail DA
 
 ## Integration
 
-Follow these steps to integrate the availblob module into your application. You can use spawn to create a new application, simply include the availblob module to have it pre-wired in your application.
+Follow these steps to integrate the avail-da module into your application. You can use spawn to create a new application, simply include the avail-da module to have it pre-wired in your application.
 
 A fully integrated example application is available in this repository under the simapp directory which can be used as a reference.
 
@@ -27,11 +27,11 @@ for more details about spawn you can refer to this doc https://github.com/rollch
 
 ### app.go wiring
 
-In your main application file, typically named `app.go`  incorporate the following to wire up the availblob module
+In your main application file, typically named `app.go`  incorporate the following to wire up the avail-da module
 
 1. Imports
 
-Within the imported packages, add the `availblob` dependencies.
+Within the imported packages, add the `avail-da-module` dependencies.
 
 ```sh
 
@@ -49,7 +49,7 @@ import (
 
 2.Configuration constants.
 
-After the imports, declare the constant variables required by `availblob`.
+After the imports, declare the constant variables required by `avail-da-module`.
 
 ```sh
 const (
@@ -63,7 +63,7 @@ const (
 
 3. Keeper and Relyer declaration
 
-Inside of the ChainApp struct, the struct which satisfies the cosmos-sdk runtime.AppI interface, add the required availblob runtime fields.
+Inside of the ChainApp struct, the struct which satisfies the cosmos-sdk runtime.AppI interface, add the required avail-da module runtime fields.
 
 ```sh
 
@@ -75,9 +75,9 @@ type ChainApp struct {
 	// ....
 }
 ```
-4. Initialize the `availblob` Keeper and Relayer
+4. Initialize the `avail-da-module` Keeper and Relayer
 
-Within the `NewChainApp` method, the constructor for the app, initialize the availblob components.
+Within the `NewChainApp` method, the constructor for the app, initialize the avail-da module components.
 
 ```sh
 func NewChainApp(
@@ -89,7 +89,7 @@ func NewChainApp(
         keys := storetypes.NewKVStoreKeys(
             // ...
 
-            // Register availblob Store
+            // Register avail-da module Store
             availblob1.StoreKey,
         )
 
@@ -116,7 +116,7 @@ func NewChainApp(
         // Connect relayer to keeper. Must be done after relayer is created.
         app.AvailBlobKeeper.SetRelayer(app.Availblobrelayer)
 
-        // Rollchains availblob proposal handling
+        // Rollchains avail-da-module proposal handling
         availBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(app.AvailBlobKeeper,
             AppSpecificPrepareProposalHandler(), // i.e. baseapp.NoOpPrepareProposal()
             AppSpecificProcessProposalHandler(), // i.e. baseapp.NoOpProcessProposal()
@@ -137,7 +137,7 @@ func NewChainApp(
         app.ModuleManager.SetOrderBeginBlockers(
             // ...
 
-            // availblob begin blocker can be last
+            // avail-da module begin blocker can be last
             availblob1.ModuleName,
         )
 
@@ -145,7 +145,7 @@ func NewChainApp(
         app.ModuleManager.SetOrderEndBlockers(
             // ...
 
-            // availblob end blocker can be last
+            // avail-da module end blocker can be last
             availblob1.ModuleName,
         )
 
@@ -153,7 +153,7 @@ func NewChainApp(
         genesisModuleOrder := []string{
             // ...
 
-            // availblob genesis module order can be last
+            // avail-da genesis module order can be last
         availblob1.ModuleName,
         }
 
@@ -163,7 +163,7 @@ func NewChainApp(
 
 5. Integrate Relayer into FinalizeBlock
 
-The `availblob` relayer needs to be notified when the rollchain blocks are committed so that it is aware of the latest height of the chain. In `FinalizeBlock`, rather than returnig app.BaseApp.FinalizeBlock(req), add error handling to that call and notify the relayer afterward.
+The `avail-da-module` relayer needs to be notified when the rollchain blocks are committed so that it is aware of the latest height of the chain. In `FinalizeBlock`, rather than returnig app.BaseApp.FinalizeBlock(req), add error handling to that call and notify the relayer afterward.
 
 ```sh
 func (app *ChainApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFinalizeBlock, error) {
@@ -180,9 +180,9 @@ func (app *ChainApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.Respon
 }
 ```
 
-6. Integrate `availblob` PreBocker
+6. Integrate `avail-da-module` PreBocker
 
-The `availblob` PreBlocker must be called in the app's PreBlocker.
+The `avail-da-module` PreBlocker must be called in the app's PreBlocker.
 
 ```sh
 func (app *ChainApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
@@ -211,11 +211,11 @@ func (app *ChainApp) RegisterNodeService(clientCtx client.Context, cfg config.Co
 
 ### Commands.go wiring
 
-In your application commands file, incorporate the following to wire up the availblob module CLI commands.
+In your application commands file, incorporate the following to wire up the avail-da module CLI commands.
 
 1. Imports
 
-Within the imported packages, add the availblob
+Within the imported packages, add the avail-da module
 
 ```sh
 import (

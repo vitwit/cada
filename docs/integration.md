@@ -1,8 +1,6 @@
 # Integration
 
-Follow these steps to integrate the availblob module into your Cosmos SDK-based application.
-
-A fully integrated example application is available in this repository under the simapp directory, which can be used as a reference.
+Follow these steps to integrate the avail-da module into your Cosmos SDK-based application.
 
 
 ### app.go wiring 
@@ -27,7 +25,7 @@ import (
 
 2. Constants configuration
 
-After importing the necessary packages for the availblob module in your app.go file, the next step is to declare any constant variables that the module will use. These constants are essential for configuring and integrating the availblob module with your application.
+After importing the necessary packages for the avail-da module in your app.go file, the next step is to declare any constant variables that the module will use. These constants are essential for configuring and integrating the avail-da module with your application.
 
 ```sh
 const (
@@ -41,9 +39,9 @@ const (
 
 3. Keeper and Relyer declaration
 
-Here's a step-by-step guide to integrating the availblob keeper and relayer into your Cosmos SDK application
+Here's a step-by-step guide to integrating the avail-da module keeper and relayer into your Cosmos SDK application
 
-Inside of the ChainApp struct, add the required availblob runtime fields.
+Inside of the ChainApp struct, add the required avail-da module runtime fields.
 
 ```sh
 type SimApp struct {
@@ -55,9 +53,9 @@ type SimApp struct {
 
 }```
 
-4. Initialize the `availblob` Keeper and Relayer
+4. Initialize the `avail-da-module` Keeper and Relayer
 
-Within the `NewSimApp` method, the constructor for the app, initialize the availblob components.
+Within the `NewSimApp` method, the constructor for the app, initialize the avail-da module components.
 
 ```sh
     func NewSimApp(
@@ -66,11 +64,14 @@ Within the `NewSimApp` method, the constructor for the app, initialize the avail
 
         // ...
 
+         // pre-existing code: remove optimistic execution in baseapp options
+        baseAppOptions = append(baseAppOptions, voteExtOp)
+
         // NOTE: pre-existing code, add parameter.
             keys := storetypes.NewKVStoreKeys(
             // ...
 
-            // Register availblob Store
+            // Register avail-da module Store
             availblob1.StoreKey,
         )
 
@@ -119,7 +120,7 @@ Within the `NewSimApp` method, the constructor for the app, initialize the avail
         app.ModuleManager.SetOrderBeginBlockers(
             // ...
 
-            // availblob begin blocker can be last
+            // avail-da-module begin blocker can be last
             availblob1.ModuleName,
         )
 
@@ -127,7 +128,7 @@ Within the `NewSimApp` method, the constructor for the app, initialize the avail
         app.ModuleManager.SetOrderEndBlockers(
             // ...
 
-            // availblob end blocker can be last
+            // avail-da-module end blocker can be last
             availblob1.ModuleName,
         )
 
@@ -135,14 +136,14 @@ Within the `NewSimApp` method, the constructor for the app, initialize the avail
         genesisModuleOrder := []string{
             // ...
 
-            // availblob genesis module order can be last
+            // avail-da genesis module order can be last
             availblob1.ModuleName,
         }
 
     }
 )
 
-5. Integrate `availblob` PreBocker
+5. Integrate `avail-da-module` PreBocker
 
 ```sh
 
@@ -181,11 +182,11 @@ func (app *SimApp) RegisterNodeService(clientCtx client.Context, cfg config.Conf
 
 ### Commands.go wiring 
 
-In your simapp application commands file, incorporate the following to wire up the availblob module CLI commands.
+In your simapp application commands file, incorporate the following to wire up the avail-da module CLI commands.
 
 1. Imports
 
-Within the imported packages, add the availblob
+Within the imported packages, add the avail-da module
 
 ```sh
 import (

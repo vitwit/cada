@@ -53,11 +53,6 @@ func NewRelayer(
 ) (*Relayer, error) {
 	cfg := AvailConfigFromAppOpts(appOpts)
 
-	if cfg.MaxFlushSize < 1 || cfg.MaxFlushSize > MaxMaxFlushSize {
-		cfg.MaxFlushSize = DefaultMaxFlushSize
-		//panic(fmt.Sprintf("invalid relayer max flush size: %d", cfg.MaxFlushSize))
-	}
-
 	client, err := NewAvailClient(cfg)
 	if err != nil {
 		// panic(fmt.Sprintf("cannot create client:%v", err))
@@ -82,7 +77,6 @@ func NewRelayer(
 		availChainID:           cfg.ChainID,
 		availLastQueriedHeight: 1, // Defaults to 1, but init genesis can set this based on client state's latest height
 
-		blockProofCacheLimit:      cfg.MaxFlushSize,
 		availAppID:                cfg.AppID,
 		availPublishBlockInterval: 5,
 	}, nil

@@ -12,7 +12,6 @@ const (
 	FlagOverrideAppID       = "avail.override-app-id"
 	FlagOverridePubInterval = "avail.override-pub-interval"
 	FlagQueryInterval       = "avail.proof-query-interval"
-	FlagMaxFlushSize        = "avail.max-flush-size"
 	FlagSeed                = "avail-seed"
 	FlagLightClientURL      = "avail.light-client-url"
 
@@ -41,7 +40,6 @@ const (
 var DefaultAvailConfig = AvailConfig{
 	ChainID:            "avail-1",
 	ProofQueryInterval: 12 * time.Second,
-	MaxFlushSize:       32,
 	Seed:               "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice",
 	AppID:              0,
 }
@@ -64,9 +62,6 @@ type AvailConfig struct {
 	// Query avail for new block proofs this often
 	ProofQueryInterval time.Duration `mapstructure:"proof-query-interval"`
 
-	// Only flush at most this many block proofs in an injected tx per block proposal
-	MaxFlushSize int `mapstructure:"max-flush-size"`
-
 	// avail config
 	Seed string `json:"seed"`
 }
@@ -78,7 +73,6 @@ func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfig {
 		AppID:               cast.ToInt(appOpts.Get(FlagOverrideAppID)),
 		OverridePubInterval: cast.ToInt(appOpts.Get(FlagOverridePubInterval)),
 		ProofQueryInterval:  cast.ToDuration(appOpts.Get(FlagQueryInterval)),
-		MaxFlushSize:        cast.ToInt(appOpts.Get(FlagMaxFlushSize)),
 		Seed:                cast.ToString(appOpts.Get(FlagSeed)),
 		LightClientURL:      cast.ToString(appOpts.Get(FlagLightClientURL)),
 	}
