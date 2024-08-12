@@ -61,7 +61,7 @@ require (
 	github.com/strangelove-ventures/globalfee v0.50.1
 	github.com/strangelove-ventures/poa v0.50.2
 	github.com/stretchr/testify v1.9.0 // indirect
-	github.com/vitwit/avail-da-module v0.0.0-00010101000000-000000000000
+	github.com/vitwit/avail-da-module v0.0.0-20240725103806-4280f8cc7eb9
 	golang.org/x/sync v0.7.0
 )
 
@@ -83,7 +83,6 @@ require (
 	github.com/ChainSafe/go-schnorrkel v1.0.0 // indirect
 	github.com/DataDog/datadog-go v3.2.0+incompatible // indirect
 	github.com/DataDog/zstd v1.5.5 // indirect
-	github.com/PrathyushaLakkireddy/availblob1 v0.0.0-20240725103806-4280f8cc7eb9 // indirect
 	github.com/aws/aws-sdk-go v1.44.224 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect

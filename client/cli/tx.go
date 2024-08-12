@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/PrathyushaLakkireddy/availblob1"
-	"github.com/PrathyushaLakkireddy/availblob1/types"
+	availblob1 "github.com/vitwit/avail-da-module"
+	"github.com/vitwit/avail-da-module/types"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/availblob transaction commands.
