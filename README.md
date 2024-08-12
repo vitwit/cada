@@ -1,4 +1,4 @@
-# Avail-sdk 
+# Avail-da-module
 
 ### Posting cosmos sdk based applications data to Avail DA
 
