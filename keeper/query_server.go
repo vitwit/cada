@@ -29,13 +29,13 @@ func (qs queryServer) Validators(ctx context.Context, _ *types.QueryValidatorsRe
 	return &types.QueryValidatorsResponse{Validators: vals.Validators}, nil
 }
 
-func (qs queryServer) CelestiaAddress(ctx context.Context, req *types.QueryAvailAddressRequest) (*types.QueryAvailAddressResponse, error) {
+func (qs queryServer) AvailAddress(ctx context.Context, req *types.QueryAvailAddressRequest) (*types.QueryAvailAddressResponse, error) {
 	addr, err := qs.k.GetValidatorAvailAddress(ctx, req.ValidatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.QueryAvailAddressResponse{CelestiaAddress: addr}, nil
+	return &types.QueryAvailAddressResponse{AvailAddress: addr}, nil
 }
 
 func (qs queryServer) ProvenHeight(ctx context.Context, _ *types.QueryProvenHeightRequest) (*types.QueryProvenHeightResponse, error) {
