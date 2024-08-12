@@ -36,9 +36,9 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
-	availblob1 "github.com/vitwit/avail-da-module"
 
 	"github.com/spf13/cast"
+	availblob1 "github.com/vitwit/avail-da-module"
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
@@ -736,11 +736,10 @@ func NewChainApp(
 	// must be done after relayer is created
 	app.AvailBlobKeeper.SetRelayer(app.Availblobrelayer)
 
-	// Proof-of-blob proposal handling
 	dph := baseapp.NewDefaultProposalHandler(bApp.Mempool(), bApp)
-	tiaBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(app.AvailBlobKeeper, dph.PrepareProposalHandler(), dph.ProcessProposalHandler())
-	bApp.SetPrepareProposal(tiaBlobProposalHandler.PrepareProposal)
-	bApp.SetProcessProposal(tiaBlobProposalHandler.ProcessProposal)
+	availBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(app.AvailBlobKeeper, dph.PrepareProposalHandler(), dph.ProcessProposalHandler())
+	bApp.SetPrepareProposal(availBlobProposalHandler.PrepareProposal)
+	bApp.SetProcessProposal(availBlobProposalHandler.ProcessProposal)
 
 	// --- Module Options ---
 
@@ -952,18 +951,6 @@ func NewChainApp(
 	}
 	app.SetAnteHandler(anteHandler)
 
-	// must be before Loading version
-	// requires the snapshot store to be created and registered as a BaseAppOption
-	// see cmd/rcd/root.go: 206 - 214 approx
-	// if manager := app.SnapshotManager(); manager != nil {
-	// 	err := manager.RegisterExtensions(
-	// 		tiablobkeeper.NewTiablobSnapshotter(app.CommitMultiStore(), app.TiaBlobKeeper),
-	// 	)
-	// 	if err != nil {
-	// 		panic(fmt.Errorf("failed to register snapshot extension: %s", err))
-	// 	}
-	// }
-
 	app.ScopedIBCKeeper = scopedIBCKeeper
 	app.ScopedTransferKeeper = scopedTransferKeeper
 	app.ScopedICAHostKeeper = scopedICAHostKeeper
@@ -1096,8 +1083,6 @@ func (app *ChainApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*
 	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
-	// fmt.Println("inside init genesiss.............", genesisState.Height)
-	fmt.Println("reqq heighttttt............", req.InitialHeight)
 
 	err := app.UpgradeKeeper.SetModuleVersionMap(ctx, app.ModuleManager.GetVersionMap())
 	if err != nil {
@@ -1105,7 +1090,6 @@ func (app *ChainApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*
 	}
 
 	response, err := app.ModuleManager.InitGenesis(ctx, app.appCodec, genesisState)
-	fmt.Println("responseee heree... in initt.........", response, err)
 	if err != nil {
 		panic(err)
 	}
