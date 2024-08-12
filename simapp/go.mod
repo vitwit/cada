@@ -14,7 +14,6 @@ replace (
 	github.com/prometheus/common => github.com/prometheus/common v0.47.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/prometheus/procfs => github.com/prometheus/procfs v0.12.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/spf13/viper => github.com/spf13/viper v1.17.0 // v1.18+ breaks app overrides
-// github.com/tendermint/tendermint => github.com/celestiaorg/celestia-core v1.35.0-tm-v0.34.29
 )
 
 replace (
