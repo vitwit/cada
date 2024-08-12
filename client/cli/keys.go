@@ -25,12 +25,7 @@ func NewKeysCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	keysCmd.AddCommand(
-	// NewKeysAddCmd(),
-	// NewKeysRestoreCmd(),
-	// NewKeysShowCmd(),
-	// NewKeysDeleteCmd(),
-	)
+	keysCmd.AddCommand()
 
 	return keysCmd
 }

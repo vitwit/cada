@@ -38,27 +38,6 @@ func (h *HTTPClientHandler) Get(url string) ([]byte, error) {
 }
 
 // Post method
-// Post method
-// func (h *HTTPClientHandler) Post(url string, data interface{}) ([]byte, error) {
-// 	jsonData, err := json.Marshal(data)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("error marshalling data: %v", err)
-// 	}
-
-// 	resp, err := h.client.Post(url, "application/json", bytes.NewBuffer(jsonData))
-// 	if err != nil {
-// 		return nil, fmt.Errorf("POST request error: %v", err)
-// 	}
-// 	defer resp.Body.Close()
-
-// 	body, err := io.ReadAll(resp.Body)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("error reading response body: %v", err)
-// 	}
-// 	return body, nil
-// }
-
-// Post method
 func (h *HTTPClientHandler) Post(url string, jsonData []byte) ([]byte, error) {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {

@@ -40,7 +40,6 @@ func (r *Relayer) PostBlocks(ctx sdk.Context, blocks []int64) {
 func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64) {
 	// process blocks instead of random data
 	if len(blocks) == 0 {
-		// fmt.Println("Empty blocks dataa...", len(blocks))
 		return
 	}
 
@@ -52,8 +51,6 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64) {
 			r.logger.Error("Error getting block", "height:", height, "error", err)
 			return
 		}
-
-		// fmt.Println("blocks res...........", res)
 
 		blockProto, err := res.Block.ToProto()
 		if err != nil {

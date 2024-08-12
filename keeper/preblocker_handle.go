@@ -10,10 +10,8 @@ import (
 )
 
 func (k *Keeper) preblockerPendingBlocks(ctx sdk.Context, blockTime time.Time, proposerAddr []byte, pendingBlocks *types.PendingBlocks) error {
-	fmt.Println("pending blocks", pendingBlocks)
 	if pendingBlocks != nil {
 		if reflect.DeepEqual(k.proposerAddress, proposerAddr) {
-			// fmt.Println("after addresses equal")
 			k.relayer.PostBlocks(ctx, pendingBlocks.BlockHeights)
 		}
 

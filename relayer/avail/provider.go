@@ -18,9 +18,6 @@ type CosmosProvider struct {
 
 	keyDir string
 
-	// the map key is the TX signer, which can either be 'default' (provider key) or a feegrantee
-	// the purpose of the map is to lock on the signer from TX creation through submission,
-	// thus making TX sequencing errors less likely.
 	walletStateMap map[string]*WalletState
 	walletStateMu  sync.Mutex
 }

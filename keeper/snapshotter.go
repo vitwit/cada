@@ -69,8 +69,6 @@ func (s *AvailBlobSnapshotter) SnapshotExtension(height uint64, payloadWriter sn
 	}
 	_ = provenHeight
 
-	// fmt.Println("Proven heightt.......", provenHeight)
-
 	// for unprovenHeight := provenHeight + 1; unprovenHeight <= int64(height); unprovenHeight++ {
 	// 	blockProtoBz, err := s.keeper.relayer.GetLocalBlockAtHeight(unprovenHeight)
 	// 	if err != nil {

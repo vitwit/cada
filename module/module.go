@@ -108,11 +108,6 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 	var genesisState types.GenesisState
 	err := cdc.UnmarshalJSON(data, &genesisState)
 	_ = err
-	// fmt.Println("errorrr hereee........", err)
-
-	// fmt.Println("genesis stateeeeeeeeeeee........", genesisState)
-	// fmt.Println("dataaa............", string(data))
-	// fmt.Println("heightt.........", ctx.BlockHeight())
 
 	if err := am.keeper.InitGenesis(ctx, &genesisState); err != nil {
 		panic(err)
