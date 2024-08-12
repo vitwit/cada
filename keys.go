@@ -1,4 +1,4 @@
-package availblob1
+package availblob
 
 import (
 	"cosmossdk.io/collections"
@@ -27,7 +27,7 @@ var (
 
 const (
 	// ModuleName is the name of the module
-	ModuleName = "availblob"
+	ModuleName = "availdamodule"
 
 	// StoreKey to be used when creating the KVStore
 	StoreKey = ModuleName
