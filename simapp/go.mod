@@ -37,7 +37,7 @@ require (
 	cosmossdk.io/client/v2 v2.0.0-beta.4
 	cosmossdk.io/core v0.12.0
 	cosmossdk.io/log v1.3.1
-	cosmossdk.io/math v1.3.0
+	cosmossdk.io/math v1.3.0 // indirect
 	cosmossdk.io/store v1.1.0
 	cosmossdk.io/tools/confix v0.1.1
 	cosmossdk.io/x/circuit v0.1.1
@@ -58,7 +58,6 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.19.0
 	github.com/strangelove-ventures/globalfee v0.50.1
-	github.com/strangelove-ventures/poa v0.50.2
 	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/vitwit/avail-da-module v0.0.0-20240725103806-4280f8cc7eb9
 	golang.org/x/sync v0.7.0
