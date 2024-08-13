@@ -134,14 +134,6 @@ import (
 
 	ibcchanneltypes "github.com/cosmos/ibc-go/v8/modules/core/04-channel/types" // spawntag:globalfee
 
-	poa "github.com/strangelove-ventures/poa"
-	poakeeper "github.com/strangelove-ventures/poa/keeper"
-	poamodule "github.com/strangelove-ventures/poa/module"
-
-	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
-	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
-	globalfeetypes "github.com/strangelove-ventures/globalfee/x/globalfee/types"
-
 	"github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward"
 	packetforwardkeeper "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/keeper"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
@@ -245,8 +237,6 @@ type ChainApp struct {
 	AvailBlobKeeper  *availblobkeeper.Keeper
 	Availblobrelayer *availblobrelayer.Relayer
 
-	POAKeeper           poakeeper.Keeper
-	GlobalFeeKeeper     globalfeekeeper.Keeper
 	PacketForwardKeeper *packetforwardkeeper.Keeper
 
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
@@ -352,8 +342,6 @@ func NewChainApp(
 		ibcfeetypes.StoreKey,
 		icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey,
-		poa.StoreKey,
-		globalfeetypes.StoreKey,
 		packetforwardtypes.StoreKey,
 		availblob1.StoreKey,
 	)
@@ -610,23 +598,6 @@ func NewChainApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// Create the globalfee keeper
-	app.GlobalFeeKeeper = globalfeekeeper.NewKeeper(
-		appCodec,
-		app.keys[globalfeetypes.StoreKey],
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	// Initialize the poa Keeper and and AppModule
-	app.POAKeeper = poakeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(keys[poa.StoreKey]),
-		app.StakingKeeper,
-		app.SlashingKeeper,
-		app.BankKeeper,
-		logger,
-	)
-
 	// IBC Fee Module keeper
 	app.IBCFeeKeeper = ibcfeekeeper.NewKeeper(
 		appCodec, keys[ibcfeetypes.StoreKey],
@@ -783,8 +754,6 @@ func NewChainApp(
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 		// custom
 		availblobmodule.NewAppModule(appCodec, app.AvailBlobKeeper),
-		poamodule.NewAppModule(appCodec, app.POAKeeper),
-		globalfee.NewAppModule(appCodec, app.GlobalFeeKeeper),
 		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
 	)
 
@@ -819,7 +788,6 @@ func NewChainApp(
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
-		poa.ModuleName, // custom
 		stakingtypes.ModuleName,
 		genutiltypes.ModuleName,
 		authz.ModuleName,
@@ -836,7 +804,6 @@ func NewChainApp(
 	app.ModuleManager.SetOrderEndBlockers(
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
-		poa.ModuleName, // custom
 		stakingtypes.ModuleName,
 		genutiltypes.ModuleName,
 		feegrant.ModuleName,
@@ -872,8 +839,6 @@ func NewChainApp(
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
-		poa.ModuleName,
-		globalfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
 		availblob1.ModuleName,
 	}
@@ -941,7 +906,6 @@ func NewChainApp(
 			IBCKeeper:     app.IBCKeeper,
 			CircuitKeeper: &app.CircuitKeeper,
 
-			GlobalFeeKeeper:      app.GlobalFeeKeeper,
 			BypassMinFeeMsgTypes: GetDefaultBypassFeeMessages(), // spawntag:globalfee
 			StakingKeeper:        app.StakingKeeper,             // spawntag:globalfee
 		},
@@ -1294,8 +1258,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
 	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
 
-	paramsKeeper.Subspace(poa.ModuleName)
-	paramsKeeper.Subspace(globalfee.ModuleName)
 	paramsKeeper.Subspace(packetforwardtypes.ModuleName).WithKeyTable(packetforwardtypes.ParamKeyTable())
 
 	return paramsKeeper
