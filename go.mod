@@ -4,9 +4,15 @@ go 1.22.5
 
 replace (
 	cosmossdk.io/core => cosmossdk.io/core v0.11.0
-	//	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v1.1.0
-	github.com/prometheus/common => github.com/prometheus/common v0.47.0
+	cosmossdk.io/x/evidence => cosmossdk.io/x/evidence v0.1.0
+	cosmossdk.io/x/upgrade => cosmossdk.io/x/upgrade v0.1.1
+	github.com/cosmos/cosmos-sdk => github.com/vitwit/cosmos-sdk v0.50.6-0.20240809182747-cd5b906bd4f6
+	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0
+	github.com/prometheus/client_model => github.com/prometheus/client_model v0.6.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
+	github.com/prometheus/common => github.com/prometheus/common v0.47.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
+	github.com/prometheus/procfs => github.com/prometheus/procfs v0.12.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/spf13/viper => github.com/spf13/viper v1.17.0 // v1.18+ breaks app overrides
+
 )
 
 require (
@@ -27,7 +33,7 @@ require (
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/cobra v1.8.1
 	github.com/test-go/testify v1.1.4
-	github.com/vitwit/avail-da-module/simapp v0.0.0-20240813092308-f0f99f48bdc7
+	github.com/vitwit/avail-da-module/simapp v0.0.0-20240820085607-26d2690ed86a
 	google.golang.org/genproto/googleapis/api v0.0.0-20240528184218-531527333157
 	google.golang.org/grpc v1.65.0
 )
