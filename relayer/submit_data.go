@@ -17,6 +17,14 @@ import (
 )
 
 func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) error {
+	if r.submittedBlocksCache[blocks[0]] {
+		return nil
+	}
+
+	r.submittedBlocksCache[blocks[0]] = true
+	delete(r.submittedBlocksCache, blocks[0]-int64(len(blocks)))
+
+	fmt.Println("blocks map: ", r.submittedBlocksCache)
 	handler := NewHTTPClientHandler()
 
 	datab := base64.StdEncoding.EncodeToString(data)
