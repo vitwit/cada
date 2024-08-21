@@ -33,11 +33,11 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 		return nil, err
 	}
 
-	var latestProvenHeight int64 = 1
+	// var latestProvenHeight int64 = 1
 	// TODO : set latestproven height in store
-	injectData := h.keeper.prepareInjectData(ctx, req.Time, latestProvenHeight)
-	injectDataBz := h.keeper.marshalMaxBytes(&injectData, req.MaxTxBytes, latestProvenHeight)
-	resp.Txs = h.keeper.addAvailblobDataToTxs(injectDataBz, req.MaxTxBytes, resp.Txs)
+	// injectData := h.keeper.prepareInjectData(ctx, req.Time, latestProvenHeight)
+	// injectDataBz := h.keeper.marshalMaxBytes(&injectData, req.MaxTxBytes, latestProvenHeight)
+	// resp.Txs = h.keeper.addAvailblobDataToTxs(injectDataBz, req.MaxTxBytes, resp.Txs)
 
 	return resp, nil
 }
