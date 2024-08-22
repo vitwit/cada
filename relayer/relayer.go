@@ -54,14 +54,13 @@ func NewRelayer(
 	keyDir string,
 ) (*Relayer, error) {
 	cfg := AvailConfigFromAppOpts(appOpts)
-
 	client, err := NewAvailClient(cfg)
 	if err != nil {
-		// panic(fmt.Sprintf("cannot create client:%v", err))
+		return nil, err
 	}
 
 	// local sdk-based chain provider
-	localProvider, err := local.NewProvider(cdc)
+	localProvider, err := local.NewProvider(cdc, cfg.CosmosNodeRPC)
 	if err != nil {
 		return nil, err
 	}
