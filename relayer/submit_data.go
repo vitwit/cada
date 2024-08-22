@@ -24,9 +24,7 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 	r.submittedBlocksCache[blocks[0]] = true
 	delete(r.submittedBlocksCache, blocks[0]-int64(len(blocks)))
 
-	fmt.Println("blocks map: ", r.submittedBlocksCache)
 	handler := NewHTTPClientHandler()
-
 	datab := base64.StdEncoding.EncodeToString(data)
 
 	jsonData := []byte(fmt.Sprintf(`{"data":"%s"}`, datab))
@@ -42,7 +40,6 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 		fmt.Printf("Error: %v\n", err)
 		return err
 	}
-	fmt.Printf("POST Response: %s\n", responseBody)
 
 	// Create an instance of the struct
 	var blockInfo BlockInfo
@@ -64,10 +61,9 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 			"appID", string(r.rpcClient.config.AppID),
 			"block_hash", blockInfo.BlockHash,
 			"block_number", blockInfo.BlockNumber,
+			"hash", blockInfo.Hash,
 		)
 	}
-
-	fmt.Println("submitted block info........", blockInfo)
 
 	return nil
 }
