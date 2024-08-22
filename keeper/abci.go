@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/vitwit/avail-da-module/types"
@@ -33,16 +35,17 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 		return nil, err
 	}
 
-	// var latestProvenHeight int64 = 1
+	var latestProvenHeight int64 = 1
 	// TODO : set latestproven height in store
-	// injectData := h.keeper.prepareInjectData(ctx, req.Time, latestProvenHeight)
-	// injectDataBz := h.keeper.marshalMaxBytes(&injectData, req.MaxTxBytes, latestProvenHeight)
-	// resp.Txs = h.keeper.addAvailblobDataToTxs(injectDataBz, req.MaxTxBytes, resp.Txs)
+	injectData := h.keeper.prepareInjectData(ctx, req.Time, latestProvenHeight)
+	injectDataBz := h.keeper.marshalMaxBytes(&injectData, req.MaxTxBytes, latestProvenHeight)
+	resp.Txs = h.keeper.addAvailblobDataToTxs(injectDataBz, req.MaxTxBytes, resp.Txs)
 
 	return resp, nil
 }
 
 func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.RequestProcessProposal) (*abci.ResponseProcessProposal, error) {
+	fmt.Println("length of transactions: ", len(req.Txs), ctx.BlockHeight())
 	injectedData := h.keeper.getInjectedData(req.Txs)
 	if injectedData != nil {
 		req.Txs = req.Txs[1:] // Pop the injected data for the default handler
