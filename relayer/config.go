@@ -14,6 +14,7 @@ const (
 	FlagQueryInterval       = "avail.proof-query-interval"
 	FlagSeed                = "avail-seed"
 	FlagLightClientURL      = "avail.light-client-url"
+	FlagCosmosNodeRPC       = "avail.cosmos-node-rpc"
 
 	DefaultConfigTemplate = `
 
@@ -34,6 +35,8 @@ const (
 	# Seed for avail
 	seed = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
 
+	# RPC of cosmos node to get the block data
+	cosmos-node-rpc = "http://127.0.0.1:26657"
 	`
 )
 
@@ -42,6 +45,7 @@ var DefaultAvailConfig = AvailConfig{
 	ProofQueryInterval: 12 * time.Second,
 	Seed:               "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice",
 	AppID:              0,
+	CosmosNodeRPC:      "http://127.0.0.1:26657",
 }
 
 // AvailConfig defines the configuration for the in-process Avail relayer.
@@ -64,6 +68,9 @@ type AvailConfig struct {
 
 	// avail config
 	Seed string `json:"seed"`
+
+	// RPC of the cosmos node to fetch the block data
+	CosmosNodeRPC string `json:"cosmos-node-rpc"`
 }
 
 func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfig {
@@ -75,5 +82,6 @@ func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfig {
 		ProofQueryInterval:  cast.ToDuration(appOpts.Get(FlagQueryInterval)),
 		Seed:                cast.ToString(appOpts.Get(FlagSeed)),
 		LightClientURL:      cast.ToString(appOpts.Get(FlagLightClientURL)),
+		CosmosNodeRPC:       cast.ToString(appOpts.Get(FlagCosmosNodeRPC)),
 	}
 }

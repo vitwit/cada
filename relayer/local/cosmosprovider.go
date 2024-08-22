@@ -12,9 +12,8 @@ type CosmosProvider struct {
 }
 
 // NewProvider validates the CosmosProviderConfig, instantiates a ChainClient and then instantiates a CosmosProvider
-func NewProvider(cdc codec.BinaryCodec) (*CosmosProvider, error) {
-	// Client wrapper seems to have issues with getting/copying the block. Validate basic does not succeed with it.
-	rpcClient, err := cometrpc.NewWithTimeout("http://127.0.0.1:26657", "/websocket", uint(3))
+func NewProvider(cdc codec.BinaryCodec, rpc string) (*CosmosProvider, error) {
+	rpcClient, err := cometrpc.NewWithTimeout(rpc, "/websocket", uint(3))
 	if err != nil {
 		return nil, err
 	}

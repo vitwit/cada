@@ -43,6 +43,7 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 }
 
 func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.RequestProcessProposal) (*abci.ResponseProcessProposal, error) {
+	// fmt.Println("length of transactions: ", len(req.Txs), ctx.BlockHeight())
 	injectedData := h.keeper.getInjectedData(req.Txs)
 	if injectedData != nil {
 		req.Txs = req.Txs[1:] // Pop the injected data for the default handler

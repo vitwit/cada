@@ -33,6 +33,8 @@ type Relayer struct {
 
 	mu sync.Mutex
 
+	submittedBlocksCache map[int64]bool
+
 	rpcClient     *AvailClient
 	localProvider *local.CosmosProvider
 	clientCtx     client.Context
@@ -52,14 +54,13 @@ func NewRelayer(
 	keyDir string,
 ) (*Relayer, error) {
 	cfg := AvailConfigFromAppOpts(appOpts)
-
 	client, err := NewAvailClient(cfg)
 	if err != nil {
-		// panic(fmt.Sprintf("cannot create client:%v", err))
+		return nil, err
 	}
 
 	// local sdk-based chain provider
-	localProvider, err := local.NewProvider(cdc)
+	localProvider, err := local.NewProvider(cdc, cfg.CosmosNodeRPC)
 	if err != nil {
 		return nil, err
 	}
@@ -72,11 +73,11 @@ func NewRelayer(
 		provenHeights: make(chan int64, 10000),
 		commitHeights: make(chan int64, 10000),
 
-		rpcClient:              client,
-		localProvider:          localProvider,
-		availChainID:           cfg.ChainID,
-		availLastQueriedHeight: 1, // Defaults to 1, but init genesis can set this based on client state's latest height
-
+		rpcClient:                 client,
+		localProvider:             localProvider,
+		availChainID:              cfg.ChainID,
+		availLastQueriedHeight:    1, // Defaults to 1, but init genesis can set this based on client state's latest height
+		submittedBlocksCache:      make(map[int64]bool),
 		availAppID:                cfg.AppID,
 		availPublishBlockInterval: 5,
 	}, nil

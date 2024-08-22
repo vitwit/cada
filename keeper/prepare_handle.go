@@ -17,7 +17,7 @@ func (k *Keeper) prepareInjectData(ctx sdk.Context, currentBlockTime time.Time, 
 }
 
 func (k *Keeper) addAvailblobDataToTxs(injectDataBz []byte, maxTxBytes int64, txs [][]byte) [][]byte {
-	if len(injectDataBz) > 0 {
+	if injectDataBz != nil && len(injectDataBz) > 0 {
 		var finalTxs [][]byte
 		totalTxBytes := int64(len(injectDataBz))
 		finalTxs = append(finalTxs, injectDataBz)
@@ -71,7 +71,7 @@ func (k *Keeper) shouldGetExpiredBlock(ctx sdk.Context) bool {
 }
 
 func (k *Keeper) marshalMaxBytes(injectData *types.InjectedData, maxBytes int64, latestProvenHeight int64) []byte {
-	if len(injectData.PendingBlocks.BlockHeights) != 0 {
+	if len(injectData.PendingBlocks.BlockHeights) == 0 {
 		return nil
 	}
 
