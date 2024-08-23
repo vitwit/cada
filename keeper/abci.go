@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/vitwit/avail-da-module/types"
@@ -56,24 +58,29 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
 	injectedData := k.prepareInjectData(ctx, req.Time, req.Height)
+	fmt.Printf("injectedDataPREPARE: %v\n", injectedData)
 
 	injectDataBz := k.marshalMaxBytes(&injectedData, int64(req.Size()), req.Height)
+	fmt.Printf("injectDataBz: %v\n", injectDataBz)
 	_ = k.addAvailblobDataToTxs(injectDataBz, int64(req.Size()), req.Txs)
 
 	if err := k.preblockerPendingBlocks(ctx, req.Time, req.ProposerAddress, &injectedData.PendingBlocks); err != nil {
 		return err
 	}
-	// }
+
 	return nil
 }
 
 func (k *Keeper) getInjectedData(txs [][]byte) *types.InjectedData {
+	fmt.Printf("len(txs): %v\n", len(txs))
 	if len(txs) != 0 {
 		var injectedData types.InjectedData
 		err := k.cdc.Unmarshal(txs[0], &injectedData)
+		fmt.Printf("err: %v\n", err)
 		if err == nil {
 			return &injectedData
 		}
+		fmt.Printf("injectedData: %v\n", injectedData)
 	}
 	return nil
 }
