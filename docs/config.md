@@ -23,3 +23,6 @@ Below is the default configuration for integrating with Avail. You can customize
 
     # Seed for avail
     seed = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
+
+    # RPC of cosmos node to get the block data
+    cosmos-node-rpc = "http://127.0.0.1:26657"
