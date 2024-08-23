@@ -1,10 +1,13 @@
 package keeper
 
 import (
+	"errors"
+
 	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	availblob1 "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/relayer"
 	"github.com/vitwit/avail-da-module/types"
@@ -76,4 +79,27 @@ func NewKeeper(
 
 func (k *Keeper) SetRelayer(r *relayer.Relayer) {
 	k.relayer = r
+}
+
+func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*types.MsgSubmitBlobResponse, error) {
+	store := ctx.KVStore(k.storeKey)
+	if IsAlreadyExist(ctx, store, *req.BlocksRange) {
+		return &types.MsgSubmitBlobResponse{}, errors.New("the range is already processed")
+	}
+	err := updateBlobStatus(ctx, store, *req.BlocksRange, PENDING)
+	return &types.MsgSubmitBlobResponse{}, err
+}
+
+func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
+	store := ctx.KVStore(k.storeKey)
+	if !IsAlreadyExist(ctx, store, *req.BlocksRange) {
+		return &types.MsgUpdateBlobStatusResponse{}, errors.New("the range does not exist")
+	}
+
+	status := FAILURE
+	if req.IsSuccess {
+		status = SUCCESS
+	}
+	err := updateBlobStatus(ctx, store, *req.BlocksRange, status)
+	return &types.MsgUpdateBlobStatusResponse{}, err
 }

@@ -1,7 +1,10 @@
 package availblob
 
 import (
+	"encoding/binary"
+
 	"cosmossdk.io/collections"
+	"github.com/vitwit/avail-da-module/types"
 )
 
 var (
@@ -23,6 +26,8 @@ var (
 
 	// light client store key
 	ClientStoreKey = []byte("client_store/")
+
+	PendingBlobsKey = collections.NewPrefix(5)
 )
 
 const (
@@ -41,3 +46,16 @@ const (
 	// TransientStoreKey defines the transient store key
 	TransientStoreKey = "transient_" + ModuleName
 )
+
+func PendingBlobsStoreKey(blocksRange types.Range) []byte {
+	fromBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(fromBytes, uint64(blocksRange.From))
+
+	toBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(toBytes, uint64(blocksRange.To))
+
+	key := PendingBlobsKey
+	key = append(key, fromBytes...)
+	key = append(key, toBytes...)
+	return key
+}

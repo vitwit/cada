@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/vitwit/avail-da-module/types"
 )
 
@@ -37,3 +38,20 @@ func (s msgServer) SetAvailAddress(ctx context.Context, msg *types.MsgSetAvailAd
 
 	return new(types.MsgSetAvailAddressResponse), nil
 }
+
+func (s msgServer) SubmitBlob(ctx context.Context, req *types.MsgSubmitBlobRequest) (*types.MsgSubmitBlobResponse, error) {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	return s.k.SubmitBlob(sdkCtx, req)
+}
+
+func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	return s.k.UpdateBlobStatus(sdkCtx, req)
+}
+
+/*
+rpc SubmitBlob(MsgSubmitBlobRequest) returns (MsgSubmitBlobResponse);
+
+  // UpdateBlobStatus
+  rpc UpdateBlobStatus(MsgUpdateBlobStatusRequest) returns (MsgUpdateBlobStatusResponse);
+*/
