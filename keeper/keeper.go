@@ -88,8 +88,8 @@ func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*
 		return &types.MsgSubmitBlobResponse{}, errors.New("the range is already processed")
 	}
 
-	fmt.Println("passed already exist..............")
 	err := updateBlobStatus(ctx, store, *req.BlocksRange, PENDING)
+	fmt.Println("errr.........", err)
 	return &types.MsgSubmitBlobResponse{}, err
 }
 

@@ -28,7 +28,7 @@ func IsAlreadyExist(ctx context.Context, store storetypes2.KVStore, blocksRange 
 }
 
 func updateBlobStatus(ctx context.Context, store storetypes2.KVStore, blocksRange types.Range, status uint32) error {
-	if status != PENDING || status != SUCCESS || status != FAILURE {
+	if status != PENDING && status != SUCCESS && status != FAILURE {
 		return errors.New("unknown status")
 	}
 	pendingBlobStoreKey := availblob1.PendingBlobsStoreKey(blocksRange)
