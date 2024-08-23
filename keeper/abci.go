@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/vitwit/avail-da-module/types"
@@ -60,8 +62,12 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	if !ok {
 		return nil
 	}
+	go func() {
+		err := k.SubmitBlobTx(ctx, submitBlobRequest)
+		fmt.Println("submit blob tx error.............", err)
+	}()
 
-	go k.relayer.StartBlobLifeCycle(submitBlobRequest, k.ClientCmd)
+	return nil
 
 	// injectDataBz := k.marshalMaxBytes(&injectedData, int64(req.Size()), req.Height)
 	// _ = k.addAvailblobDataToTxs(injectDataBz, int64(req.Size()), req.Txs)
@@ -70,7 +76,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	// 	return err
 	// }
 	// // }
-	return nil
+	// return nil
 }
 
 func (k *Keeper) getInjectedData(txs [][]byte) *types.InjectedData {

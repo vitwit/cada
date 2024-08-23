@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -26,7 +27,7 @@ func NewTxCmd(keeper *keeper.Keeper) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	keeper.ClientCmd = txCmd
+	// keeper.ClientCmd = txCmd
 
 	txCmd.AddCommand(NewSubmitBlobCmd())
 	txCmd.AddCommand(NewUpdateBlobStatusCmd(), InitKepperClientCmd(keeper))
@@ -37,12 +38,14 @@ func NewTxCmd(keeper *keeper.Keeper) *cobra.Command {
 // init keeper client cmd
 func InitKepperClientCmd(keeper *keeper.Keeper) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "init-keeper-cleint",
+		Use:     "init-keeper-client",
 		Short:   "initlialize a client to use in keeper",
 		Example: "init-keeper-client",
 		Args:    cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			fmt.Println("setting keeper client.....", keeper.ClientCmd == nil)
 			keeper.ClientCmd = cmd
+			fmt.Println("setting keeper client.....", keeper.ClientCmd == nil)
 			return nil
 		},
 	}
@@ -81,6 +84,8 @@ func NewSubmitBlobCmd() *cobra.Command {
 				},
 				ValidatorAddress: clientCtx.GetFromAddress().String(),
 			}
+
+			// cmd.Marsha
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}

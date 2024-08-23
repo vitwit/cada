@@ -8,6 +8,7 @@ import (
 	storetypes2 "cosmossdk.io/store/types"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 	availblob1 "github.com/vitwit/avail-da-module"
@@ -31,6 +32,7 @@ type Keeper struct {
 	ProvenHeight            collections.Item[int64]
 	PendingBlocksToTimeouts collections.Map[int64, int64]
 	TimeoutsToPendingBlocks collections.Map[int64, types.PendingBlocks]
+	keyring                 keyring.Keyring
 
 	storeKey storetypes2.StoreKey
 
