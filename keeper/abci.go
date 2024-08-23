@@ -33,38 +33,38 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 		return nil, err
 	}
 
-	var latestProvenHeight int64 = 1
-	// TODO : set latestproven height in store
-	injectData := h.keeper.prepareInjectData(ctx, req.Time, latestProvenHeight)
-	injectDataBz := h.keeper.marshalMaxBytes(&injectData, req.MaxTxBytes, latestProvenHeight)
-	resp.Txs = h.keeper.addAvailblobDataToTxs(injectDataBz, req.MaxTxBytes, resp.Txs)
+	// var latestProvenHeight int64 = 1
+	// // TODO : set latestproven height in store
+	// injectData := h.keeper.prepareInjectData(ctx, req.Time, latestProvenHeight)
+	// injectDataBz := h.keeper.marshalMaxBytes(&injectData, req.MaxTxBytes, latestProvenHeight)
+	// resp.Txs = h.keeper.addAvailblobDataToTxs(injectDataBz, req.MaxTxBytes, resp.Txs)
 
 	return resp, nil
 }
 
 func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.RequestProcessProposal) (*abci.ResponseProcessProposal, error) {
-	// fmt.Println("length of transactions: ", len(req.Txs), ctx.BlockHeight())
-	injectedData := h.keeper.getInjectedData(req.Txs)
-	if injectedData != nil {
-		req.Txs = req.Txs[1:] // Pop the injected data for the default handler
+	// // fmt.Println("length of transactions: ", len(req.Txs), ctx.BlockHeight())
+	// injectedData := h.keeper.getInjectedData(req.Txs)
+	// if injectedData != nil {
+	// 	req.Txs = req.Txs[1:] // Pop the injected data for the default handler
 
-		if err := h.keeper.processPendingBlocks(ctx, req.Time, &injectedData.PendingBlocks); err != nil {
-			return nil, err
-		}
-	}
+	// 	if err := h.keeper.processPendingBlocks(ctx, req.Time, &injectedData.PendingBlocks); err != nil {
+	// 		return nil, err
+	// 	}
+	// }
 	return h.processProposalHandler(ctx, req)
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
-	injectedData := k.prepareInjectData(ctx, req.Time, req.Height)
+	// injectedData := k.prepareInjectData(ctx, req.Time, req.Height)
 
-	injectDataBz := k.marshalMaxBytes(&injectedData, int64(req.Size()), req.Height)
-	_ = k.addAvailblobDataToTxs(injectDataBz, int64(req.Size()), req.Txs)
+	// injectDataBz := k.marshalMaxBytes(&injectedData, int64(req.Size()), req.Height)
+	// _ = k.addAvailblobDataToTxs(injectDataBz, int64(req.Size()), req.Txs)
 
-	if err := k.preblockerPendingBlocks(ctx, req.Time, req.ProposerAddress, &injectedData.PendingBlocks); err != nil {
-		return err
-	}
+	// if err := k.preblockerPendingBlocks(ctx, req.Time, req.ProposerAddress, &injectedData.PendingBlocks); err != nil {
+	// 	return err
 	// }
+	// // }
 	return nil
 }
 
