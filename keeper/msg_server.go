@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/vitwit/avail-da-module/types"
@@ -40,12 +41,16 @@ func (s msgServer) SetAvailAddress(ctx context.Context, msg *types.MsgSetAvailAd
 }
 
 func (s msgServer) SubmitBlob(ctx context.Context, req *types.MsgSubmitBlobRequest) (*types.MsgSubmitBlobResponse, error) {
+
+	fmt.Println("msgServer sub,itblob.............", req)
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	return s.k.SubmitBlob(sdkCtx, req)
 }
 
 func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	//TODO: query the light client
 	return s.k.UpdateBlobStatus(sdkCtx, req)
 }
 

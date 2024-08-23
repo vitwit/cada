@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"errors"
+	"fmt"
 
 	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
@@ -86,6 +87,8 @@ func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*
 	if IsAlreadyExist(ctx, store, *req.BlocksRange) {
 		return &types.MsgSubmitBlobResponse{}, errors.New("the range is already processed")
 	}
+
+	fmt.Println("passed already exist..............")
 	err := updateBlobStatus(ctx, store, *req.BlocksRange, PENDING)
 	return &types.MsgSubmitBlobResponse{}, err
 }

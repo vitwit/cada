@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/binary"
 	"errors"
+	"fmt"
 
 	storetypes2 "cosmossdk.io/store/types"
 	availblob1 "github.com/vitwit/avail-da-module"
@@ -19,6 +20,7 @@ const (
 func IsAlreadyExist(ctx context.Context, store storetypes2.KVStore, blocksRange types.Range) bool {
 	pendingBlobStoreKey := availblob1.PendingBlobsStoreKey(blocksRange)
 	blobStatus := store.Get(pendingBlobStoreKey)
+	fmt.Println("blob status:", blobStatus, blobStatus == nil)
 	if blobStatus == nil {
 		return false
 	}
