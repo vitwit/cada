@@ -9,6 +9,7 @@ import (
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/spf13/cobra"
 	availblob1 "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/relayer"
 	"github.com/vitwit/avail-da-module/types"
@@ -42,6 +43,7 @@ type Keeper struct {
 	unprovenBlocks map[int64][]byte
 
 	proposerAddress []byte
+	ClientCmd       *cobra.Command
 }
 
 func NewKeeper(

@@ -63,7 +63,7 @@ func (AppModule) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwrunt
 
 // GetTxCmd returns the root tx command for the rollchain module.
 func (am AppModule) GetTxCmd() *cobra.Command {
-	return cli.NewTxCmd()
+	return cli.NewTxCmd(am.keeper)
 }
 
 // RegisterInterfaces registers interfaces and implementations of the rollchain module.

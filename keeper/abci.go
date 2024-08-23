@@ -56,7 +56,12 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
-	// injectedData := k.prepareInjectData(ctx, req.Time, req.Height)
+	submitBlobRequest, ok := k.relayer.NextBlocksToSumbit(ctx)
+	if !ok {
+		return nil
+	}
+
+	go k.relayer.StartBlobLifeCycle(submitBlobRequest, k.ClientCmd)
 
 	// injectDataBz := k.marshalMaxBytes(&injectedData, int64(req.Size()), req.Height)
 	// _ = k.addAvailblobDataToTxs(injectDataBz, int64(req.Size()), req.Txs)

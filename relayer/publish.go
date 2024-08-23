@@ -2,11 +2,28 @@ package relayer
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/vitwit/avail-da-module/types"
 )
 
 // PostNextBlocks is called by the current proposing validator during PrepareProposal.
 // If on the publish boundary, it will return the block heights that will be published
 // It will not publish the block being proposed.
+
+func (r *Relayer) NextBlocksToSumbit(ctx sdk.Context) (types.MsgSubmitBlobRequest, bool) {
+	height := ctx.BlockHeight()
+	// only publish new blocks on interval
+	if height < 2 || (height-1)%int64(r.availPublishBlockInterval) != 0 {
+		return types.MsgSubmitBlobRequest{}, false
+	}
+
+	return types.MsgSubmitBlobRequest{
+		BlocksRange: &types.Range{
+			From: uint64(height - int64(r.availPublishBlockInterval)),
+			To:   uint64(height - 1),
+		},
+	}, true
+
+}
 func (r *Relayer) ProposePostNextBlocks(ctx sdk.Context, provenHeight int64) []int64 {
 	height := ctx.BlockHeight()
 

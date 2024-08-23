@@ -12,11 +12,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 
 	availblob "github.com/vitwit/avail-da-module"
+	"github.com/vitwit/avail-da-module/keeper"
 	"github.com/vitwit/avail-da-module/types"
 )
 
 // NewTxCmd
-func NewTxCmd() *cobra.Command {
+func NewTxCmd(keeper *keeper.Keeper) *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        availblob.ModuleName,
 		Short:                      availblob.ModuleName + " transaction subcommands",
@@ -25,9 +26,30 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	keeper.ClientCmd = txCmd
+
 	txCmd.AddCommand(NewSubmitBlobCmd())
-	txCmd.AddCommand(NewUpdateBlobStatusCmd())
+	txCmd.AddCommand(NewUpdateBlobStatusCmd(), InitKepperClientCmd(keeper))
+
 	return txCmd
+}
+
+// init keeper client cmd
+func InitKepperClientCmd(keeper *keeper.Keeper) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "init-keeper-cleint",
+		Short:   "initlialize a client to use in keeper",
+		Example: "init-keeper-client",
+		Args:    cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			keeper.ClientCmd = cmd
+			return nil
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
 }
 
 // submit blob
