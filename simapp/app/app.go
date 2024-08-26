@@ -146,7 +146,7 @@ import (
 const (
 	appName      = "avail-sdk"
 	NodeDir      = ".availsdk"
-	Bech32Prefix = "avail"
+	Bech32Prefix = "cosmos"
 	// TODO: Change me
 	AvailAppID = 1
 

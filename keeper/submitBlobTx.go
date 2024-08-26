@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"os"
 
+	cometrpc "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/cosmos/cosmos-sdk/client"
 	clitx "github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/spf13/pflag"
 	"github.com/vitwit/avail-da-module/types"
 )
@@ -18,7 +20,9 @@ func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) er
 	cdc := k.cdc
 	chainID := ctx.ChainID()
 	address := k.proposerAddress
-	fromAddress := sdk.AccAddress(address)
+
+	fmt.Println("address heree......", address)
+	// fromAddress := sdk.AccAddress(address)
 	// Assuming you have access to the keyring and broadcast mode
 	broadcastMode := "block"
 
@@ -33,30 +37,41 @@ func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) er
 		return err
 	}
 
-	/*
-		clientCtx := client.Context{}.
-		WithCodec(cdc).
-		WithTxConfig(authTx.NewTxConfig(cdc, authTx.DefaultSignModes)).
-		WithChainID("demo").
-		WithKeyringDir("~/.availsdk/keyring-test").
-		WithHomeDir("~/.availsdk").
-		WithInput(os.Stdin)
-	*/
+	rpcClient, err := cometrpc.NewWithTimeout("http://localhost:26657", "/websocket", uint(3))
+	if err != nil {
+		return err
+	}
+
+	addr, err := sdk.AccAddressFromBech32("cosmos16de7yxn7tdwlvn5xx84x6fa9zaf2gfzk2ul206")
+	fmt.Println("address and errorr......", addr, err)
+
+	// clientCtx := NewClientCtx(kr, rpcClient)
+
+	// clientCtx := client.Context{}.
+	// 	WithCodec(cdc).
+	// 	WithTxConfig(authTx.NewTxConfig(cdc, authTx.DefaultSignModes)).
+	// 	WithChainID("demo").
+	// 	WithKeyringDir("~/.availsdk/keyring-test").
+	// 	WithHomeDir("~/.availsdk").
+	// 	WithInput(os.Stdin)
 
 	// k.keyring.Backend()
 
 	clientCtx := client.Context{}.
 		WithCodec(cdc.(codec.Codec)).
 		WithChainID(chainID).
-		WithFromAddress(fromAddress).
+		WithFromAddress(addr).
 		WithFromName("alice").
 		// WithKeyringDir("~/.availsdk/keyring-test").
+		WithKeyringDir(homepath).
 		WithBroadcastMode(broadcastMode).
 		WithTxConfig(authTx.NewTxConfig(cdc.(codec.Codec), authTx.DefaultSignModes)).
-		WithKeyring(kr)
+		WithKeyring(kr).
+		WithAccountRetriever(authtypes.AccountRetriever{}).
+		WithClient(rpcClient)
 
 	fmt.Println("coming upto hereeeee.........")
-	msg.ValidatorAddress = fromAddress.String()
+	msg.ValidatorAddress = "cosmos16de7yxn7tdwlvn5xx84x6fa9zaf2gfzk2ul206"
 
 	fmt.Println("validator addressssssss............, ", msg.ValidatorAddress)
 
@@ -73,7 +88,14 @@ func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) er
 	fmt.Println("aaaaaaaa.......", clientCtx.TxConfig)
 	fmt.Println("aaaaaaaa.......", clientCtx.AccountRetriever)
 
-	err = clitx.GenerateOrBroadcastTxCLI(clientCtx, &flags, &msg)
+	// err = clitx.GenerateOrBroadcastTxCLI(clientCtx, &flags, &msg)
+	txf, err := clitx.NewFactoryCLI(clientCtx, &flags)
+	fmt.Println("here the eroor with txf....", txf, err)
+	if err != nil {
+		return err
+	}
+
+	err = clitx.GenerateOrBroadcastTxWithFactory(clientCtx, txf, &msg)
 	if err != nil {
 		fmt.Println("error insideeeeeeeeeeee............", err)
 		return err
