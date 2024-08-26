@@ -7,11 +7,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 func InitClientCtx(cdc *codec.ProtoCodec) client.Context {
@@ -34,15 +38,15 @@ func InitClientCtx(cdc *codec.ProtoCodec) client.Context {
 	return clientCtx
 }
 
-func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, ctx sdk.Context, cdc codec.BinaryCodec) client.Context {
-	// encodingConfig := params.MakeEncodingConfig()
-	// authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	// cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	// sdk.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	// staking.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	// cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string, cdc codec.BinaryCodec) client.Context {
+	encodingConfig := MakeEncodingConfig()
+	authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	sdk.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	staking.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
-	chainID := ctx.ChainID()
+	// chainID := ctx.ChainID()
 
 	// fmt.Println("address heree......", address)
 	// fromAddress := sdk.AccAddress(address)
@@ -73,4 +77,35 @@ func NewFactory(clientCtx client.Context) tx.Factory {
 		WithSignMode(signing.SignMode_SIGN_MODE_DIRECT).
 		WithAccountRetriever(clientCtx.AccountRetriever).
 		WithTxConfig(clientCtx.TxConfig)
+}
+
+// MakeEncodingConfig creates an EncodingConfig for an amino based test configuration.
+func MakeEncodingConfig() EncodingConfig {
+	aminoCodec := codec.NewLegacyAmino()
+	interfaceRegistry := codectypes.NewInterfaceRegistry()
+	codec := codec.NewProtoCodec(interfaceRegistry)
+	txCfg := authTx.NewTxConfig(codec, authTx.DefaultSignModes)
+
+	encCfg := EncodingConfig{
+		InterfaceRegistry: interfaceRegistry,
+		Codec:             codec,
+		TxConfig:          txCfg,
+		Amino:             aminoCodec,
+	}
+
+	std.RegisterLegacyAminoCodec(encCfg.Amino)
+	std.RegisterInterfaces(encCfg.InterfaceRegistry)
+	// mb.RegisterLegacyAminoCodec(encCfg.Amino)
+	// mb.RegisterInterfaces(encCfg.InterfaceRegistry)
+
+	return encCfg
+}
+
+// EncodingConfig specifies the concrete encoding types to use for a given app.
+// This is provided for compatibility between protobuf and amino implementations.
+type EncodingConfig struct {
+	InterfaceRegistry codectypes.InterfaceRegistry
+	Codec             codec.Codec
+	TxConfig          client.TxConfig
+	Amino             *codec.LegacyAmino
 }
