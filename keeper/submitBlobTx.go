@@ -15,8 +15,28 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/spf13/pflag"
+	dacli "github.com/vitwit/avail-da-module/chainclient"
 	"github.com/vitwit/avail-da-module/types"
 )
+
+func (k Keeper) SubmitBlobTx2(ctx sdk.Context, msg types.MsgSubmitBlobRequest) error {
+	cdc := k.cdc
+	homepath := "/home/vitwit/.availsdk/keyring-test"
+
+	cc, err := dacli.CreateChainClient(sdk.KeyringServiceName(), ctx.ChainID(), homepath, cdc.(codec.Codec))
+	if err != nil {
+		return err
+	}
+
+	msg.ValidatorAddress = cc.Address
+	err = cc.BroadcastTx(msg, cc.Key, sdk.AccAddress(cc.Address))
+	if err != nil {
+		fmt.Println("error while broadcastig the txxx.........", err)
+		return err
+	}
+
+	return nil
+}
 
 func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) error {
 	// address := k.proposerAddress
@@ -39,18 +59,16 @@ func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) er
 	// create new client context
 	clientCtx := NewClientCtx(kr, rpcClient, ctx.ChainID(), cdc)
 
-	flags := *pflag.NewFlagSet("my-flags", pflag.ContinueOnError)
-	fmt.Println("new flagssssss.......", flags)
-
-	msg.ValidatorAddress = "cosmos1ux2hl3y42nz6vtdl8k7t7f05k9p3r2k62zfvtv"
+	// flags := *pflag.NewFlagSet("my-flags", pflag.ContinueOnError)
 
 	// txf, err := clitx.NewFactoryCLI(clientCtx, &flags)
-	// fmt.Println("here the eroor with txf....", txf, err)
+	// // fmt.Println("here the eroor with txf....", txf, err)
 	// if err != nil {
 	// 	return err
 	// }
 
 	factory := NewFactory(clientCtx)
+	clientCtx.AccountRetriever = authtypes.AccountRetriever{}
 
 	err = clitx.GenerateOrBroadcastTxWithFactory(clientCtx, factory, &msg)
 	if err != nil {

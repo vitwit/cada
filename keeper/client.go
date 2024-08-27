@@ -8,15 +8,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
+	// "github.com/tendermint/starport/starport/pkg/xfilepath"
 )
+
+// var availdHomePath = xfilepath.JoinFromHome(xfilepath.Path("availsdk"))
 
 func InitClientCtx(cdc *codec.ProtoCodec) client.Context {
 	// interfaceRegistry := codectypes.NewInterfaceRegistry()
@@ -40,16 +41,22 @@ func InitClientCtx(cdc *codec.ProtoCodec) client.Context {
 
 func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string, cdc codec.BinaryCodec) client.Context {
 	encodingConfig := MakeEncodingConfig()
-	authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	sdk.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	staking.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	// authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	// cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	// sdk.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	// staking.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	// cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	// chainID := ctx.ChainID()
 
 	// fmt.Println("address heree......", address)
-	// fromAddress := sdk.AccAddress(address)
+	// sdk.AccAddressFromBech32()
+	fromAddress, err := sdk.AccAddressFromBech32("cosmos1ux2hl3y42nz6vtdl8k7t7f05k9p3r2k62zfvtv")
+	// fmt.Println("here errorr...", err)
+	if err != nil {
+		// return err
+	}
+	// fmt.Println("from addresss.........", fromAddress)
 	// Assuming you have access to the keyring and broadcast mode
 	broadcastMode := "block"
 
@@ -58,13 +65,14 @@ func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string, cdc code
 	return client.Context{}.
 		WithCodec(cdc.(codec.Codec)).
 		WithChainID(chainID).
-		// WithFromAddress(fromAddress).
+		WithFromAddress(fromAddress).
 		WithFromName("alice").
 		WithKeyringDir(homepath).
 		WithBroadcastMode(broadcastMode).
 		WithTxConfig(authTx.NewTxConfig(cdc.(codec.Codec), authTx.DefaultSignModes)).
 		WithKeyring(kr).
-		WithAccountRetriever(authtypes.AccountRetriever{})
+		WithAccountRetriever(authtypes.AccountRetriever{}).
+		WithClient(c).WithInterfaceRegistry(encodingConfig.InterfaceRegistry)
 }
 
 // NewFactory creates a new Factory.
