@@ -41,18 +41,34 @@ func (k Keeper) SubmitBlobTx2(ctx sdk.Context, msg types.MsgSubmitBlobRequest) e
 func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) error {
 	// address := k.proposerAddress
 	cdc := k.cdc
+
+	// var wg sy/nc.WaitGroup
+
+	// count := 1
+
+	// go func() {
+	// 	for {
+	// 		if count == 0 {
+	// 			break
+	// 		}
+	// 		time.Sleep(7 * time.Second)
+	// 		fmt.Println("still in...................", ctx.BlockHeight())
+	// 	}
+	// }()
 	homepath := "/home/vitwit/.availsdk/keyring-test"
 	// keyring
 	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest,
 		homepath, os.Stdin, cdc.(codec.Codec))
 
 	if err != nil {
+		// count = 0
 		fmt.Println("error while creating keyring..", err)
 		return err
 	}
 
 	rpcClient, err := cometrpc.NewWithTimeout("http://localhost:26657", "/websocket", uint(3))
 	if err != nil {
+		// count = 0
 		return err
 	}
 
@@ -67,15 +83,31 @@ func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) er
 	// 	return err
 	// }
 
+	// import mnemonic
+	key := "testkey"
+	info := ImportMnemonic(key, "", homepath, clientCtx)
+	fmt.Println("in submit acc infooo........", info)
+
+	msg.ValidatorAddress = "cosmos1ux2hl3y42nz6vtdl8k7t7f05k9p3r2k62zfvtv"
+
 	factory := NewFactory(clientCtx)
-	clientCtx.AccountRetriever = authtypes.AccountRetriever{}
+	// clientCtx.AccountRetriever = authtypes.AccountRetriever{}
+
+	// get account details
+
+	// time.Sleep(60 * time.Second)
+	clientCtx.FromName = key
 
 	err = clitx.GenerateOrBroadcastTxWithFactory(clientCtx, factory, &msg)
+	// fmt.Println("errrrrrrrrrrrr............", err)
 	if err != nil {
+		// count = 0
 		fmt.Println("error insideeeeeeeeeeee............", err)
 		return err
 	}
 
+	fmt.Println("after submittinggg tx")
+	// count = 0
 	return nil
 }
 

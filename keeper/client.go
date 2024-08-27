@@ -8,13 +8,17 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/go-bip39"
+
 	// "github.com/tendermint/starport/starport/pkg/xfilepath"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 )
 
 // var availdHomePath = xfilepath.JoinFromHome(xfilepath.Path("availsdk"))
@@ -58,7 +62,8 @@ func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string, cdc code
 	}
 	// fmt.Println("from addresss.........", fromAddress)
 	// Assuming you have access to the keyring and broadcast mode
-	broadcastMode := "block"
+	// broadcastMode := "block"
+	broadcastMode := flags.BroadcastSync
 
 	homepath := "/home/vitwit/.availsdk/keyring-test"
 
@@ -72,7 +77,8 @@ func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string, cdc code
 		WithTxConfig(authTx.NewTxConfig(cdc.(codec.Codec), authTx.DefaultSignModes)).
 		WithKeyring(kr).
 		WithAccountRetriever(authtypes.AccountRetriever{}).
-		WithClient(c).WithInterfaceRegistry(encodingConfig.InterfaceRegistry)
+		WithClient(c).WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
+		WithSkipConfirmation(true)
 }
 
 // NewFactory creates a new Factory.
@@ -116,4 +122,59 @@ type EncodingConfig struct {
 	Codec             codec.Codec
 	TxConfig          client.TxConfig
 	Amino             *codec.LegacyAmino
+}
+
+// ImportMnemonic is to import existing account mnemonic in keyring
+func ImportMnemonic(keyName, mnemonic, hdPath string, c client.Context) (err error) {
+	err = AccountCreate(keyName, mnemonic, hdPath, c) // return account also
+	// fmt.Println("here the accc details.......", keyName, mnemonic, hdPath)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AccountCreate creates an account by name and mnemonic (optional) in the keyring.
+func AccountCreate(accountName, mnemonic, hdPath string, c client.Context) error {
+	if mnemonic == "" {
+		entropySeed, err := bip39.NewEntropy(256)
+		if err != nil {
+			return err
+		}
+		mnemonic, err = bip39.NewMnemonic(entropySeed)
+		// fmt.Println("mnemoniccccc here.....", mnemonic)
+		if err != nil {
+			return err
+		}
+	}
+
+	algos, _ := c.Keyring.SupportedAlgorithms()
+	algo, err := keyring.NewSigningAlgoFromString(string(hd.Secp256k1Type), algos)
+	if err != nil {
+		return err
+	}
+
+	path := hd.CreateHDPath(118, 0, 0).String()
+	// fmt.Println("pathhh......", path)
+
+	// record, str, err := c.Keyring.NewMnemonic("test_key1", keyring.English, path, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
+	// fmt.Println("recorddddd.......", err, str, record)
+
+	// k, _, err = kb.NewMnemonic("test", English, types.FullFundraiserPath, DefaultBIP39Passphrase, hd.Secp256k1)
+	info, err := c.Keyring.NewAccount(accountName, mnemonic, keyring.DefaultBIP39Passphrase, path, algo)
+	// fmt.Println("after creationnnn.........", info, err)
+	if err != nil {
+		return err
+	}
+	// pk, err := info.GetPubKey()
+	// if err != nil {
+	// 	return err
+	// }
+	// addr := sdk.AccAddress(pk.Address())
+	// fmt.Println("address hereee...", addr)
+	// account := c.ToAccount(info)
+	// account.Mnemonic = mnemonic
+	return c.PrintProto(info)
+	// return nil
 }
