@@ -20,6 +20,9 @@ The `Proven Height` represents the latest block height of the Cosmos chain for w
 
 ## Architecture
 
+![Screenshot from 2024-08-27 11-35-01](https://github.com/user-attachments/assets/1a8657f6-4c1b-418a-8295-05c039baa6d0)
+
+
 1. **Block Interval Trigger**:
    - At each block interval, a request is sent from `PrepareProposal` abci method to the relayer, specifying the range of block heights to be posted to the Avail DA network. This request should be made by the block proposer only.
 
