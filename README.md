@@ -33,7 +33,7 @@ The `Proven Height` represents the latest block height of the Cosmos chain for w
 3. **Data Submission to Avail DA**:
    - Once the `MsgSubmitBlobRequest` transaction is confirmed, the relayer fetches the block data for the specified range and submits it to the Avail DA layer.
 
-4. **MsgUpdateBlobStatusRequest** Transaction**:
+4. **MsgUpdateBlobStatusRequest Transaction**:
    - After confirming that the data is available on Avail, the relayer submits a `MsgUpdateBlobStatusRequest` transaction on the Cosmos chain, updating the block status to pre-verification:
      ``` 
      status[range] = pre_verification
