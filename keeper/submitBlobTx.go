@@ -5,16 +5,13 @@ import (
 	"os"
 
 	cometrpc "github.com/cometbft/cometbft/rpc/client/http"
-	"github.com/cosmos/cosmos-sdk/client"
 	clitx "github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/spf13/pflag"
 	dacli "github.com/vitwit/avail-da-module/chainclient"
 	"github.com/vitwit/avail-da-module/types"
 )
@@ -41,8 +38,8 @@ func (k Keeper) SubmitBlobTx2(ctx sdk.Context, msg types.MsgSubmitBlobRequest) e
 func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) error {
 	// Define keyring and RPC client configuration
 
-	homePath := "/home/vitwit/.availsdk/keyring-test"
-	keyName := "testkey"
+	homePath := "/home/vitwit/.availsdk"
+	keyName := "alice"
 	rpcAddress := "http://localhost:26657"
 
 	// Create a keyring
@@ -51,6 +48,29 @@ func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) er
 		return fmt.Errorf("error creating keyring: %w", err)
 	}
 
+	// List all keys in the keyring
+	// keys, err := kr.List()
+	// if err != nil {
+	// 	fmt.Println("error listing keys:", err)
+	// }
+
+	info, err := kr.Key(keyName)
+	// log.Println("uuu....", info, err)
+
+	valAddr, err := info.GetAddress()
+
+	// valAddr, err := sdk.AccAddressFromBech32(addr.String())
+	// fmt.Println("val addr, err..", valAddr, err, addr)
+
+	// fmt.Println("keysss........", keys)
+
+	// // Print out the keys
+	// for _, keyInfo := range keys {
+	// 	addr, err := keyInfo.GetAddress()
+	// 	fmt.Println("err..", err)
+	// 	fmt.Printf("Name: %s, Address: %s\n", keyInfo.Name, addr)
+	// }
+
 	// Create an RPC client
 	rpcClient, err := cometrpc.NewWithTimeout(rpcAddress, "/websocket", 3)
 	if err != nil {
@@ -58,119 +78,41 @@ func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) er
 	}
 
 	// Create a new client context
-	clientCtx := NewClientCtx(kr, rpcClient, ctx.ChainID(), k.cdc)
+	clientCtx := NewClientCtx(kr, rpcClient, ctx.ChainID(), k.cdc, homePath, valAddr)
 
 	// Retrieve the validator address (replace with actual logic to get the address)
-	valAddr, err := sdk.AccAddressFromBech32("cosmos1fhqer4tc50nut2evvnj6yegcah2yfu3s844n9a")
-	if err != nil {
-		return fmt.Errorf("error parsing validator address: %w", err)
-	}
+	// valAddr, err = sdk.AccAddressFromBech32("cosmos1fhqer4tc50nut2evvnj6yegcah2yfu3s844n9a")
+	// if err != nil {
+	// 	return fmt.Errorf("error parsing validator address: %w", err)
+	// }
 
 	// Set the client context's from fields
 	clientCtx.FromName = keyName
 	clientCtx.FromAddress = valAddr
 
+	// Fetch account number and sequence from the blockchain
+	accountRetriever := authtypes.AccountRetriever{}
+	account, err := accountRetriever.GetAccount(clientCtx, valAddr)
+	if err != nil {
+		return fmt.Errorf("error retrieving account: %w", err)
+	}
+
+	fmt.Println("account details......", account.GetAccountNumber(), account.GetSequence())
+
+	// Set the correct account number and sequence
+	factory := NewFactory(clientCtx).
+		WithAccountNumber(account.GetAccountNumber()).
+		WithSequence(account.GetSequence())
+
 	// Create a transaction factory and set the validator address in the message
-	factory := NewFactory(clientCtx)
+	// factory := NewFactory(clientCtx)
 	msg.ValidatorAddress = valAddr.String()
+	// time.Sleep(10 * time.Second)
 
 	// Generate and broadcast the transaction
 	if err := clitx.GenerateOrBroadcastTxWithFactory(clientCtx, factory, &msg); err != nil {
 		return fmt.Errorf("error broadcasting transaction: %w", err)
 	}
 
-	return nil
-}
-
-func (k Keeper) SubmitBlobTx1(ctx sdk.Context, msg types.MsgSubmitBlobRequest) error {
-	cdc := k.cdc
-	chainID := ctx.ChainID()
-	address := k.proposerAddress
-
-	fmt.Println("address heree......", address)
-	// fromAddress := sdk.AccAddress(address)
-	// Assuming you have access to the keyring and broadcast mode
-	broadcastMode := "block"
-
-	homepath := "/home/vitwit/.availsdk/keyring-test"
-
-	// keyring
-	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest,
-		homepath, os.Stdin, cdc.(codec.Codec))
-
-	if err != nil {
-		fmt.Println("error while creating keyring..", err)
-		return err
-	}
-
-	rpcClient, err := cometrpc.NewWithTimeout("http://localhost:26657", "/websocket", uint(3))
-	if err != nil {
-		return err
-	}
-
-	addr, err := sdk.AccAddressFromBech32("cosmos1ux2hl3y42nz6vtdl8k7t7f05k9p3r2k62zfvtv")
-	fmt.Println("address and errorr......", addr, err)
-
-	// clientCtx := NewClientCtx(kr, rpcClient)
-
-	// clientCtx := client.Context{}.
-	// 	WithCodec(cdc).
-	// 	WithTxConfig(authTx.NewTxConfig(cdc, authTx.DefaultSignModes)).
-	// 	WithChainID("demo").
-	// 	WithKeyringDir("~/.availsdk/keyring-test").
-	// 	WithHomeDir("~/.availsdk").
-	// 	WithInput(os.Stdin)
-
-	// k.keyring.Backend()
-
-	clientCtx := client.Context{}.
-		WithCodec(cdc.(codec.Codec)).
-		WithChainID(chainID).
-		WithFromAddress(addr).
-		WithFromName("alice").
-		// WithKeyringDir("~/.availsdk/keyring-test").
-		WithKeyringDir(homepath).
-		WithBroadcastMode(broadcastMode).
-		WithTxConfig(authTx.NewTxConfig(cdc.(codec.Codec), authTx.DefaultSignModes)).
-		WithKeyring(kr).
-		WithAccountRetriever(authtypes.AccountRetriever{}).
-		WithClient(rpcClient).
-		WithSkipConfirmation(true)
-
-	// a, b, c := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, addr)
-	// fmt.Println("coming upto hereeeee.........", a, b, c)
-	msg.ValidatorAddress = "cosmos1ux2hl3y42nz6vtdl8k7t7f05k9p3r2k62zfvtv"
-
-	fmt.Println("validator addressssssss............, ", msg.ValidatorAddress)
-
-	flags := *pflag.NewFlagSet("my-flags", pflag.ContinueOnError)
-	fmt.Println("new flagssssss.......", flags)
-	// fmt.Println("account and sequence numberrr.......", flags.)
-	// Set any additional flags here, like fees, gas, etc.
-
-	fmt.Println("txxxxxxxxxxx........", clientCtx.ChainID)
-	fmt.Println("txxxxxxxxxxx........", clientCtx.CmdContext)
-	fmt.Println("txxxxxxxxxxx........", clientCtx.Codec)
-	fmt.Println("txxxxxxxxxxx........", clientCtx.FromAddress.String())
-	fmt.Println("txxxxxxxxxxx........", clientCtx.BroadcastMode)
-	fmt.Println("aaaaaaaa.......", clientCtx.TxConfig)
-	fmt.Println("aaaaaaaa.......", clientCtx.AccountRetriever)
-
-	// err = clitx.GenerateOrBroadcastTxCLI(clientCtx, &flags, &msg)
-	txf, err := clitx.NewFactoryCLI(clientCtx, &flags)
-	fmt.Println("here the eroor with txf....", txf, err)
-	if err != nil {
-		return err
-	}
-
-	err = clitx.GenerateOrBroadcastTxWithFactory(clientCtx, txf, &msg)
-	if err != nil {
-		fmt.Println("error insideeeeeeeeeeee............", err)
-		return err
-	}
-
-	fmt.Println("heree.....")
-
-	// handle the response, log, or return as needed
 	return nil
 }

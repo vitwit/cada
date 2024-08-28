@@ -30,29 +30,13 @@ const (
 
 // var availdHomePath = xfilepath.JoinFromHome(xfilepath.Path("availsdk"))
 
-func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string, cdc codec.BinaryCodec) client.Context {
+func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string,
+	cdc codec.BinaryCodec, homepath string, fromAddress sdk.AccAddress) client.Context {
 	encodingConfig := MakeEncodingConfig()
-	// authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	// cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	// sdk.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	// staking.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	// cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
-	// chainID := ctx.ChainID()
-
-	// fmt.Println("address heree......", address)
-	// sdk.AccAddressFromBech32()
-	fromAddress, err := sdk.AccAddressFromBech32("cosmos1fhqer4tc50nut2evvnj6yegcah2yfu3s844n9a")
-	fmt.Println("here errorr...", err)
-	if err != nil {
-		// return err
-	}
-	// fmt.Println("from addresss.........", fromAddress)
-	// Assuming you have access to the keyring and broadcast mode
-	// broadcastMode := "block"
 	broadcastMode := flags.BroadcastSync
 
-	homepath := "/home/vitwit/.availsdk/keyring-test"
+	// homepath := "/home/vitwit/.availsdk"
 
 	return client.Context{}.
 		WithCodec(cdc.(codec.Codec)).
