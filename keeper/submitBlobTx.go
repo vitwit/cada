@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	cometrpc "github.com/cometbft/cometbft/rpc/client/http"
@@ -42,72 +43,53 @@ func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) er
 	// address := k.proposerAddress
 	cdc := k.cdc
 
-	// var wg sy/nc.WaitGroup
-
-	// count := 1
-
-	// go func() {
-	// 	for {
-	// 		if count == 0 {
-	// 			break
-	// 		}
-	// 		time.Sleep(7 * time.Second)
-	// 		fmt.Println("still in...................", ctx.BlockHeight())
-	// 	}
-	// }()
 	homepath := "/home/vitwit/.availsdk/keyring-test"
 	// keyring
 	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest,
 		homepath, os.Stdin, cdc.(codec.Codec))
 
 	if err != nil {
-		// count = 0
 		fmt.Println("error while creating keyring..", err)
 		return err
 	}
 
 	rpcClient, err := cometrpc.NewWithTimeout("http://localhost:26657", "/websocket", uint(3))
 	if err != nil {
-		// count = 0
 		return err
 	}
 
 	// create new client context
 	clientCtx := NewClientCtx(kr, rpcClient, ctx.ChainID(), cdc)
 
-	// flags := *pflag.NewFlagSet("my-flags", pflag.ContinueOnError)
-
-	// txf, err := clitx.NewFactoryCLI(clientCtx, &flags)
-	// // fmt.Println("here the eroor with txf....", txf, err)
-	// if err != nil {
-	// 	return err
-	// }
-
 	// import mnemonic
 	key := "testkey"
-	info := ImportMnemonic(key, "", homepath, clientCtx)
-	fmt.Println("in submit acc infooo........", info)
+	info, err := ImportMnemonic(key, "", homepath, clientCtx)
+	fmt.Println("infoo heree........", info)
+	// _ = info
+	// fmt.Println("in submit acc infooo........", info)
+	pk, err := info.GetPubKey()
+	if err != nil {
+		return err
+	}
+	addr := sdk.AccAddress(pk.Address())
+	fmt.Println("addresss........", addr)
 
-	msg.ValidatorAddress = "cosmos1ux2hl3y42nz6vtdl8k7t7f05k9p3r2k62zfvtv"
+	// add, err := sdk.AccAddressFromBech32(pk.Address().String())
+	log.Println("aaa.......", addr.String())
+	// log.Fatal("proto valuee", clientCtx.PrintProto(info))
+
+	msg.ValidatorAddress = addr.String()
 
 	factory := NewFactory(clientCtx)
-	// clientCtx.AccountRetriever = authtypes.AccountRetriever{}
 
-	// get account details
-
-	// time.Sleep(60 * time.Second)
-	clientCtx.FromName = key
+	clientCtx.FromName = "key"
+	clientCtx.FromAddress = addr
 
 	err = clitx.GenerateOrBroadcastTxWithFactory(clientCtx, factory, &msg)
-	// fmt.Println("errrrrrrrrrrrr............", err)
 	if err != nil {
-		// count = 0
-		fmt.Println("error insideeeeeeeeeeee............", err)
 		return err
 	}
 
-	fmt.Println("after submittinggg tx")
-	// count = 0
 	return nil
 }
 

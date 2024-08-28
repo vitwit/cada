@@ -65,6 +65,10 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	go func() {
 		err := k.SubmitBlobTx(ctx, submitBlobRequest)
 		fmt.Println("submit blob tx error.............", err)
+		if err == nil {
+			// send the blobs tx data to avail DA
+
+		}
 	}()
 
 	return nil
