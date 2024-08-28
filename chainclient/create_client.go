@@ -77,10 +77,10 @@ func GetClient(chainID string, cc ChainClient, homePath string, codec codec.Code
 
 	// fmt.Println("mnemonic and chain id....", c.Mnemonic, c.ChainName, c.Key)
 
-	// err = c.ImportMnemonic(c.Key, c.Mnemonic, c.HDPath)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	err = c.ImportMnemonic(c.Key, c.Mnemonic, c.HDPath)
+	if err != nil {
+		return nil, err
+	}
 
 	return c, nil
 }

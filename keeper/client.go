@@ -1,21 +1,26 @@
 package keeper
 
 import (
+	"fmt"
+
 	cometrpc "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/std"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/go-bip39"
 
 	// "github.com/tendermint/starport/starport/pkg/xfilepath"
-	"github.com/cosmos/cosmos-sdk/client/flags"
+
+	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
 const (
@@ -37,11 +42,11 @@ func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string, cdc code
 
 	// fmt.Println("address heree......", address)
 	// sdk.AccAddressFromBech32()
-	// fromAddress, err := sdk.AccAddressFromBech32(kr.FromAddress)
-	// fmt.Println("here errorr...", err)
-	// if err != nil {
-	// 	// return err
-	// }
+	fromAddress, err := sdk.AccAddressFromBech32("cosmos1fhqer4tc50nut2evvnj6yegcah2yfu3s844n9a")
+	fmt.Println("here errorr...", err)
+	if err != nil {
+		// return err
+	}
 	// fmt.Println("from addresss.........", fromAddress)
 	// Assuming you have access to the keyring and broadcast mode
 	// broadcastMode := "block"
@@ -52,7 +57,7 @@ func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string, cdc code
 	return client.Context{}.
 		WithCodec(cdc.(codec.Codec)).
 		WithChainID(chainID).
-		// WithFromAddress(kr.fromAddress).
+		WithFromAddress(fromAddress).
 		WithFromName("testkey").
 		WithKeyringDir(homepath).
 		WithBroadcastMode(broadcastMode).
@@ -76,7 +81,7 @@ func NewFactory(clientCtx client.Context) tx.Factory {
 }
 
 // MakeEncodingConfig creates an EncodingConfig for an amino based test configuration.
-func MakeEncodingConfig() EncodingConfig {
+func MakeEncodingConfig(modules ...module.AppModuleBasic) EncodingConfig {
 	aminoCodec := codec.NewLegacyAmino()
 	interfaceRegistry := codectypes.NewInterfaceRegistry()
 	codec := codec.NewProtoCodec(interfaceRegistry)
@@ -89,13 +94,37 @@ func MakeEncodingConfig() EncodingConfig {
 		Amino:             aminoCodec,
 	}
 
+	mb := module.NewBasicManager(modules...)
+
 	std.RegisterLegacyAminoCodec(encCfg.Amino)
 	std.RegisterInterfaces(encCfg.InterfaceRegistry)
-	// mb.RegisterLegacyAminoCodec(encCfg.Amino)
-	// mb.RegisterInterfaces(encCfg.InterfaceRegistry)
+	mb.RegisterLegacyAminoCodec(encCfg.Amino)
+	mb.RegisterInterfaces(encCfg.InterfaceRegistry)
 
 	return encCfg
 }
+
+// func MakeTestEncodingConfig(modules ...module.AppModuleBasic) TestEncodingConfig {
+// 	aminoCodec := codec.NewLegacyAmino()
+// 	interfaceRegistry := testutil.CodecOptions{}.NewInterfaceRegistry()
+// 	codec := codec.NewProtoCodec(interfaceRegistry)
+
+// 	encCfg := TestEncodingConfig{
+// 		InterfaceRegistry: interfaceRegistry,
+// 		Codec:             codec,
+// 		TxConfig:          tx.NewTxConfig(codec, tx.DefaultSignModes),
+// 		Amino:             aminoCodec,
+// 	}
+
+// 	mb := module.NewBasicManager(modules...)
+
+// 	std.RegisterLegacyAminoCodec(encCfg.Amino)
+// 	std.RegisterInterfaces(encCfg.InterfaceRegistry)
+// 	mb.RegisterLegacyAminoCodec(encCfg.Amino)
+// 	mb.RegisterInterfaces(encCfg.InterfaceRegistry)
+
+// 	return encCfg
+// }
 
 // EncodingConfig specifies the concrete encoding types to use for a given app.
 // This is provided for compatibility between protobuf and amino implementations.
@@ -125,7 +154,7 @@ func AccountCreate(accountName, mnemonic, hdPath string, c client.Context) (*key
 			return nil, err
 		}
 		mnemonic, err = bip39.NewMnemonic(entropySeed)
-		// fmt.Println("mnemoniccccc here.....", mnemonic)
+		fmt.Println("mnemoniccccc here.....", mnemonic)
 		if err != nil {
 			return nil, err
 		}
@@ -145,16 +174,21 @@ func AccountCreate(accountName, mnemonic, hdPath string, c client.Context) (*key
 
 	// k, _, err = kb.NewMnemonic("test", English, types.FullFundraiserPath, DefaultBIP39Passphrase, hd.Secp256k1)
 	info, err := c.Keyring.NewAccount(accountName, mnemonic, keyring.DefaultBIP39Passphrase, path, algo)
-	// fmt.Println("after creationnnn.........", info, err)
+	fmt.Println("after creationnnn.........", info, err)
 	if err != nil {
 		return nil, err
 	}
 	// pk, err := info.GetPubKey()
 	// if err != nil {
-	// 	return err
+	// 	return nil, err
 	// }
+
 	// addr := sdk.AccAddress(pk.Address())
 	// fmt.Println("address hereee...", addr)
+
+	// aa, err := info.GetAddress()
+	// fmt.Println("here aa and err.......", aa, err)
+
 	// account := c.ToAccount(info)
 	// account.Mnemonic = mnemonic
 	return info, nil

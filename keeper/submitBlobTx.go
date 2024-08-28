@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	cometrpc "github.com/cometbft/cometbft/rpc/client/http"
@@ -61,29 +60,29 @@ func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) er
 	// create new client context
 	clientCtx := NewClientCtx(kr, rpcClient, ctx.ChainID(), cdc)
 
-	// import mnemonic
+	// // import mnemonic
 	key := "testkey"
-	info, err := ImportMnemonic(key, "", homepath, clientCtx)
-	fmt.Println("infoo heree........", info)
-	// _ = info
-	// fmt.Println("in submit acc infooo........", info)
-	pk, err := info.GetPubKey()
-	if err != nil {
-		return err
-	}
-	addr := sdk.AccAddress(pk.Address())
-	fmt.Println("addresss........", addr)
+	// mnemonic := "kingdom blade tunnel gate decrease glass crater crash provide word crystal grape that hold dust retreat speak exit blind car enroll patient face wasp"
+	// info, err := ImportMnemonic(key, mnemonic, homepath, clientCtx)
+	// fmt.Println("infoo heree........", info)
 
-	// add, err := sdk.AccAddressFromBech32(pk.Address().String())
-	log.Println("aaa.......", addr.String())
-	// log.Fatal("proto valuee", clientCtx.PrintProto(info))
+	// pk, err := info.GetPubKey()
+	// if err != nil {
+	// 	return err
+	// }
 
-	msg.ValidatorAddress = addr.String()
+	// addr := sdk.AccAddress(pk.Address())
+	// fmt.Println("address hereee...", addr)
+
+	valAddr, err := sdk.AccAddressFromBech32("cosmos1fhqer4tc50nut2evvnj6yegcah2yfu3s844n9a")
+	fmt.Println("val addrr and error...", valAddr, err)
+
+	clientCtx.FromName = key
+	clientCtx.FromAddress = valAddr
 
 	factory := NewFactory(clientCtx)
 
-	clientCtx.FromName = "key"
-	clientCtx.FromAddress = addr
+	msg.ValidatorAddress = valAddr.String()
 
 	err = clitx.GenerateOrBroadcastTxWithFactory(clientCtx, factory, &msg)
 	if err != nil {
