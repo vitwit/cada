@@ -39,54 +39,44 @@ func (k Keeper) SubmitBlobTx2(ctx sdk.Context, msg types.MsgSubmitBlobRequest) e
 }
 
 func (k Keeper) SubmitBlobTx(ctx sdk.Context, msg types.MsgSubmitBlobRequest) error {
-	// address := k.proposerAddress
-	cdc := k.cdc
+	// Define keyring and RPC client configuration
 
-	homepath := "/home/vitwit/.availsdk/keyring-test"
-	// keyring
-	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest,
-		homepath, os.Stdin, cdc.(codec.Codec))
+	homePath := "/home/vitwit/.availsdk/keyring-test"
+	keyName := "testkey"
+	rpcAddress := "http://localhost:26657"
 
+	// Create a keyring
+	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, k.cdc.(codec.Codec))
 	if err != nil {
-		fmt.Println("error while creating keyring..", err)
-		return err
+		return fmt.Errorf("error creating keyring: %w", err)
 	}
 
-	rpcClient, err := cometrpc.NewWithTimeout("http://localhost:26657", "/websocket", uint(3))
+	// Create an RPC client
+	rpcClient, err := cometrpc.NewWithTimeout(rpcAddress, "/websocket", 3)
 	if err != nil {
-		return err
+		return fmt.Errorf("error creating RPC client: %w", err)
 	}
 
-	// create new client context
-	clientCtx := NewClientCtx(kr, rpcClient, ctx.ChainID(), cdc)
+	// Create a new client context
+	clientCtx := NewClientCtx(kr, rpcClient, ctx.ChainID(), k.cdc)
 
-	// // import mnemonic
-	key := "testkey"
-	// mnemonic := "kingdom blade tunnel gate decrease glass crater crash provide word crystal grape that hold dust retreat speak exit blind car enroll patient face wasp"
-	// info, err := ImportMnemonic(key, mnemonic, homepath, clientCtx)
-	// fmt.Println("infoo heree........", info)
-
-	// pk, err := info.GetPubKey()
-	// if err != nil {
-	// 	return err
-	// }
-
-	// addr := sdk.AccAddress(pk.Address())
-	// fmt.Println("address hereee...", addr)
-
+	// Retrieve the validator address (replace with actual logic to get the address)
 	valAddr, err := sdk.AccAddressFromBech32("cosmos1fhqer4tc50nut2evvnj6yegcah2yfu3s844n9a")
-	fmt.Println("val addrr and error...", valAddr, err)
+	if err != nil {
+		return fmt.Errorf("error parsing validator address: %w", err)
+	}
 
-	clientCtx.FromName = key
+	// Set the client context's from fields
+	clientCtx.FromName = keyName
 	clientCtx.FromAddress = valAddr
 
+	// Create a transaction factory and set the validator address in the message
 	factory := NewFactory(clientCtx)
-
 	msg.ValidatorAddress = valAddr.String()
 
-	err = clitx.GenerateOrBroadcastTxWithFactory(clientCtx, factory, &msg)
-	if err != nil {
-		return err
+	// Generate and broadcast the transaction
+	if err := clitx.GenerateOrBroadcastTxWithFactory(clientCtx, factory, &msg); err != nil {
+		return fmt.Errorf("error broadcasting transaction: %w", err)
 	}
 
 	return nil
