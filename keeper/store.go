@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"encoding/binary"
-	"errors"
 	"fmt"
 
 	storetypes2 "cosmossdk.io/store/types"
@@ -12,9 +11,10 @@ import (
 )
 
 const (
-	PENDING uint32 = 0
-	SUCCESS uint32 = 1
-	FAILURE uint32 = 2
+	READY_STATE     uint32 = 0
+	PENDING_STATE   uint32 = 1
+	IN_VOTING_STATE uint32 = 2
+	FAILURE_STATE   uint32 = 3
 )
 
 func IsAlreadyExist(ctx context.Context, store storetypes2.KVStore, blocksRange types.Range) bool {
@@ -27,16 +27,44 @@ func IsAlreadyExist(ctx context.Context, store storetypes2.KVStore, blocksRange 
 	return true
 }
 
-func updateBlobStatus(ctx context.Context, store storetypes2.KVStore, blocksRange types.Range, status uint32) error {
-	if status != PENDING && status != SUCCESS && status != FAILURE {
-		return errors.New("unknown status")
+func IsStateReady(store storetypes2.KVStore) bool {
+	statusBytes := store.Get(availblob1.BlobStatusKey)
+	if statusBytes == nil || len(statusBytes) == 0 {
+		return true
 	}
-	pendingBlobStoreKey := availblob1.PendingBlobsStoreKey(blocksRange)
+
+	status := binary.BigEndian.Uint32(statusBytes)
+
+	return status == READY_STATE
+
+}
+
+func UpdateBlobStatus(ctx context.Context, store storetypes2.KVStore, status uint32) error {
 
 	statusBytes := make([]byte, 4)
 
 	binary.BigEndian.PutUint32(statusBytes, status)
 
-	store.Set(pendingBlobStoreKey, statusBytes)
+	store.Set(availblob1.BlobStatusKey, statusBytes)
+	return nil
+}
+
+func UpdateEndHeight(ctx context.Context, store storetypes2.KVStore, endHeight uint64) error {
+
+	heightBytes := make([]byte, 8)
+
+	binary.BigEndian.PutUint64(heightBytes, endHeight)
+
+	store.Set(availblob1.NextHeightKey, heightBytes)
+	return nil
+}
+
+func UpdateProvenHeight(ctx context.Context, store storetypes2.KVStore, endHeight uint64) error {
+
+	heightBytes := make([]byte, 8)
+
+	binary.BigEndian.PutUint64(heightBytes, endHeight)
+
+	store.Set(availblob1.ProvenHeightKey, heightBytes)
 	return nil
 }

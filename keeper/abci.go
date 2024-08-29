@@ -1,11 +1,10 @@
 package keeper
 
 import (
-	"fmt"
+	"bytes"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/vitwit/avail-da-module/types"
 )
 
 type ProofOfBlobProposalHandler struct {
@@ -35,61 +34,45 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 		return nil, err
 	}
 
-	// var latestProvenHeight int64 = 1
-	// // TODO : set latestproven height in store
-	// injectData := h.keeper.prepareInjectData(ctx, req.Time, latestProvenHeight)
-	// injectDataBz := h.keeper.marshalMaxBytes(&injectData, req.MaxTxBytes, latestProvenHeight)
-	// resp.Txs = h.keeper.addAvailblobDataToTxs(injectDataBz, req.MaxTxBytes, resp.Txs)
-
 	return resp, nil
 }
 
 func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.RequestProcessProposal) (*abci.ResponseProcessProposal, error) {
-	// // fmt.Println("length of transactions: ", len(req.Txs), ctx.BlockHeight())
-	// injectedData := h.keeper.getInjectedData(req.Txs)
-	// if injectedData != nil {
-	// 	req.Txs = req.Txs[1:] // Pop the injected data for the default handler
-
-	// 	if err := h.keeper.processPendingBlocks(ctx, req.Time, &injectedData.PendingBlocks); err != nil {
-	// 		return nil, err
-	// 	}
-	// }
 	return h.processProposalHandler(ctx, req)
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
-	submitBlobRequest, ok := k.relayer.NextBlocksToSumbit(ctx)
-	if !ok {
+
+	currentBlockHeight := ctx.BlockHeight()
+	if k.IsValidBlockToPostTODA(uint64(currentBlockHeight)) {
 		return nil
 	}
-	go func() {
-		err := k.SubmitBlobTx(ctx, submitBlobRequest)
-		fmt.Println("submit blob tx error.............", err)
-		if err == nil {
-			// send the blobs tx data to avail DA
 
-		}
-	}()
+	fromHeight := k.GetProvenHeightFromStore(ctx) //Todo: change this get from ProvenHeight from store
+	endHeight := min(fromHeight+uint64(k.MaxBlocksForBlob), uint64(ctx.BlockHeight()))
+
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	k.SetBlobStatusPending(sdkCtx, fromHeight, endHeight)
+
+	// only proposar should should run the this
+	if bytes.Equal(req.ProposerAddress, k.proposerAddress) {
+
+		// Todo: run the relayer routine
+		// relayer doesn't have to make submitBlob Transaction, it should just start DA submissio
+
+	}
 
 	return nil
-
-	// injectDataBz := k.marshalMaxBytes(&injectedData, int64(req.Size()), req.Height)
-	// _ = k.addAvailblobDataToTxs(injectDataBz, int64(req.Size()), req.Txs)
-
-	// if err := k.preblockerPendingBlocks(ctx, req.Time, req.ProposerAddress, &injectedData.PendingBlocks); err != nil {
-	// 	return err
-	// }
-	// // }
-	// return nil
 }
 
-func (k *Keeper) getInjectedData(txs [][]byte) *types.InjectedData {
-	if len(txs) != 0 {
-		var injectedData types.InjectedData
-		err := k.cdc.Unmarshal(txs[0], &injectedData)
-		if err == nil {
-			return &injectedData
-		}
+func (k *Keeper) IsValidBlockToPostTODA(height uint64) bool {
+	if uint64(height) <= uint64(1) {
+		return false
 	}
-	return nil
+
+	if (height-1)%k.PublishToAvailBlockInterval != 0 {
+		return false
+	}
+
+	return true
 }
