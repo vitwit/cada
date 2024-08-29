@@ -110,3 +110,8 @@ func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatu
 	err := updateBlobStatus(ctx, store, *req.BlocksRange, status)
 	return &types.MsgUpdateBlobStatusResponse{}, err
 }
+
+func (k *Keeper) SubmitBlobStatus(ctx sdk.Context, _ *types.QuerySubmitBlobStatusRequest) (*types.QuerySubmitBlobStatusResponse, error) {
+	// Todo: implement query
+	return nil, nil
+}

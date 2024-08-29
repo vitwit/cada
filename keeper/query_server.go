@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"cosmossdk.io/collections"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/vitwit/avail-da-module/types"
 )
 
@@ -88,4 +89,11 @@ func (qs queryServer) ExpiredBlocks(ctx context.Context, _ *types.QueryExpiredBl
 		CurrentTime:   time.Unix(0, currentTimeNs),
 		ExpiredBlocks: expiredBlocks,
 	}, nil
+}
+
+func (qs queryServer) SubmitBlobStatus(ctx context.Context, req *types.QuerySubmitBlobStatusRequest) (*types.QuerySubmitBlobStatusResponse, error) {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	//TODO: query the light client
+	return qs.k.SubmitBlobStatus(sdkCtx, req)
 }
