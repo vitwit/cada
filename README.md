@@ -26,14 +26,12 @@ The `Relayer` acts as the transport layer, responsible for handling requests fro
 
 ## Architecture
 
-![Screenshot from 2024-08-27 11-35-01](https://github.com/user-attachments/assets/1a8657f6-4c1b-418a-8295-05c039baa6d0)
-
 
 1. **Block Interval Trigger**:
    - At each block interval, a request is sent from `PrepareProposal` abci method to the relayer, specifying the range of block heights to be posted to the Avail DA network. This request should be made by the block proposer only.
    - The range of block heights should be from provenHeight+1 to minimum(provenHeight+MaxBlocksLimitForBlob, CurrentBlockHeight).
 
-2. **MsgSubmitBlobRequest Transaction**:
+2. **Status Pending**:
    - The relayer initiates a `MsgSubmitBlobRequest` transaction on the Cosmos chain, marking the block data for the specified range as pending:
      ``` 
      status[range] = pending
@@ -64,6 +62,8 @@ The `Relayer` acts as the transport layer, responsible for handling requests fro
          provenHeight = range.to
      }
      ```
+
+     ![Screenshot from 2024-08-27 11-35-01](https://github.com/user-attachments/assets/1a8657f6-4c1b-418a-8295-05c039baa6d0)
 
 7. **Failure Handling**:
    - In case of any failures or expiration of the verification window, the data will be reposted following the same procedure.
