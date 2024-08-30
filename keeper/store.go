@@ -1,11 +1,11 @@
 package keeper
 
 import (
-	"context"
 	"encoding/binary"
 	"fmt"
 
 	storetypes2 "cosmossdk.io/store/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	availblob1 "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/types"
 )
@@ -17,7 +17,7 @@ const (
 	FAILURE_STATE   uint32 = 3
 )
 
-func IsAlreadyExist(ctx context.Context, store storetypes2.KVStore, blocksRange types.Range) bool {
+func IsAlreadyExist(ctx sdk.Context, store storetypes2.KVStore, blocksRange types.Range) bool {
 	pendingBlobStoreKey := availblob1.PendingBlobsStoreKey(blocksRange)
 	blobStatus := store.Get(pendingBlobStoreKey)
 	fmt.Println("blob status:", blobStatus, blobStatus == nil)
@@ -29,6 +29,7 @@ func IsAlreadyExist(ctx context.Context, store storetypes2.KVStore, blocksRange 
 
 func IsStateReady(store storetypes2.KVStore) bool {
 	statusBytes := store.Get(availblob1.BlobStatusKey)
+	fmt.Println("status bytes............", statusBytes)
 	if statusBytes == nil || len(statusBytes) == 0 {
 		return true
 	}
@@ -36,10 +37,9 @@ func IsStateReady(store storetypes2.KVStore) bool {
 	status := binary.BigEndian.Uint32(statusBytes)
 
 	return status == READY_STATE
-
 }
 
-func UpdateBlobStatus(ctx context.Context, store storetypes2.KVStore, status uint32) error {
+func UpdateBlobStatus(ctx sdk.Context, store storetypes2.KVStore, status uint32) error {
 
 	statusBytes := make([]byte, 4)
 
@@ -49,7 +49,7 @@ func UpdateBlobStatus(ctx context.Context, store storetypes2.KVStore, status uin
 	return nil
 }
 
-func UpdateEndHeight(ctx context.Context, store storetypes2.KVStore, endHeight uint64) error {
+func UpdateEndHeight(ctx sdk.Context, store storetypes2.KVStore, endHeight uint64) error {
 
 	heightBytes := make([]byte, 8)
 
@@ -59,7 +59,7 @@ func UpdateEndHeight(ctx context.Context, store storetypes2.KVStore, endHeight u
 	return nil
 }
 
-func UpdateProvenHeight(ctx context.Context, store storetypes2.KVStore, endHeight uint64) error {
+func UpdateProvenHeight(ctx sdk.Context, store storetypes2.KVStore, endHeight uint64) error {
 
 	heightBytes := make([]byte, 8)
 

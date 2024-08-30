@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
-	"errors"
+	"fmt"
 
 	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
@@ -94,11 +94,24 @@ func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, provenHeight, endHeight u
 
 	store := ctx.KVStore(k.storeKey)
 
-	if IsStateReady(store) { //TOodo: we should check for expiration too
-		return errors.New("a block range with same start height is already being processed")
-	}
+	// if IsStateReady(store) { //TOodo: we should check for expiration too
+	// 	return errors.New("a block range with same start height is already being processed")
+	// }
 
 	UpdateBlobStatus(ctx, store, PENDING_STATE)
+	UpdateEndHeight(ctx, store, endHeight)
+	return nil
+}
+
+func (k *Keeper) SetBlobStatusSuccess(ctx sdk.Context, provenHeight, endHeight uint64) error {
+
+	store := ctx.KVStore(k.storeKey)
+
+	// if IsStateReady(store) { //TOodo: we should check for expiration too
+	// 	return errors.New("a block range with same start height is already being processed")
+	// }
+
+	UpdateBlobStatus(ctx, store, READY_STATE)
 	UpdateEndHeight(ctx, store, endHeight)
 	return nil
 }
@@ -106,11 +119,14 @@ func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, provenHeight, endHeight u
 func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 	heightBytes := store.Get(availblob1.ProvenHeightKey)
-	if heightBytes == nil || len(heightBytes) == 0 {
+	if heightBytes == nil || len(heightBytes) == 8 {
 		return 0
 	}
 
+	fmt.Println("heoght buyessssssss from......", heightBytes)
+
 	provenHeight := binary.BigEndian.Uint64(heightBytes)
+	fmt.Println("proven height here............", provenHeight)
 	return provenHeight
 }
 
@@ -123,4 +139,20 @@ func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*
 func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
 	//Todo: status should be changed to Voting or Ready, depending on the request
 	return &types.MsgUpdateBlobStatusResponse{}, nil
+}
+
+func (k *Keeper) CheckHeight(endHeight uint64) error {
+	// Step 1: Encode 41 into a byte slice
+	// var endHeight uint64 = 41
+	heightBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(heightBytes, endHeight)
+
+	fmt.Println("Encoded byte slice for 41:", heightBytes)
+
+	// Step 2: Decode the byte slice back to a uint64
+	decodedHeight := binary.BigEndian.Uint64(heightBytes)
+
+	fmt.Println("Decoded height:", decodedHeight)
+
+	return nil
 }
