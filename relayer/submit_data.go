@@ -16,13 +16,13 @@ import (
 	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
 )
 
-func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) error {
-	if r.submittedBlocksCache[blocks[0]] {
+func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, fromHeight int64, endHeight int64, lightClientUrl string) error {
+	if r.submittedBlocksCache[fromHeight] {
 		return nil
 	}
 
-	r.submittedBlocksCache[blocks[0]] = true
-	delete(r.submittedBlocksCache, blocks[0]-int64(len(blocks)))
+	r.submittedBlocksCache[fromHeight] = true
+	delete(r.submittedBlocksCache, fromHeight-endHeight)
 
 	handler := NewHTTPClientHandler()
 	datab := base64.StdEncoding.EncodeToString(data)
@@ -48,16 +48,16 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 	err = json.Unmarshal(responseBody, &blockInfo)
 	if err != nil {
 		r.logger.Error("Error while posting block(s) to Avail DA",
-			"height_start", blocks[0],
-			"height_end", blocks[len(blocks)-1],
+			"height_start", fromHeight,
+			"height_end", endHeight,
 			"appID", string(r.rpcClient.config.AppID),
 		)
 	}
 
 	if err == nil {
 		r.logger.Info("Posted block(s) to Avail DA",
-			"height_start", blocks[0],
-			"height_end", blocks[len(blocks)-1],
+			"height_start", fromHeight,
+			"height_end", endHeight,
 			"appID", string(r.rpcClient.config.AppID),
 			"block_hash", blockInfo.BlockHash,
 			"block_number", blockInfo.BlockNumber,

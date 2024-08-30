@@ -30,6 +30,7 @@ var (
 	PendingBlobsKey = collections.NewPrefix(5)
 
 	BlobStatusKey = collections.NewPrefix(6)
+	//BlobStatusKey = []byte{0x06}
 
 	NextHeightKey = collections.NewPrefix(7)
 )

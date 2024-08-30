@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
-	"errors"
+	"fmt"
 
 	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
@@ -94,9 +94,10 @@ func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, provenHeight, endHeight u
 
 	store := ctx.KVStore(k.storeKey)
 
-	if IsStateReady(store) { //TOodo: we should check for expiration too
-		return errors.New("a block range with same start height is already being processed")
-	}
+	// if IsStateReady(store) { //TOodo: we should check for expiration too
+	// 	return errors.New("a block range with same start height is already being processed")
+	// }
+	fmt.Printf("\"HELLOOOOOOOOOOOOOO\": %v\n", "HELLOOOOOOOOOOOOOO")
 
 	UpdateBlobStatus(ctx, store, PENDING_STATE)
 	UpdateEndHeight(ctx, store, endHeight)
@@ -105,12 +106,18 @@ func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, provenHeight, endHeight u
 
 func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
+	fmt.Printf("availblob1.ProvenHeightKey: %v\n", availblob1.ProvenHeightKey)
+
 	heightBytes := store.Get(availblob1.ProvenHeightKey)
+	fmt.Printf("heightBytes: %v\n", heightBytes)
 	if heightBytes == nil || len(heightBytes) == 0 {
 		return 0
 	}
 
+	fmt.Printf("heightBytes AFTERRRRRRRRRRR: %v\n", heightBytes)
+
 	provenHeight := binary.BigEndian.Uint64(heightBytes)
+	fmt.Printf("provenHeight: %v\n", provenHeight)
 	return provenHeight
 }
 

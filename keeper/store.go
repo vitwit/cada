@@ -28,12 +28,18 @@ func IsAlreadyExist(ctx context.Context, store storetypes2.KVStore, blocksRange 
 }
 
 func IsStateReady(store storetypes2.KVStore) bool {
+	fmt.Printf("availblob1.BlobStatusKey: %v\n", availblob1.BlobStatusKey)
 	statusBytes := store.Get(availblob1.BlobStatusKey)
-	if statusBytes == nil || len(statusBytes) == 0 {
+	fmt.Printf("statusBytes::::::::::::: %v\n", statusBytes)
+	if statusBytes != nil || len(statusBytes) != 0 {
 		return true
 	}
 
+	fmt.Printf("\"IsStateReadhyyyyyyyyyyyyyy\": %v\n", "IsStateReadhyyyyyyyyyyyyyy")
+	fmt.Printf("binary.BigEndian.Uint32(statusBytes): %v\n", binary.BigEndian.Uint32(statusBytes))
 	status := binary.BigEndian.Uint32(statusBytes)
+
+	fmt.Printf("status********************: %v\n", status)
 
 	return status == READY_STATE
 
@@ -66,5 +72,9 @@ func UpdateProvenHeight(ctx context.Context, store storetypes2.KVStore, endHeigh
 	binary.BigEndian.PutUint64(heightBytes, endHeight)
 
 	store.Set(availblob1.ProvenHeightKey, heightBytes)
+
+	fmt.Printf("store.Get(availblob1.ProvenHeightKey): %v\n", store.Get(availblob1.ProvenHeightKey))
+
+	fmt.Printf("\"Update Proven Height\": %v\n", "Update Proven Height")
 	return nil
 }
