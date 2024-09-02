@@ -11,12 +11,12 @@ option go_package =  "github.com/vitwit/avail-da-module/types";
 
 // query request
 message QuerySubmitBlobStatusRequest {
-  Range range = 1;
 }
 
 // query response
 message QuerySubmitBlobStatusResponse {
-  string status = 1;
+  Range range = 1;
+  string status = 2;
 }
 
 // Query defines the gRPC querier service.

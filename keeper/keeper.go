@@ -120,7 +120,7 @@ func (k *Keeper) SetBlobStatusSuccess(ctx sdk.Context, provenHeight, endHeight u
 func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 	heightBytes := store.Get(availblob1.ProvenHeightKey)
-	if heightBytes == nil || len(heightBytes) == 8 {
+	if heightBytes == nil || len(heightBytes) == 0 {
 		return 0
 	}
 
@@ -131,6 +131,22 @@ func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
 	return provenHeight
 }
 
+func (k *Keeper) GetEndHeightFromStore(ctx sdk.Context) uint64 {
+	store := ctx.KVStore(k.storeKey)
+	heightBytes := store.Get(availblob1.NextHeightKey)
+
+	fmt.Println("heightBytes getEnd........", heightBytes)
+	if heightBytes == nil || len(heightBytes) == 0 {
+		return 0
+	}
+
+	fmt.Println("heightt buyessssssss from......", heightBytes)
+
+	nextHeight := binary.BigEndian.Uint64(heightBytes)
+	fmt.Println("proven height here............", nextHeight)
+	return nextHeight
+}
+
 // Todo: remove this method later
 func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*types.MsgSubmitBlobResponse, error) {
 
@@ -139,6 +155,28 @@ func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*
 
 func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
 	//Todo: status should be changed to Voting or Ready, depending on the request
+	store := ctx.KVStore(k.storeKey)
+	provenHeight := k.GetProvenHeightFromStore(ctx)
+	endHeight := k.GetEndHeightFromStore(ctx)
+	status := GetStatusFromStore(store)
+
+	if req.BlocksRange.From != provenHeight+1 || req.BlocksRange.To != endHeight {
+		return nil, errors.New("invalid blocks range")
+	}
+
+	if status != PENDING_STATE {
+		return nil, errors.New("can update the status if it is not pending")
+	}
+
+	newStatus := READY_STATE
+	if !req.IsSuccess {
+		newStatus = PENDING_STATE
+	} else {
+		UpdateProvenHeight(ctx, store, endHeight)
+	}
+
+	UpdateBlobStatus(ctx, store, newStatus)
+
 	return &types.MsgUpdateBlobStatusResponse{}, nil
 }
 
@@ -160,5 +198,17 @@ func (k *Keeper) CheckHeight(endHeight uint64) error {
 
 func (k *Keeper) SubmitBlobStatus(ctx sdk.Context, _ *types.QuerySubmitBlobStatusRequest) (*types.QuerySubmitBlobStatusResponse, error) {
 	// Todo: implement query
-	return nil, nil
+	store := ctx.KVStore(k.storeKey)
+	provenHeight := k.GetProvenHeightFromStore(ctx)
+	endHeight := k.GetEndHeightFromStore(ctx)
+	status := GetStatusFromStore(store)
+	statusString := ParseStatus(status)
+	startHeight := provenHeight + 1
+	if provenHeight == 0 {
+		startHeight = 0
+	}
+	return &types.QuerySubmitBlobStatusResponse{
+		Range:  &types.Range{From: startHeight, To: endHeight},
+		Status: statusString,
+	}, nil
 }

@@ -17,6 +17,21 @@ const (
 	FAILURE_STATE   uint32 = 3
 )
 
+func ParseStatus(status uint32) string {
+	switch status {
+	case READY_STATE:
+		return "SUCCESS"
+	case PENDING_STATE:
+		return "PENDING"
+	case IN_VOTING_STATE:
+		return "IN_VOTING"
+	case FAILURE_STATE:
+		return "FAILUTE"
+	default:
+		return "UNKNOWN"
+	}
+}
+
 func IsAlreadyExist(ctx sdk.Context, store storetypes2.KVStore, blocksRange types.Range) bool {
 	pendingBlobStoreKey := availblob1.PendingBlobsStoreKey(blocksRange)
 	blobStatus := store.Get(pendingBlobStoreKey)
@@ -37,6 +52,18 @@ func IsStateReady(store storetypes2.KVStore) bool {
 	status := binary.BigEndian.Uint32(statusBytes)
 
 	return status == READY_STATE
+}
+
+func GetStatusFromStore(store storetypes2.KVStore) uint32 {
+	statusBytes := store.Get(availblob1.BlobStatusKey)
+
+	if statusBytes == nil || len(statusBytes) == 0 {
+		return READY_STATE
+	}
+
+	status := binary.BigEndian.Uint32(statusBytes)
+
+	return status
 }
 
 func UpdateBlobStatus(ctx sdk.Context, store storetypes2.KVStore, status uint32) error {

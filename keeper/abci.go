@@ -61,6 +61,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	err := k.SetBlobStatusPending(sdkCtx, fromHeight, endHeight)
 	if err != nil {
 		fmt.Println("error while setting blob status...", err)
+		return nil
 	}
 
 	var blocksToSumit []int64

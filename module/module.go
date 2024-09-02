@@ -66,6 +66,10 @@ func (am AppModule) GetTxCmd() *cobra.Command {
 	return cli.NewTxCmd(am.keeper)
 }
 
+func (AppModule) GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
+}
+
 // RegisterInterfaces registers interfaces and implementations of the rollchain module.
 func (AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	types.RegisterInterfaces(registry)
