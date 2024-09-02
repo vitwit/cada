@@ -43,14 +43,16 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
-	// fmt.Println("coming hereee.........", req)
+	fmt.Println("coming hereee.........", ctx.BlockHeight())
 
 	currentBlockHeight := ctx.BlockHeight()
 	if !k.IsValidBlockToPostTODA(uint64(currentBlockHeight)) {
 		return nil
 	}
 
-	fmt.Println("block heighttt.........", ctx.BlockHeight())
+	// fmt.Printf("Ctx.........%+v\n", ctx)
+
+	fmt.Println("block heighttt.........", ctx.BlockHeight(), ctx.ExecMode(), ctx.IsCheckTx(), ctx.IsReCheckTx())
 
 	fromHeight := k.GetProvenHeightFromStore(ctx) //Todo: change this get from ProvenHeight from store
 	fmt.Println("from height..", fromHeight)

@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-	"reflect"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -10,17 +8,17 @@ import (
 )
 
 func (k *Keeper) preblockerPendingBlocks(ctx sdk.Context, blockTime time.Time, proposerAddr []byte, pendingBlocks *types.PendingBlocks) error {
-	if pendingBlocks != nil {
-		if reflect.DeepEqual(k.proposerAddress, proposerAddr) {
-			k.relayer.PostBlocks(ctx, pendingBlocks.BlockHeights, k.cdc, proposerAddr)
-		}
+	// if pendingBlocks != nil {
+	// 	if reflect.DeepEqual(k.proposerAddress, proposerAddr) {
+	// 		k.relayer.PostBlocks(ctx, pendingBlocks.BlockHeights, k.cdc, proposerAddr)
+	// 	}
 
-		for _, pendingBlock := range pendingBlocks.BlockHeights {
-			if err := k.AddUpdatePendingBlock(ctx, pendingBlock, blockTime); err != nil {
-				return fmt.Errorf("preblocker pending blocks, %v", err)
-			}
-		}
-	}
+	// 	for _, pendingBlock := range pendingBlocks.BlockHeights {
+	// 		if err := k.AddUpdatePendingBlock(ctx, pendingBlock, blockTime); err != nil {
+	// 			return fmt.Errorf("preblocker pending blocks, %v", err)
+	// 		}
+	// 	}
+	// }
 
 	return nil
 }
