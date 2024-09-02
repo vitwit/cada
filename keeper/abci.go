@@ -81,7 +81,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 
 		// Todo: run the relayer routine
 		// relayer doesn't have to make submitBlob Transaction, it should just start DA submission
-		k.relayer.PostBlocks(ctx, blocksToSumit)
+		k.relayer.PostBlocks(ctx, blocksToSumit, k.cdc, req.ProposerAddress)
 
 	}
 

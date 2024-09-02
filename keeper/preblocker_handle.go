@@ -12,7 +12,7 @@ import (
 func (k *Keeper) preblockerPendingBlocks(ctx sdk.Context, blockTime time.Time, proposerAddr []byte, pendingBlocks *types.PendingBlocks) error {
 	if pendingBlocks != nil {
 		if reflect.DeepEqual(k.proposerAddress, proposerAddr) {
-			k.relayer.PostBlocks(ctx, pendingBlocks.BlockHeights)
+			k.relayer.PostBlocks(ctx, pendingBlocks.BlockHeights, k.cdc, proposerAddr)
 		}
 
 		for _, pendingBlock := range pendingBlocks.BlockHeights {

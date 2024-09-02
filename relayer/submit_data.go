@@ -16,9 +16,10 @@ import (
 	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
 )
 
-func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) error {
+func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) (BlockInfo, error) {
+	var blockInfo BlockInfo
 	if r.submittedBlocksCache[blocks[0]] {
-		return nil
+		return blockInfo, nil
 	}
 
 	r.submittedBlocksCache[blocks[0]] = true
@@ -38,11 +39,10 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 	responseBody, err := handler.Post(url, jsonData)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
-		return err
+		return blockInfo, err
 	}
 
 	// Create an instance of the struct
-	var blockInfo BlockInfo
 
 	// Unmarshal the JSON data into the struct
 	err = json.Unmarshal(responseBody, &blockInfo)
@@ -65,7 +65,7 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 		)
 	}
 
-	return nil
+	return blockInfo, nil
 }
 
 func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) {
