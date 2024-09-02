@@ -118,22 +118,25 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 		return
 	}
 
-	fmt.Println("proposer addressss........", sdk.AccAddress.String(proposer),
-		uint64(blocks[0]), uint64(blocks[len(blocks)-1]), uint64(blockInfo.BlockNumber))
+	if blockInfo.BlockNumber != 0 {
+		fmt.Println("proposer addressss........", sdk.AccAddress.String(proposer),
+			uint64(blocks[0]), uint64(blocks[len(blocks)-1]), uint64(blockInfo.BlockNumber))
 
-	// TODO : execute tx about successfull submission
-	err = ExecuteTX(ctx, types.MsgUpdateBlobStatusRequest{
-		ValidatorAddress: sdk.AccAddress.String(proposer),
-		BlocksRange: &types.Range{
-			From: uint64(blocks[0]),
-			To:   uint64(blocks[len(blocks)-1]),
-		},
-		AvailHeight: uint64(blockInfo.BlockNumber),
-		IsSuccess:   true,
-	}, cdc)
-	if err != nil {
-		fmt.Println("error while submitting tx...", err)
+		// TODO : execute tx about successfull submission
+		err = ExecuteTX(ctx, types.MsgUpdateBlobStatusRequest{
+			ValidatorAddress: sdk.AccAddress.String(proposer),
+			BlocksRange: &types.Range{
+				From: uint64(blocks[0]),
+				To:   uint64(blocks[len(blocks)-1]),
+			},
+			AvailHeight: uint64(blockInfo.BlockNumber),
+			IsSuccess:   true,
+		}, cdc)
+		if err != nil {
+			fmt.Println("error while submitting tx...", err)
+		}
 	}
+
 }
 
 func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec) error {
