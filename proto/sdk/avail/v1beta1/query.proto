@@ -5,29 +5,52 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "sdk/avail/v1beta1/validator.proto";
 import "google/protobuf/timestamp.proto";
+import "sdk/avail/v1beta1/tx.proto";
 
 option go_package =  "github.com/vitwit/avail-da-module/types";
 
+// query request
+message QuerySubmitBlobStatusRequest {
+  Range range = 1;
+}
+
+// query response
+message QuerySubmitBlobStatusResponse {
+  string status = 1;
+}
+
 // Query defines the gRPC querier service.
 service Query {
+
+  // submit Blob Status
+  rpc SubmitBlobStatus(QuerySubmitBlobStatusRequest)
+    returns (QuerySubmitBlobStatusResponse) {
+    option (google.api.http).get = "/availblob/v1beta1/submitBlobStatus";
+  }
   // Validators returns registered validators of the module.
   rpc Validators(QueryValidatorsRequest)
       returns (QueryValidatorsResponse) {
     option (google.api.http).get = "/availblob/v1beta1/validators";
   }
 
+
+
+  // Todo: will be removed
   rpc AvailAddress(QueryAvailAddressRequest) returns (QueryAvailAddressResponse) {
     option (google.api.http).get = "/availblob/v1beta1/avail_address";
   }
 
+  // proven height
   rpc ProvenHeight(QueryProvenHeightRequest) returns (QueryProvenHeightResponse) {
     option (google.api.http).get = "/availblob/v1beta1/proven_height";
   }
 
+  // pending blocks
   rpc PendingBlocks(QueryPendingBlocksRequest) returns (QueryPendingBlocksResponse) {
     option (google.api.http).get = "/availblob/v1beta1/pending_blocks";
   }
 
+  // expired blocks
   rpc ExpiredBlocks(QueryExpiredBlocksRequest) returns (QueryExpiredBlocksResponse) {
     option (google.api.http).get = "/availblob/v1beta1/expired_blocks";
   }
@@ -52,6 +75,7 @@ message QueryAvailAddressResponse {
   string avail_address = 1;
 }
 
+// proven Height
 message QueryProvenHeightRequest {}
 
 message QueryProvenHeightResponse {

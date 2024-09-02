@@ -33,6 +33,96 @@ var _ = time.Kitchen
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// query request
+type QuerySubmitBlobStatusRequest struct {
+	Range *Range `protobuf:"bytes,1,opt,name=range,proto3" json:"range,omitempty"`
+}
+
+func (m *QuerySubmitBlobStatusRequest) Reset()         { *m = QuerySubmitBlobStatusRequest{} }
+func (m *QuerySubmitBlobStatusRequest) String() string { return proto.CompactTextString(m) }
+func (*QuerySubmitBlobStatusRequest) ProtoMessage()    {}
+func (*QuerySubmitBlobStatusRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_30ff5d91ce731c68, []int{0}
+}
+func (m *QuerySubmitBlobStatusRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySubmitBlobStatusRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySubmitBlobStatusRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySubmitBlobStatusRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySubmitBlobStatusRequest.Merge(m, src)
+}
+func (m *QuerySubmitBlobStatusRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySubmitBlobStatusRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySubmitBlobStatusRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySubmitBlobStatusRequest proto.InternalMessageInfo
+
+func (m *QuerySubmitBlobStatusRequest) GetRange() *Range {
+	if m != nil {
+		return m.Range
+	}
+	return nil
+}
+
+// query response
+type QuerySubmitBlobStatusResponse struct {
+	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+}
+
+func (m *QuerySubmitBlobStatusResponse) Reset()         { *m = QuerySubmitBlobStatusResponse{} }
+func (m *QuerySubmitBlobStatusResponse) String() string { return proto.CompactTextString(m) }
+func (*QuerySubmitBlobStatusResponse) ProtoMessage()    {}
+func (*QuerySubmitBlobStatusResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_30ff5d91ce731c68, []int{1}
+}
+func (m *QuerySubmitBlobStatusResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySubmitBlobStatusResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySubmitBlobStatusResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySubmitBlobStatusResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySubmitBlobStatusResponse.Merge(m, src)
+}
+func (m *QuerySubmitBlobStatusResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySubmitBlobStatusResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySubmitBlobStatusResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySubmitBlobStatusResponse proto.InternalMessageInfo
+
+func (m *QuerySubmitBlobStatusResponse) GetStatus() string {
+	if m != nil {
+		return m.Status
+	}
+	return ""
+}
+
 // QueryValidatorsRequest is the request type for the Query/Validators RPC method.
 type QueryValidatorsRequest struct {
 }
@@ -41,7 +131,7 @@ func (m *QueryValidatorsRequest) Reset()         { *m = QueryValidatorsRequest{}
 func (m *QueryValidatorsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryValidatorsRequest) ProtoMessage()    {}
 func (*QueryValidatorsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{0}
+	return fileDescriptor_30ff5d91ce731c68, []int{2}
 }
 func (m *QueryValidatorsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -80,7 +170,7 @@ func (m *QueryValidatorsResponse) Reset()         { *m = QueryValidatorsResponse
 func (m *QueryValidatorsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryValidatorsResponse) ProtoMessage()    {}
 func (*QueryValidatorsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{1}
+	return fileDescriptor_30ff5d91ce731c68, []int{3}
 }
 func (m *QueryValidatorsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -125,7 +215,7 @@ func (m *QueryAvailAddressRequest) Reset()         { *m = QueryAvailAddressReque
 func (m *QueryAvailAddressRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryAvailAddressRequest) ProtoMessage()    {}
 func (*QueryAvailAddressRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{2}
+	return fileDescriptor_30ff5d91ce731c68, []int{4}
 }
 func (m *QueryAvailAddressRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -170,7 +260,7 @@ func (m *QueryAvailAddressResponse) Reset()         { *m = QueryAvailAddressResp
 func (m *QueryAvailAddressResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryAvailAddressResponse) ProtoMessage()    {}
 func (*QueryAvailAddressResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{3}
+	return fileDescriptor_30ff5d91ce731c68, []int{5}
 }
 func (m *QueryAvailAddressResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -206,6 +296,7 @@ func (m *QueryAvailAddressResponse) GetAvailAddress() string {
 	return ""
 }
 
+// proven Height
 type QueryProvenHeightRequest struct {
 }
 
@@ -213,7 +304,7 @@ func (m *QueryProvenHeightRequest) Reset()         { *m = QueryProvenHeightReque
 func (m *QueryProvenHeightRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryProvenHeightRequest) ProtoMessage()    {}
 func (*QueryProvenHeightRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{4}
+	return fileDescriptor_30ff5d91ce731c68, []int{6}
 }
 func (m *QueryProvenHeightRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -250,7 +341,7 @@ func (m *QueryProvenHeightResponse) Reset()         { *m = QueryProvenHeightResp
 func (m *QueryProvenHeightResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryProvenHeightResponse) ProtoMessage()    {}
 func (*QueryProvenHeightResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{5}
+	return fileDescriptor_30ff5d91ce731c68, []int{7}
 }
 func (m *QueryProvenHeightResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -295,7 +386,7 @@ func (m *BlockWithExpiration) Reset()         { *m = BlockWithExpiration{} }
 func (m *BlockWithExpiration) String() string { return proto.CompactTextString(m) }
 func (*BlockWithExpiration) ProtoMessage()    {}
 func (*BlockWithExpiration) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{6}
+	return fileDescriptor_30ff5d91ce731c68, []int{8}
 }
 func (m *BlockWithExpiration) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -345,7 +436,7 @@ func (m *QueryPendingBlocksRequest) Reset()         { *m = QueryPendingBlocksReq
 func (m *QueryPendingBlocksRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryPendingBlocksRequest) ProtoMessage()    {}
 func (*QueryPendingBlocksRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{7}
+	return fileDescriptor_30ff5d91ce731c68, []int{9}
 }
 func (m *QueryPendingBlocksRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -382,7 +473,7 @@ func (m *QueryPendingBlocksResponse) Reset()         { *m = QueryPendingBlocksRe
 func (m *QueryPendingBlocksResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryPendingBlocksResponse) ProtoMessage()    {}
 func (*QueryPendingBlocksResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{8}
+	return fileDescriptor_30ff5d91ce731c68, []int{10}
 }
 func (m *QueryPendingBlocksResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -425,7 +516,7 @@ func (m *QueryExpiredBlocksRequest) Reset()         { *m = QueryExpiredBlocksReq
 func (m *QueryExpiredBlocksRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryExpiredBlocksRequest) ProtoMessage()    {}
 func (*QueryExpiredBlocksRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{9}
+	return fileDescriptor_30ff5d91ce731c68, []int{11}
 }
 func (m *QueryExpiredBlocksRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -463,7 +554,7 @@ func (m *QueryExpiredBlocksResponse) Reset()         { *m = QueryExpiredBlocksRe
 func (m *QueryExpiredBlocksResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryExpiredBlocksResponse) ProtoMessage()    {}
 func (*QueryExpiredBlocksResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{10}
+	return fileDescriptor_30ff5d91ce731c68, []int{12}
 }
 func (m *QueryExpiredBlocksResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -507,6 +598,8 @@ func (m *QueryExpiredBlocksResponse) GetExpiredBlocks() []*BlockWithExpiration {
 }
 
 func init() {
+	proto.RegisterType((*QuerySubmitBlobStatusRequest)(nil), "sdk.avail.v1beta1.QuerySubmitBlobStatusRequest")
+	proto.RegisterType((*QuerySubmitBlobStatusResponse)(nil), "sdk.avail.v1beta1.QuerySubmitBlobStatusResponse")
 	proto.RegisterType((*QueryValidatorsRequest)(nil), "sdk.avail.v1beta1.QueryValidatorsRequest")
 	proto.RegisterType((*QueryValidatorsResponse)(nil), "sdk.avail.v1beta1.QueryValidatorsResponse")
 	proto.RegisterType((*QueryAvailAddressRequest)(nil), "sdk.avail.v1beta1.QueryAvailAddressRequest")
@@ -523,48 +616,54 @@ func init() {
 func init() { proto.RegisterFile("sdk/avail/v1beta1/query.proto", fileDescriptor_30ff5d91ce731c68) }
 
 var fileDescriptor_30ff5d91ce731c68 = []byte{
-	// 653 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0x41, 0x6e, 0xd3, 0x40,
-	0x14, 0x86, 0x33, 0x2d, 0xad, 0x60, 0x9a, 0x22, 0x3a, 0xa0, 0x12, 0x4c, 0x9b, 0xa4, 0xae, 0x80,
-	0x94, 0x52, 0x5b, 0x2d, 0x17, 0xa0, 0x11, 0xa8, 0x6c, 0x90, 0x20, 0x42, 0x20, 0x21, 0xa1, 0x68,
-	0x5c, 0x0f, 0xce, 0x28, 0x89, 0xc7, 0xf5, 0x8c, 0x03, 0xdd, 0xb2, 0x64, 0x55, 0xa9, 0x0b, 0x2e,
-	0xc2, 0x21, 0xba, 0xac, 0xc4, 0x86, 0x15, 0xa0, 0x86, 0x23, 0x70, 0x00, 0xe4, 0xf1, 0xd8, 0xb5,
-	0x9b, 0x71, 0x15, 0x76, 0x4d, 0xff, 0xff, 0xbd, 0xf7, 0xbd, 0x79, 0xfe, 0xe1, 0x2a, 0x77, 0xfb,
-	0x36, 0x1e, 0x61, 0x3a, 0xb0, 0x47, 0xdb, 0x0e, 0x11, 0x78, 0xdb, 0x3e, 0x88, 0x48, 0x78, 0x68,
-	0x05, 0x21, 0x13, 0x0c, 0x2d, 0x71, 0xb7, 0x6f, 0x49, 0xd9, 0x52, 0xb2, 0x71, 0xcb, 0x63, 0x1e,
-	0x93, 0xaa, 0x1d, 0xff, 0x95, 0x18, 0x8d, 0x15, 0x8f, 0x31, 0x6f, 0x40, 0x6c, 0x1c, 0x50, 0x1b,
-	0xfb, 0x3e, 0x13, 0x58, 0x50, 0xe6, 0x73, 0xa5, 0xae, 0x4d, 0x4e, 0x19, 0xe1, 0x01, 0x75, 0xb1,
-	0x60, 0xa1, 0xb2, 0x34, 0x54, 0x03, 0xf9, 0xcb, 0x89, 0x3e, 0xd8, 0x82, 0x0e, 0x09, 0x17, 0x78,
-	0x18, 0x24, 0x06, 0xb3, 0x06, 0x97, 0x5f, 0xc5, 0x64, 0x6f, 0xd2, 0x42, 0xde, 0x21, 0x07, 0x11,
-	0xe1, 0xc2, 0x7c, 0x0f, 0x6f, 0x4f, 0x28, 0x3c, 0x60, 0x3e, 0x27, 0xa8, 0x0d, 0x61, 0x36, 0x88,
-	0xd7, 0x40, 0x73, 0xb6, 0xb5, 0xb0, 0xb3, 0x62, 0x4d, 0x2c, 0x65, 0x65, 0xa5, 0xed, 0x2b, 0x27,
-	0x3f, 0x1b, 0x95, 0x4e, 0xae, 0xca, 0xdc, 0x83, 0x35, 0xd9, 0x7e, 0x37, 0xae, 0xd8, 0x75, 0xdd,
-	0x90, 0xf0, 0x74, 0x34, 0xda, 0x84, 0x4b, 0x99, 0xb3, 0x8b, 0x13, 0xad, 0x06, 0x9a, 0xa0, 0x75,
-	0xad, 0x73, 0x23, 0x13, 0x54, 0x8d, 0xf9, 0x04, 0xde, 0xd1, 0x34, 0x52, 0xa4, 0xeb, 0x70, 0x51,
-	0x22, 0x5d, 0xe8, 0x52, 0xc5, 0x39, 0xb3, 0x69, 0x28, 0x94, 0x97, 0x21, 0x1b, 0x11, 0xff, 0x39,
-	0xa1, 0x5e, 0x4f, 0xa4, 0xaf, 0x90, 0x76, 0x2f, 0x6a, 0xe7, 0xdd, 0x03, 0xf9, 0xff, 0x6e, 0x4f,
-	0x0a, 0xb2, 0xfb, 0x6c, 0xa7, 0x1a, 0xe4, 0xcc, 0x26, 0x87, 0x37, 0xdb, 0x03, 0xb6, 0xdf, 0x7f,
-	0x4b, 0x45, 0xef, 0xd9, 0xa7, 0x80, 0x86, 0xf2, 0x86, 0x68, 0x19, 0xce, 0x17, 0x8a, 0xd4, 0x2f,
-	0xf4, 0x14, 0x42, 0x92, 0xb9, 0x6a, 0x33, 0x4d, 0xd0, 0x5a, 0xd8, 0x31, 0xac, 0xe4, 0x8c, 0x56,
-	0x7a, 0x46, 0xeb, 0x75, 0x7a, 0xc6, 0xf6, 0xd5, 0xf8, 0x65, 0x8f, 0x7e, 0x35, 0x40, 0x27, 0x57,
-	0x67, 0xde, 0x4d, 0xb1, 0x89, 0xef, 0x52, 0xdf, 0x93, 0x00, 0xd9, 0x65, 0xfb, 0xd0, 0xd0, 0x89,
-	0x6a, 0xa9, 0x17, 0xf0, 0x7a, 0x90, 0x08, 0x5d, 0x47, 0x2a, 0xea, 0xc0, 0xf7, 0x35, 0x07, 0xd6,
-	0x2c, 0xd6, 0x59, 0x0c, 0xf2, 0x6d, 0x33, 0x12, 0xe9, 0x20, 0x6e, 0x91, 0xe4, 0x1b, 0x50, 0x28,
-	0x17, 0x54, 0x85, 0xb2, 0x07, 0xab, 0xfb, 0x51, 0x18, 0x12, 0x5f, 0x74, 0xe3, 0xef, 0x56, 0xbe,
-	0xd4, 0xb4, 0xaf, 0xb1, 0xa0, 0x2a, 0x63, 0x2d, 0xde, 0x89, 0x24, 0x13, 0xd2, 0x9d, 0x66, 0xfe,
-	0x6f, 0x27, 0x92, 0xe7, 0xdb, 0xf9, 0x3b, 0x07, 0xe7, 0x24, 0x36, 0xfa, 0x02, 0x20, 0x3c, 0x0f,
-	0x08, 0xda, 0xd0, 0xf4, 0xd3, 0xc7, 0xcb, 0x78, 0x38, 0x8d, 0x35, 0x79, 0x07, 0xf3, 0xde, 0xe7,
-	0xef, 0x7f, 0x8e, 0x67, 0x1a, 0x68, 0x35, 0x49, 0xbb, 0x33, 0x60, 0xce, 0x64, 0xe2, 0x39, 0x3a,
-	0x06, 0xb0, 0x9a, 0x4f, 0x01, 0xda, 0x2c, 0x9b, 0xa1, 0x09, 0x9d, 0xf1, 0x68, 0x3a, 0xb3, 0x42,
-	0x6a, 0x49, 0x24, 0x13, 0x35, 0x35, 0x48, 0x85, 0xc4, 0x49, 0xaa, 0x7c, 0x7a, 0xca, 0xa9, 0x34,
-	0xf9, 0x2b, 0xa7, 0xd2, 0x05, 0xf2, 0x52, 0xaa, 0x42, 0x52, 0xd1, 0x57, 0x00, 0x17, 0x0b, 0xdf,
-	0x3f, 0x2a, 0x9f, 0xa4, 0xc9, 0x90, 0xb1, 0x35, 0xa5, 0x5b, 0x81, 0x6d, 0x48, 0xb0, 0x75, 0xb4,
-	0xa6, 0x03, 0x2b, 0xa4, 0x4d, 0x92, 0x15, 0xe2, 0x50, 0x4e, 0xa6, 0xcb, 0x54, 0x39, 0x99, 0x36,
-	0x63, 0x97, 0x92, 0x15, 0x33, 0xd3, 0xde, 0x3d, 0x39, 0xab, 0x83, 0xd3, 0xb3, 0x3a, 0xf8, 0x7d,
-	0x56, 0x07, 0x47, 0xe3, 0x7a, 0xe5, 0x74, 0x5c, 0xaf, 0xfc, 0x18, 0xd7, 0x2b, 0xef, 0x1e, 0x78,
-	0x54, 0xf4, 0x22, 0xc7, 0xda, 0x67, 0x43, 0x7b, 0x44, 0xc5, 0x47, 0x2a, 0x92, 0x6e, 0x5b, 0x2e,
-	0xde, 0x1a, 0x32, 0x37, 0x1a, 0x10, 0x5b, 0x1c, 0x06, 0x84, 0x3b, 0xf3, 0x32, 0xb3, 0x8f, 0xff,
-	0x05, 0x00, 0x00, 0xff, 0xff, 0x00, 0x17, 0x5c, 0x23, 0x21, 0x07, 0x00, 0x00,
+	// 740 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0x41, 0x4f, 0xd4, 0x40,
+	0x14, 0xc7, 0xb7, 0x20, 0xa8, 0xc3, 0x62, 0x60, 0x34, 0xb8, 0x56, 0xd8, 0x85, 0x12, 0x14, 0x44,
+	0x5a, 0xc1, 0x83, 0x57, 0xd9, 0x68, 0xf0, 0xa2, 0xd1, 0x62, 0x34, 0x31, 0x31, 0x9b, 0x29, 0x1d,
+	0xbb, 0xcd, 0x76, 0x3b, 0xa5, 0x33, 0x5d, 0xe1, 0xea, 0xd1, 0x13, 0x09, 0x07, 0xe3, 0xd5, 0xcf,
+	0xe0, 0x87, 0xe0, 0x48, 0xe2, 0xc5, 0x93, 0x1a, 0xf0, 0x83, 0x98, 0x4e, 0xa7, 0xa5, 0xdd, 0x9d,
+	0x6e, 0xd6, 0x5b, 0xa7, 0xff, 0xf7, 0xfe, 0xf3, 0x7b, 0x33, 0xf3, 0x1e, 0x58, 0xa0, 0x76, 0xc7,
+	0x40, 0x3d, 0xe4, 0x7a, 0x46, 0x6f, 0xd3, 0xc2, 0x0c, 0x6d, 0x1a, 0xfb, 0x11, 0x0e, 0x0f, 0xf5,
+	0x20, 0x24, 0x8c, 0xc0, 0x59, 0x6a, 0x77, 0x74, 0x2e, 0xeb, 0x42, 0x56, 0x6f, 0x38, 0xc4, 0x21,
+	0x5c, 0x35, 0xe2, 0xaf, 0x24, 0x50, 0x9d, 0x77, 0x08, 0x71, 0x3c, 0x6c, 0xa0, 0xc0, 0x35, 0x90,
+	0xef, 0x13, 0x86, 0x98, 0x4b, 0x7c, 0x2a, 0xd4, 0xa5, 0xc1, 0x5d, 0x7a, 0xc8, 0x73, 0x6d, 0xc4,
+	0x48, 0x28, 0x42, 0x1a, 0xc2, 0x80, 0xaf, 0xac, 0xe8, 0x83, 0xc1, 0xdc, 0x2e, 0xa6, 0x0c, 0x75,
+	0x03, 0x11, 0xa0, 0x0e, 0x7a, 0xb0, 0x83, 0x44, 0xd3, 0x5e, 0x80, 0xf9, 0x57, 0x31, 0xf5, 0x6e,
+	0x64, 0x75, 0x5d, 0xd6, 0xf4, 0x88, 0xb5, 0xcb, 0x10, 0x8b, 0xa8, 0x89, 0xf7, 0x23, 0x4c, 0x19,
+	0xd4, 0xc1, 0x44, 0x88, 0x7c, 0x07, 0xd7, 0x94, 0x45, 0x65, 0x75, 0x6a, 0xab, 0xa6, 0x0f, 0x94,
+	0xa5, 0x9b, 0xb1, 0x6e, 0x26, 0x61, 0xda, 0x23, 0xb0, 0x50, 0xe2, 0x47, 0x03, 0xe2, 0x53, 0x0c,
+	0xe7, 0xc0, 0x24, 0xe5, 0x7f, 0xb8, 0xe3, 0x55, 0x53, 0xac, 0xb4, 0x1a, 0x98, 0xe3, 0x89, 0x6f,
+	0xd2, 0xea, 0x52, 0x04, 0xed, 0x3d, 0xb8, 0x39, 0xa0, 0x08, 0xb3, 0x26, 0x00, 0xd9, 0x69, 0xc4,
+	0x86, 0xe3, 0xab, 0x53, 0x5b, 0xf3, 0x12, 0xc4, 0x2c, 0xb5, 0x79, 0xe9, 0xe4, 0x57, 0xa3, 0x62,
+	0xe6, 0xb2, 0xb4, 0x1d, 0x50, 0xe3, 0xf6, 0xdb, 0x71, 0xc6, 0xb6, 0x6d, 0x87, 0x98, 0x66, 0xd5,
+	0xaf, 0x83, 0xd9, 0x2c, 0xb2, 0x85, 0x12, 0x4d, 0x70, 0xcf, 0x64, 0x82, 0xc8, 0xd1, 0x1e, 0x83,
+	0x5b, 0x12, 0x23, 0x41, 0xba, 0x0c, 0xa6, 0x39, 0x52, 0x9f, 0x4b, 0x15, 0xe5, 0x82, 0x35, 0x55,
+	0xa0, 0xbc, 0x0c, 0x49, 0x0f, 0xfb, 0xcf, 0xb0, 0xeb, 0xb4, 0x59, 0x7a, 0x0a, 0xa9, 0x7b, 0x51,
+	0xbb, 0x70, 0x0f, 0xf8, 0xff, 0x56, 0x9b, 0x0b, 0xdc, 0x7d, 0xdc, 0xac, 0x06, 0xb9, 0x60, 0x8d,
+	0x82, 0xeb, 0x4d, 0x8f, 0xec, 0x75, 0xde, 0xba, 0xac, 0xfd, 0xf4, 0x20, 0x70, 0x43, 0xfe, 0xd0,
+	0xe2, 0x0b, 0x29, 0x24, 0x89, 0x15, 0x7c, 0x02, 0x00, 0xce, 0xa2, 0x6a, 0x63, 0xfc, 0xfa, 0x55,
+	0x3d, 0x79, 0x6b, 0x7a, 0xfa, 0xd6, 0xf4, 0xd7, 0xe9, 0x5b, 0x6b, 0x5e, 0x89, 0x4f, 0xf6, 0xe8,
+	0x77, 0x43, 0x31, 0x73, 0x79, 0xda, 0xed, 0x14, 0x1b, 0xfb, 0xb6, 0xeb, 0x3b, 0x1c, 0x20, 0xbb,
+	0xd9, 0x0e, 0x50, 0x65, 0xa2, 0x28, 0xea, 0x39, 0xb8, 0x16, 0x24, 0x42, 0xcb, 0xe2, 0x8a, 0xb8,
+	0xe0, 0x3b, 0x92, 0x0b, 0x96, 0x14, 0x66, 0x4e, 0x07, 0x79, 0xdb, 0x8c, 0x84, 0x47, 0x60, 0xbb,
+	0x48, 0xf2, 0x5d, 0x11, 0x28, 0x7d, 0xaa, 0x40, 0xd9, 0x01, 0xd5, 0xbd, 0x28, 0x0c, 0xb1, 0xcf,
+	0x5a, 0x71, 0x73, 0x89, 0x66, 0x18, 0xed, 0x34, 0xa6, 0x44, 0x66, 0xac, 0xc5, 0x35, 0xe1, 0x64,
+	0x87, 0xb4, 0xa6, 0xb1, 0xff, 0xab, 0x09, 0xe7, 0xf9, 0xb6, 0xbe, 0x5e, 0x06, 0x13, 0x1c, 0x1b,
+	0x7e, 0x53, 0xc0, 0x4c, 0x7f, 0xcf, 0x41, 0x43, 0xe2, 0x3a, 0xac, 0xdb, 0xd5, 0x07, 0xa3, 0x27,
+	0x24, 0x27, 0xa3, 0xad, 0x7f, 0xfa, 0xf1, 0xf7, 0x78, 0x6c, 0x05, 0x2e, 0x27, 0x03, 0xc6, 0xf2,
+	0x88, 0x95, 0x0d, 0x19, 0xda, 0xcf, 0xf3, 0x59, 0x01, 0xe0, 0xa2, 0x8b, 0xe1, 0x5a, 0xd9, 0x6e,
+	0x03, 0x33, 0x40, 0xbd, 0x37, 0x4a, 0xa8, 0x40, 0x5a, 0xe1, 0x48, 0x0d, 0xb8, 0x20, 0x41, 0xba,
+	0xe8, 0x7b, 0x78, 0xac, 0x80, 0x6a, 0xbe, 0x55, 0xe1, 0x7a, 0xd9, 0x1e, 0x92, 0xc9, 0xa0, 0xde,
+	0x1f, 0x2d, 0x58, 0x20, 0xad, 0x72, 0x24, 0x0d, 0x2e, 0x4a, 0x90, 0x0a, 0x63, 0x81, 0x53, 0xe5,
+	0x5b, 0xbc, 0x9c, 0x4a, 0x32, 0x24, 0xca, 0xa9, 0x64, 0x53, 0x63, 0x28, 0x55, 0x61, 0x9c, 0xc0,
+	0x2f, 0x0a, 0x98, 0x2e, 0x34, 0x29, 0x2c, 0xdf, 0x49, 0xd2, 0xe8, 0xea, 0xc6, 0x88, 0xd1, 0x02,
+	0x6c, 0x8d, 0x83, 0x2d, 0xc3, 0x25, 0x19, 0x58, 0x61, 0x24, 0x70, 0xb2, 0x42, 0xcf, 0x96, 0x93,
+	0xc9, 0x1a, 0xbf, 0x9c, 0x4c, 0x3a, 0x08, 0x86, 0x92, 0x15, 0x1b, 0xbb, 0xb9, 0x7d, 0x72, 0x56,
+	0x57, 0x4e, 0xcf, 0xea, 0xca, 0x9f, 0xb3, 0xba, 0x72, 0x74, 0x5e, 0xaf, 0x9c, 0x9e, 0xd7, 0x2b,
+	0x3f, 0xcf, 0xeb, 0x95, 0x77, 0x77, 0x1d, 0x97, 0xb5, 0x23, 0x4b, 0xdf, 0x23, 0x5d, 0xa3, 0xe7,
+	0xb2, 0x8f, 0x2e, 0x4b, 0xdc, 0x36, 0x6c, 0xb4, 0xd1, 0x25, 0x76, 0xe4, 0x61, 0x83, 0x1d, 0x06,
+	0x98, 0x5a, 0x93, 0x7c, 0xb0, 0x3c, 0xfc, 0x17, 0x00, 0x00, 0xff, 0xff, 0x67, 0xde, 0x72, 0xab,
+	0x6b, 0x08, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -579,11 +678,17 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
+	// submit Blob Status
+	SubmitBlobStatus(ctx context.Context, in *QuerySubmitBlobStatusRequest, opts ...grpc.CallOption) (*QuerySubmitBlobStatusResponse, error)
 	// Validators returns registered validators of the module.
 	Validators(ctx context.Context, in *QueryValidatorsRequest, opts ...grpc.CallOption) (*QueryValidatorsResponse, error)
+	// Todo: will be removed
 	AvailAddress(ctx context.Context, in *QueryAvailAddressRequest, opts ...grpc.CallOption) (*QueryAvailAddressResponse, error)
+	// proven height
 	ProvenHeight(ctx context.Context, in *QueryProvenHeightRequest, opts ...grpc.CallOption) (*QueryProvenHeightResponse, error)
+	// pending blocks
 	PendingBlocks(ctx context.Context, in *QueryPendingBlocksRequest, opts ...grpc.CallOption) (*QueryPendingBlocksResponse, error)
+	// expired blocks
 	ExpiredBlocks(ctx context.Context, in *QueryExpiredBlocksRequest, opts ...grpc.CallOption) (*QueryExpiredBlocksResponse, error)
 }
 
@@ -593,6 +698,15 @@ type queryClient struct {
 
 func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
+}
+
+func (c *queryClient) SubmitBlobStatus(ctx context.Context, in *QuerySubmitBlobStatusRequest, opts ...grpc.CallOption) (*QuerySubmitBlobStatusResponse, error) {
+	out := new(QuerySubmitBlobStatusResponse)
+	err := c.cc.Invoke(ctx, "/sdk.avail.v1beta1.Query/SubmitBlobStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *queryClient) Validators(ctx context.Context, in *QueryValidatorsRequest, opts ...grpc.CallOption) (*QueryValidatorsResponse, error) {
@@ -642,11 +756,17 @@ func (c *queryClient) ExpiredBlocks(ctx context.Context, in *QueryExpiredBlocksR
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
+	// submit Blob Status
+	SubmitBlobStatus(context.Context, *QuerySubmitBlobStatusRequest) (*QuerySubmitBlobStatusResponse, error)
 	// Validators returns registered validators of the module.
 	Validators(context.Context, *QueryValidatorsRequest) (*QueryValidatorsResponse, error)
+	// Todo: will be removed
 	AvailAddress(context.Context, *QueryAvailAddressRequest) (*QueryAvailAddressResponse, error)
+	// proven height
 	ProvenHeight(context.Context, *QueryProvenHeightRequest) (*QueryProvenHeightResponse, error)
+	// pending blocks
 	PendingBlocks(context.Context, *QueryPendingBlocksRequest) (*QueryPendingBlocksResponse, error)
+	// expired blocks
 	ExpiredBlocks(context.Context, *QueryExpiredBlocksRequest) (*QueryExpiredBlocksResponse, error)
 }
 
@@ -654,6 +774,9 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
+func (*UnimplementedQueryServer) SubmitBlobStatus(ctx context.Context, req *QuerySubmitBlobStatusRequest) (*QuerySubmitBlobStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SubmitBlobStatus not implemented")
+}
 func (*UnimplementedQueryServer) Validators(ctx context.Context, req *QueryValidatorsRequest) (*QueryValidatorsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Validators not implemented")
 }
@@ -672,6 +795,24 @@ func (*UnimplementedQueryServer) ExpiredBlocks(ctx context.Context, req *QueryEx
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
+}
+
+func _Query_SubmitBlobStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySubmitBlobStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SubmitBlobStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sdk.avail.v1beta1.Query/SubmitBlobStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SubmitBlobStatus(ctx, req.(*QuerySubmitBlobStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_Validators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -769,6 +910,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "SubmitBlobStatus",
+			Handler:    _Query_SubmitBlobStatus_Handler,
+		},
+		{
 			MethodName: "Validators",
 			Handler:    _Query_Validators_Handler,
 		},
@@ -791,6 +936,71 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "sdk/avail/v1beta1/query.proto",
+}
+
+func (m *QuerySubmitBlobStatusRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySubmitBlobStatusRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySubmitBlobStatusRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Range != nil {
+		{
+			size, err := m.Range.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QuerySubmitBlobStatusResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySubmitBlobStatusResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySubmitBlobStatusResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Status) > 0 {
+		i -= len(m.Status)
+		copy(dAtA[i:], m.Status)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Status)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *QueryValidatorsRequest) Marshal() (dAtA []byte, err error) {
@@ -984,12 +1194,12 @@ func (m *BlockWithExpiration) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.Expiration, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.Expiration):])
-	if err1 != nil {
-		return 0, err1
+	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.Expiration, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.Expiration):])
+	if err2 != nil {
+		return 0, err2
 	}
-	i -= n1
-	i = encodeVarintQuery(dAtA, i, uint64(n1))
+	i -= n2
+	i = encodeVarintQuery(dAtA, i, uint64(n2))
 	i--
 	dAtA[i] = 0x12
 	if m.Height != 0 {
@@ -1117,12 +1327,12 @@ func (m *QueryExpiredBlocksResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 			dAtA[i] = 0x12
 		}
 	}
-	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.CurrentTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.CurrentTime):])
-	if err2 != nil {
-		return 0, err2
+	n3, err3 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.CurrentTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.CurrentTime):])
+	if err3 != nil {
+		return 0, err3
 	}
-	i -= n2
-	i = encodeVarintQuery(dAtA, i, uint64(n2))
+	i -= n3
+	i = encodeVarintQuery(dAtA, i, uint64(n3))
 	i--
 	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
@@ -1139,6 +1349,32 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *QuerySubmitBlobStatusRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Range != nil {
+		l = m.Range.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QuerySubmitBlobStatusResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Status)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
 func (m *QueryValidatorsRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1279,6 +1515,174 @@ func sovQuery(x uint64) (n int) {
 }
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *QuerySubmitBlobStatusRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySubmitBlobStatusRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySubmitBlobStatusRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Range", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Range == nil {
+				m.Range = &Range{}
+			}
+			if err := m.Range.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuerySubmitBlobStatusResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySubmitBlobStatusResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySubmitBlobStatusResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Status = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *QueryValidatorsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
