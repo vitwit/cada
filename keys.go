@@ -28,6 +28,10 @@ var (
 	ClientStoreKey = []byte("client_store/")
 
 	PendingBlobsKey = collections.NewPrefix(5)
+
+	BlobStatusKey = collections.NewPrefix(6)
+
+	NextHeightKey = collections.NewPrefix(7)
 )
 
 const (

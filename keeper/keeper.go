@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/binary"
 	"errors"
 	"fmt"
 
@@ -39,6 +40,8 @@ type Keeper struct {
 	cdc codec.BinaryCodec
 
 	publishToAvailBlockInterval int
+	PublishToAvailBlockInterval uint64
+	MaxBlocksForBlob            uint
 	injectedProofsLimit         int
 	app_id                      int
 
@@ -78,7 +81,9 @@ func NewKeeper(
 		publishToAvailBlockInterval: publishToAvailBlockInterval,
 		app_id:                      appId,
 
-		unprovenBlocks: make(map[int64][]byte),
+		unprovenBlocks:              make(map[int64][]byte),
+		MaxBlocksForBlob:            10, //Todo: call this from app.go, later change to params
+		PublishToAvailBlockInterval: 5,  //Todo: call this from app.go, later change to params
 	}
 }
 
@@ -86,27 +91,69 @@ func (k *Keeper) SetRelayer(r *relayer.Relayer) {
 	k.relayer = r
 }
 
-func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*types.MsgSubmitBlobResponse, error) {
+func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, provenHeight, endHeight uint64) error {
+
 	store := ctx.KVStore(k.storeKey)
-	if IsAlreadyExist(ctx, store, *req.BlocksRange) {
-		return &types.MsgSubmitBlobResponse{}, errors.New("the range is already processed")
+
+	if !IsStateReady(store) { //TOodo: we should check for expiration too
+		return errors.New("a block range with same start height is already being processed")
 	}
 
-	err := updateBlobStatus(ctx, store, *req.BlocksRange, PENDING)
-	fmt.Println("errr.........", err)
-	return &types.MsgSubmitBlobResponse{}, err
+	UpdateBlobStatus(ctx, store, PENDING_STATE)
+	UpdateEndHeight(ctx, store, endHeight)
+	return nil
+}
+
+func (k *Keeper) SetBlobStatusSuccess(ctx sdk.Context, provenHeight, endHeight uint64) error {
+
+	store := ctx.KVStore(k.storeKey)
+
+	if !IsStateReady(store) { //TOodo: we should check for expiration too
+		return errors.New("a block range with same start height is already being processed")
+	}
+
+	UpdateBlobStatus(ctx, store, READY_STATE)
+	UpdateEndHeight(ctx, store, endHeight)
+	return nil
+}
+
+func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
+	store := ctx.KVStore(k.storeKey)
+	heightBytes := store.Get(availblob1.ProvenHeightKey)
+	if heightBytes == nil || len(heightBytes) == 8 {
+		return 0
+	}
+
+	fmt.Println("heightt buyessssssss from......", heightBytes)
+
+	provenHeight := binary.BigEndian.Uint64(heightBytes)
+	fmt.Println("proven height here............", provenHeight)
+	return provenHeight
+}
+
+// Todo: remove this method later
+func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*types.MsgSubmitBlobResponse, error) {
+
+	return &types.MsgSubmitBlobResponse{}, nil
 }
 
 func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
-	store := ctx.KVStore(k.storeKey)
-	if !IsAlreadyExist(ctx, store, *req.BlocksRange) {
-		return &types.MsgUpdateBlobStatusResponse{}, errors.New("the range does not exist")
-	}
+	//Todo: status should be changed to Voting or Ready, depending on the request
+	return &types.MsgUpdateBlobStatusResponse{}, nil
+}
 
-	status := FAILURE
-	if req.IsSuccess {
-		status = SUCCESS
-	}
-	err := updateBlobStatus(ctx, store, *req.BlocksRange, status)
-	return &types.MsgUpdateBlobStatusResponse{}, err
+func (k *Keeper) CheckHeight(endHeight uint64) error {
+	// Step 1: Encode 41 into a byte slice
+	// var endHeight uint64 = 41
+	heightBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(heightBytes, endHeight)
+
+	fmt.Println("Encoded byte slice for 41:", heightBytes)
+
+	// Step 2: Decode the byte slice back to a uint64
+	decodedHeight := binary.BigEndian.Uint64(heightBytes)
+
+	fmt.Println("Decoded height:", decodedHeight)
+
+	return nil
 }
