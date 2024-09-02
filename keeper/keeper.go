@@ -157,3 +157,8 @@ func (k *Keeper) CheckHeight(endHeight uint64) error {
 
 	return nil
 }
+
+func (k *Keeper) SubmitBlobStatus(ctx sdk.Context, _ *types.QuerySubmitBlobStatusRequest) (*types.QuerySubmitBlobStatusResponse, error) {
+	// Todo: implement query
+	return nil, nil
+}
