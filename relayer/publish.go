@@ -91,5 +91,12 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64) {
 			"height_end", blocks[len(blocks)-1],
 			"appID", string(r.rpcClient.config.AppID),
 		)
+
+		// TODO : execute tx about successfull submission
+
+		return
 	}
+
+	// TODO : execute tx about successfull submission
+
 }

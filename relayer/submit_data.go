@@ -55,7 +55,7 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 	}
 
 	if err == nil {
-		r.logger.Info("Posted block(s) to Avail DA",
+		r.logger.Info("Successfully posted block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
 			"appID", string(r.rpcClient.config.AppID),

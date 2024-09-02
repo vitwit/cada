@@ -43,12 +43,14 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
-	fmt.Println("coming hereee.........", req)
+	// fmt.Println("coming hereee.........", req)
 
 	currentBlockHeight := ctx.BlockHeight()
-	if k.IsValidBlockToPostTODA(uint64(currentBlockHeight)) {
+	if !k.IsValidBlockToPostTODA(uint64(currentBlockHeight)) {
 		return nil
 	}
+
+	fmt.Println("block heighttt.........", ctx.BlockHeight())
 
 	fromHeight := k.GetProvenHeightFromStore(ctx) //Todo: change this get from ProvenHeight from store
 	fmt.Println("from height..", fromHeight)
@@ -61,17 +63,26 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 		fmt.Println("error while setting blob status...", err)
 	}
 
+	var blocksToSumit []int64
+
+	for i := fromHeight + 1; i < endHeight; i++ {
+		blocksToSumit = append(blocksToSumit, int64(i))
+	}
+
+	fmt.Println("blocks to submittttttttt.........", blocksToSumit)
+
 	// only proposar should should run the this
 	if bytes.Equal(req.ProposerAddress, k.proposerAddress) {
 		// update blob status to success
-
-		err = k.SetBlobStatusSuccess(sdkCtx, fromHeight, endHeight)
-		if err != nil {
-			return nil
-		}
+		// err = k.SetBlobStatusSuccess(sdkCtx, fromHeight, endHeight)
+		// if err != nil {
+		// 	return nil
+		// }
 
 		// Todo: run the relayer routine
 		// relayer doesn't have to make submitBlob Transaction, it should just start DA submission
+		k.relayer.PostBlocks(ctx, blocksToSumit)
+
 	}
 
 	return nil
