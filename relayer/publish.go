@@ -122,16 +122,18 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 		fmt.Println("proposer addressss........", sdk.AccAddress.String(proposer),
 			uint64(blocks[0]), uint64(blocks[len(blocks)-1]), uint64(blockInfo.BlockNumber))
 
-		// TODO : execute tx about successfull submission
-		err = ExecuteTX(ctx, types.MsgUpdateBlobStatusRequest{
-			ValidatorAddress: sdk.AccAddress.String(proposer),
+		msg := types.MsgUpdateBlobStatusRequest{ValidatorAddress: sdk.AccAddress.String(proposer),
 			BlocksRange: &types.Range{
 				From: uint64(blocks[0]),
 				To:   uint64(blocks[len(blocks)-1]),
 			},
 			AvailHeight: uint64(blockInfo.BlockNumber),
-			IsSuccess:   true,
-		}, cdc)
+			IsSuccess:   true}
+
+		fmt.Println("submit blocks msg.......", msg)
+
+		// TODO : execute tx about successfull submission
+		err = ExecuteTX(ctx, msg, cdc)
 		if err != nil {
 			fmt.Println("error while submitting tx...", err)
 		}
