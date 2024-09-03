@@ -12,6 +12,6 @@ message GenesisState {
 
     // the height of the last block that was proven to be posted to Avail.
     // increment only, never skipping heights.
-    int64 proven_height = 2;
+    uint64 proven_height = 2;
     repeated BlockWithExpiration pending_blocks = 3;
  }

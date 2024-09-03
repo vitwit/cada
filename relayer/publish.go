@@ -142,7 +142,7 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec) error {
 	// Define keyring and RPC client configuration
 
-	homePath := "/home/vitwit/.availsdk"
+	homePath := "/home/vitwit/.simapp"
 	keyName := "alice"
 	rpcAddress := "http://localhost:26657"
 
@@ -160,8 +160,9 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 
 	info, err := kr.Key(keyName)
 	// log.Println("uuu....", info, err)
-
+	fmt.Println("here error???", info == nil)
 	valAddr, err := info.GetAddress()
+	fmt.Println("after address................", valAddr)
 
 	// valAddr, err := sdk.AccAddressFromBech32(addr.String())
 	// fmt.Println("val addr, err..", valAddr, err, addr)

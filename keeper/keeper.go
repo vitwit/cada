@@ -30,7 +30,7 @@ type Keeper struct {
 
 	Validators              collections.Map[string, string]
 	ClientID                collections.Item[string]
-	ProvenHeight            collections.Item[int64]
+	ProvenHeight            collections.Item[uint64]
 	PendingBlocksToTimeouts collections.Map[int64, int64]
 	TimeoutsToPendingBlocks collections.Map[int64, types.PendingBlocks]
 	keyring                 keyring.Keyring
@@ -70,7 +70,7 @@ func NewKeeper(
 
 		Validators:              collections.NewMap(sb, availblob1.ValidatorsKey, "validators", collections.StringKey, collections.StringValue),
 		ClientID:                collections.NewItem(sb, availblob1.ClientIDKey, "client_id", collections.StringValue),
-		ProvenHeight:            collections.NewItem(sb, availblob1.ProvenHeightKey, "proven_height", collections.Int64Value),
+		ProvenHeight:            collections.NewItem(sb, availblob1.ProvenHeightKey, "proven_height", collections.Uint64Value),
 		PendingBlocksToTimeouts: collections.NewMap(sb, availblob1.PendingBlocksToTimeouts, "pending_blocks_to_timeouts", collections.Int64Key, collections.Int64Value),
 		TimeoutsToPendingBlocks: collections.NewMap(sb, availblob1.TimeoutsToPendingBlocks, "timeouts_to_pending_blocks", collections.Int64Key, codec.CollValue[types.PendingBlocks](cdc)),
 
@@ -161,7 +161,8 @@ func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatu
 	status := GetStatusFromStore(store)
 
 	if req.BlocksRange.From != provenHeight+1 || req.BlocksRange.To != endHeight {
-		return nil, errors.New("invalid blocks range")
+		return nil, fmt.Errorf("invalid blocks range request: expected range [%d -> %d], got [%d -> %d]",
+			provenHeight+1, endHeight, req.BlocksRange.From, req.BlocksRange.To)
 	}
 
 	if status != PENDING_STATE {

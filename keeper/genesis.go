@@ -14,9 +14,9 @@ func (k *Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) error {
 	}
 
 	// Set proven height to genesis height, we do not init any pending block on a genesis init/restart
-	if err := k.SetProvenHeight(ctx, ctx.HeaderInfo().Height); err != nil {
-		return err
-	}
+	// if err := k.SetProvenHeight(ctx, ctx.HeaderInfo().Height); err != nil {
+	// 	return err
+	// }
 
 	k.relayer.NotifyProvenHeight(ctx.HeaderInfo().Height)
 

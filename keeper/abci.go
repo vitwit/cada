@@ -54,13 +54,14 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 
 	fmt.Println("block heighttt.........", ctx.BlockHeight(), ctx.ExecMode(), ctx.IsCheckTx(), ctx.IsReCheckTx())
 
-	fromHeight := k.GetProvenHeightFromStore(ctx) //Todo: change this get from ProvenHeight from store
+	provenHeight := k.GetProvenHeightFromStore(ctx)
+	fromHeight := provenHeight + 1
 	fmt.Println("from height..", fromHeight)
-	endHeight := min(fromHeight+uint64(k.MaxBlocksForBlob), uint64(ctx.BlockHeight()))
-	fmt.Println("end height..", endHeight)
+	endHeight := min(fromHeight+uint64(k.MaxBlocksForBlob), uint64(ctx.BlockHeight())) //exclusive i.e [fromHeight, endHeight)
+	fmt.Println("end height..", endHeight-1)
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	err := k.SetBlobStatusPending(sdkCtx, fromHeight, endHeight)
+	err := k.SetBlobStatusPending(sdkCtx, fromHeight, endHeight-1)
 	if err != nil {
 		fmt.Println("error while setting blob status...", err)
 		return nil
@@ -68,7 +69,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 
 	var blocksToSumit []int64
 
-	for i := fromHeight + 1; i < endHeight; i++ {
+	for i := fromHeight; i < endHeight; i++ {
 		blocksToSumit = append(blocksToSumit, int64(i))
 	}
 

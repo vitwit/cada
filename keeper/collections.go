@@ -50,11 +50,11 @@ func (k *Keeper) GetAllValidators(ctx context.Context) (types.Validators, error)
 	return validators, nil
 }
 
-func (k *Keeper) SetProvenHeight(ctx context.Context, height int64) error {
+func (k *Keeper) SetProvenHeight(ctx context.Context, height uint64) error {
 	return k.ProvenHeight.Set(ctx, height)
 }
 
-func (k *Keeper) GetProvenHeight(ctx context.Context) (int64, error) {
+func (k *Keeper) GetProvenHeight(ctx context.Context) (uint64, error) {
 	return k.ProvenHeight.Get(ctx)
 }
 

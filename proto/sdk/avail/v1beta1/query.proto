@@ -79,7 +79,7 @@ message QueryAvailAddressResponse {
 message QueryProvenHeightRequest {}
 
 message QueryProvenHeightResponse {
-  int64 proven_height = 1;
+  uint64 proven_height = 1;
 }
 
 message BlockWithExpiration {
