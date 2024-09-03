@@ -2,12 +2,11 @@ package keeper
 
 import (
 	"encoding/binary"
-	"fmt"
 
+	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	availblob1 "github.com/vitwit/avail-da-module"
-	"github.com/vitwit/avail-da-module/types"
 )
 
 const (
@@ -32,26 +31,15 @@ func ParseStatus(status uint32) string {
 	}
 }
 
-func IsAlreadyExist(ctx sdk.Context, store storetypes2.KVStore, blocksRange types.Range) bool {
-	pendingBlobStoreKey := availblob1.PendingBlobsStoreKey(blocksRange)
-	blobStatus := store.Get(pendingBlobStoreKey)
-	fmt.Println("blob status:", blobStatus, blobStatus == nil)
-	if blobStatus == nil {
-		return false
-	}
-	return true
-}
-
-func IsStateReady(store storetypes2.KVStore) bool {
+func CanUpdateStatusToPending(store storetypes2.KVStore) bool {
 	statusBytes := store.Get(availblob1.BlobStatusKey)
-	fmt.Println("status bytes............", statusBytes)
 	if statusBytes == nil || len(statusBytes) == 0 {
 		return true
 	}
 
 	status := binary.BigEndian.Uint32(statusBytes)
 
-	return status == READY_STATE
+	return status == READY_STATE || status == FAILURE_STATE
 }
 
 func GetStatusFromStore(store storetypes2.KVStore) uint32 {
@@ -76,22 +64,48 @@ func UpdateBlobStatus(ctx sdk.Context, store storetypes2.KVStore, status uint32)
 	return nil
 }
 
-func UpdateEndHeight(ctx sdk.Context, store storetypes2.KVStore, endHeight uint64) error {
+func UpdateStartHeight(ctx sdk.Context, store storetypes2.KVStore, startHeight uint64) error {
+	return updateHeight(store, availblob1.PrevHeightKey, startHeight)
+}
 
+func UpdateEndHeight(ctx sdk.Context, store storetypes2.KVStore, endHeight uint64) error {
+	return updateHeight(store, availblob1.NextHeightKey, endHeight)
+}
+
+func UpdateProvenHeight(ctx sdk.Context, store storetypes2.KVStore, provenHeight uint64) error {
+	return updateHeight(store, availblob1.ProvenHeightKey, provenHeight)
+}
+
+func updateHeight(store storetypes2.KVStore, key collections.Prefix, height uint64) error {
 	heightBytes := make([]byte, 8)
 
-	binary.BigEndian.PutUint64(heightBytes, endHeight)
+	binary.BigEndian.PutUint64(heightBytes, height)
 
-	store.Set(availblob1.NextHeightKey, heightBytes)
+	store.Set(key, heightBytes)
 	return nil
 }
 
-func UpdateProvenHeight(ctx sdk.Context, store storetypes2.KVStore, endHeight uint64) error {
+func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
+	return k.getHeight(ctx, availblob1.ProvenHeightKey)
+}
 
-	heightBytes := make([]byte, 8)
+func (k *Keeper) GetStartHeightFromStore(ctx sdk.Context) uint64 {
+	return k.getHeight(ctx, availblob1.PrevHeightKey)
+}
 
-	binary.BigEndian.PutUint64(heightBytes, endHeight)
+func (k *Keeper) GetEndHeightFromStore(ctx sdk.Context) uint64 {
 
-	store.Set(availblob1.ProvenHeightKey, heightBytes)
-	return nil
+	return k.getHeight(ctx, availblob1.NextHeightKey)
+}
+
+func (k *Keeper) getHeight(ctx sdk.Context, key collections.Prefix) uint64 {
+	store := ctx.KVStore(k.storeKey)
+	heightBytes := store.Get(key)
+
+	if heightBytes == nil || len(heightBytes) == 0 {
+		return 0
+	}
+
+	height := binary.BigEndian.Uint64(heightBytes)
+	return height
 }

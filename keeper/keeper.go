@@ -91,60 +91,18 @@ func (k *Keeper) SetRelayer(r *relayer.Relayer) {
 	k.relayer = r
 }
 
-func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, provenHeight, endHeight uint64) error {
+func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, startHeight, endHeight uint64) error {
 
 	store := ctx.KVStore(k.storeKey)
 
-	if !IsStateReady(store) { //TOodo: we should check for expiration too
+	if !CanUpdateStatusToPending(store) { //TOodo: we should check for expiration too
 		return errors.New("a block range with same start height is already being processed")
 	}
 
 	UpdateBlobStatus(ctx, store, PENDING_STATE)
+	UpdateStartHeight(ctx, store, startHeight)
 	UpdateEndHeight(ctx, store, endHeight)
 	return nil
-}
-
-func (k *Keeper) SetBlobStatusSuccess(ctx sdk.Context, provenHeight, endHeight uint64) error {
-
-	store := ctx.KVStore(k.storeKey)
-
-	if !IsStateReady(store) { //TOodo: we should check for expiration too
-		return errors.New("a block range with same start height is already being processed")
-	}
-
-	UpdateBlobStatus(ctx, store, READY_STATE)
-	UpdateEndHeight(ctx, store, endHeight)
-	return nil
-}
-
-func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
-	store := ctx.KVStore(k.storeKey)
-	heightBytes := store.Get(availblob1.ProvenHeightKey)
-	if heightBytes == nil || len(heightBytes) == 0 {
-		return 0
-	}
-
-	fmt.Println("heightt buyessssssss from......", heightBytes)
-
-	provenHeight := binary.BigEndian.Uint64(heightBytes)
-	fmt.Println("proven height here............", provenHeight)
-	return provenHeight
-}
-
-func (k *Keeper) GetEndHeightFromStore(ctx sdk.Context) uint64 {
-	store := ctx.KVStore(k.storeKey)
-	heightBytes := store.Get(availblob1.NextHeightKey)
-
-	fmt.Println("heightBytes getEnd........", heightBytes)
-	if heightBytes == nil || len(heightBytes) == 0 {
-		return 0
-	}
-
-	fmt.Println("heightt buyessssssss from......", heightBytes)
-
-	nextHeight := binary.BigEndian.Uint64(heightBytes)
-	fmt.Println("proven height here............", nextHeight)
-	return nextHeight
 }
 
 // Todo: remove this method later
@@ -171,7 +129,7 @@ func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatu
 
 	newStatus := READY_STATE
 	if !req.IsSuccess {
-		newStatus = READY_STATE
+		newStatus = FAILURE_STATE
 	} else {
 		UpdateProvenHeight(ctx, store, endHeight)
 	}
@@ -200,14 +158,11 @@ func (k *Keeper) CheckHeight(endHeight uint64) error {
 func (k *Keeper) SubmitBlobStatus(ctx sdk.Context, _ *types.QuerySubmitBlobStatusRequest) (*types.QuerySubmitBlobStatusResponse, error) {
 	// Todo: implement query
 	store := ctx.KVStore(k.storeKey)
-	provenHeight := k.GetProvenHeightFromStore(ctx)
+	startHeight := k.GetStartHeightFromStore(ctx)
 	endHeight := k.GetEndHeightFromStore(ctx)
 	status := GetStatusFromStore(store)
 	statusString := ParseStatus(status)
-	startHeight := provenHeight + 1
-	if provenHeight == 0 {
-		startHeight = 0
-	}
+
 	return &types.QuerySubmitBlobStatusResponse{
 		Range:  &types.Range{From: startHeight, To: endHeight},
 		Status: statusString,

@@ -19,11 +19,11 @@ import (
 func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) (BlockInfo, error) {
 	fmt.Println("calling twiceeeee.........", blocks)
 	var blockInfo BlockInfo
-	if r.submittedBlocksCache[blocks[0]] {
-		return blockInfo, nil
-	}
+	// if r.submittedBlocksCache[blocks[0]] {
+	// 	return blockInfo, nil
+	// }
 
-	r.submittedBlocksCache[blocks[0]] = true
+	// r.submittedBlocksCache[blocks[0]] = true
 	delete(r.submittedBlocksCache, blocks[0]-int64(len(blocks)))
 
 	handler := NewHTTPClientHandler()

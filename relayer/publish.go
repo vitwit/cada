@@ -93,7 +93,11 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 		bb = append(bb, blockBz...)
 	}
 
+	fmt.Println("is it coming here where we post to DA")
+
 	blockInfo, err := r.SubmitDataToClient(r.rpcClient.config.Seed, r.rpcClient.config.AppID, bb, blocks, r.rpcClient.config.LightClientURL)
+
+	fmt.Println("after submission.............", err)
 	if err != nil {
 		r.logger.Error("Error while submitting block(s) to Avail DA",
 			"height_start", blocks[0],

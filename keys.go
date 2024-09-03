@@ -31,7 +31,9 @@ var (
 
 	BlobStatusKey = collections.NewPrefix(6)
 
-	NextHeightKey = collections.NewPrefix(7)
+	PrevHeightKey = collections.NewPrefix(7)
+
+	NextHeightKey = collections.NewPrefix(8)
 )
 
 const (
