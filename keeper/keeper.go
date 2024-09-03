@@ -171,7 +171,7 @@ func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatu
 
 	newStatus := READY_STATE
 	if !req.IsSuccess {
-		newStatus = PENDING_STATE
+		newStatus = READY_STATE
 	} else {
 		UpdateProvenHeight(ctx, store, endHeight)
 	}
