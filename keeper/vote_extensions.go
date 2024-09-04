@@ -6,17 +6,20 @@ import (
 
 	"cosmossdk.io/log"
 	cometabci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type VoteExtensionHandler struct {
-	logger log.Logger
+	logger             log.Logger
+	voteExtensionCodec *codec.Codec
 }
 
 // NewVoteExtensionHandler creates a new VoteExtensionHandler.
-func NewVoteExtensionHandler(logger log.Logger) *VoteExtensionHandler {
+func NewVoteExtensionHandler(logger log.Logger, codec *codec.Codec) *VoteExtensionHandler {
 	return &VoteExtensionHandler{
-		logger: logger,
+		logger:             logger,
+		voteExtensionCodec: codec,
 	}
 }
 
@@ -88,3 +91,25 @@ func (h *VoteExtensionHandler) VerifyVoteExtension(extension []byte, expectedBlo
 
 	return nil
 }
+
+// func (h *VoteExtensionHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
+//     return func(ctx sdk.Context, req *types.RequestExtendVote) (*types.ResponseExtendVote, error) {
+//         availDAHeight := h.getAvailDAHeight(ctx)
+
+//         voteExtensionBytes, err := h.voteExtensionCodec.Encode(availDAHeight)
+//         if err != nil {
+//             h.logger.Printf("Failed to encode vote extension: %v", err)
+//             return nil, err
+//         }
+
+//         return &types.ResponseExtendVote{
+//             VoteExtension: voteExtensionBytes,
+//         }, nil
+//     }
+// }
+
+// // Mock function to retrieve the Avail DA height.
+// func (h *VoteExtensionHandler) getAvailDAHeight(ctx sdk.Context) uint64 {
+//     // This function should be implemented to retrieve the actual Avail DA height.
+//     return 12345 // Example height
+// }
