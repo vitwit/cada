@@ -3,17 +3,15 @@ package keeper
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/vitwit/avail-da-module/types"
 )
 
 type StakeWeightedVotes struct {
-	Votes              map[types.Range]int64
+	Votes              map[string]int64
 	ExtendedCommitInfo abci.ExtendedCommitInfo
 }
 
@@ -22,7 +20,7 @@ type ProofOfBlobProposalHandler struct {
 
 	prepareProposalHandler sdk.PrepareProposalHandler
 	processProposalHandler sdk.ProcessProposalHandler
-	voteExtHandler         VoteExtHandler
+	VoteExtHandler         VoteExtHandler
 }
 
 func NewProofOfBlobProposalHandler(
@@ -35,7 +33,7 @@ func NewProofOfBlobProposalHandler(
 		keeper:                 k,
 		prepareProposalHandler: prepareProposalHandler,
 		processProposalHandler: processProposalHandler,
-		voteExtHandler:         voteExtHandler,
+		VoteExtHandler:         voteExtHandler,
 	}
 }
 
@@ -61,10 +59,12 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 		ExtendedCommitInfo: req.LocalLastCommit,
 	}
 
+	fmt.Println("votes..................", votes, injectedVoteExtTx)
+
 	bz, err := json.Marshal(injectedVoteExtTx)
 	if err != nil {
 		fmt.Println("failed to encode injected vote extension tx", "err", err)
-		return nil, errors.New("failed to encode injected vote extension tx")
+		// return nil, errors.New("failed to encode injected vote extension tx")
 	}
 
 	proposalTxs = append(proposalTxs, bz)
@@ -81,7 +81,7 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.
 	var injectedVoteExtTx StakeWeightedVotes
 	if err := json.Unmarshal(req.Txs[0], &injectedVoteExtTx); err != nil {
 		fmt.Println("failed to decode injected vote extension tx", "err", err)
-		return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_REJECT}, nil
+		// return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_REJECT}, nil
 	}
 
 	fmt.Println("injected data is:..............", injectedVoteExtTx)
@@ -151,16 +151,12 @@ func (k *Keeper) IsValidBlockToPostTODA(height uint64) bool {
 	return true
 }
 
-func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.ExtendedCommitInfo) (map[types.Range]int64, error) {
+func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.ExtendedCommitInfo) (map[string]int64, error) {
 	from := h.keeper.GetStartHeightFromStore(ctx)
 	to := h.keeper.GetEndHeightFromStore(ctx)
 
-	pendingBlockRange := types.Range{
-		From: from,
-		To:   to,
-	}
-
-	votes := make(map[types.Range]int64, 1)
+	pendingRangeKey := Key(from, to)
+	votes := make(map[string]int64, 1)
 
 	var totalStake int64
 
@@ -172,14 +168,14 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 
 		var voteExt VoteExtension
 		if err := json.Unmarshal(v.VoteExtension, &voteExt); err != nil {
-			h.voteExtHandler.logger.Error("failed to decode vote extension", "err", err, "validator", fmt.Sprintf("%x", v.Validator.Address))
-			return nil, err
+			h.VoteExtHandler.logger.Error("failed to decode vote extension", "err", err, "validator", fmt.Sprintf("%x", v.Validator.Address))
+			//return nil, err
 		}
 
 		totalStake += v.Validator.Power
 
 		for voteRange, isVoted := range voteExt.Votes {
-			if voteRange != pendingBlockRange || !isVoted {
+			if voteRange != pendingRangeKey || !isVoted {
 				continue
 			}
 

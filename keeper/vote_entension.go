@@ -7,7 +7,6 @@ import (
 	"cosmossdk.io/log"
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/vitwit/avail-da-module/types"
 )
 
 type VoteExtHandler struct {
@@ -27,12 +26,17 @@ func NewVoteExtHandler(
 	}
 }
 
+func Key(from, to uint64) string {
+	return fmt.Sprintln(from, " ", to)
+}
+
 // TODO: change the Vote Extension to be actually usable
 type VoteExtension struct {
-	Votes map[types.Range]bool
+	Votes map[string]bool
 }
 
 func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
+
 	return func(ctx sdk.Context, req *abci.RequestExtendVote) (*abci.ResponseExtendVote, error) {
 
 		fmt.Println("coming to extend vote handler.........")
@@ -40,22 +44,28 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 		from := h.Keeper.GetStartHeightFromStore(ctx)
 		end := h.Keeper.GetEndHeightFromStore(ctx)
 
-		pendingRange := types.Range{
-			From: from,
-			To:   end,
-		}
+		pendingRangeKey := Key(from, end)
 
-		var Votes map[types.Range]bool
-		Votes[pendingRange] = true
+		Votes := make(map[string]bool, 1)
+		Votes[pendingRangeKey] = true
 		voteExt := VoteExtension{
 			Votes: Votes,
 		}
+
+		fmt.Println("before marshalling....", voteExt)
 
 		//TODO: use proto marshalling instead
 		votesBytes, err := json.Marshal(voteExt)
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal vote extension: %w", err)
 		}
+
+		var AfterVoteExt VoteExtension
+		err = json.Unmarshal(votesBytes, &AfterVoteExt)
+		if err != nil {
+			fmt.Println("muurshalling error.......................")
+		}
+
 		return &abci.ResponseExtendVote{
 			VoteExtension: votesBytes,
 		}, nil

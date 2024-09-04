@@ -13,7 +13,7 @@ import (
 
 func (k Keeper) SubmitBlobTx2(ctx sdk.Context, msg types.MsgSubmitBlobRequest) error {
 	cdc := k.cdc
-	homepath := "/home/vitwit/.availsdk/keyring-test"
+	homepath := "/home/vitwit/.availsdk"
 
 	cc, err := dacli.CreateChainClient(sdk.KeyringServiceName(), ctx.ChainID(), homepath, cdc.(codec.Codec))
 	if err != nil {
