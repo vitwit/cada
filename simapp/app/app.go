@@ -723,8 +723,8 @@ func NewChainApp(
 	)
 	bApp.SetPrepareProposal(availBlobProposalHandler.PrepareProposal)
 	bApp.SetProcessProposal(availBlobProposalHandler.ProcessProposal)
-	app.SetExtendVoteHandler(voteExtensionHandler.ExtendVoteHandler())
-	app.SetVerifyVoteExtensionHandler(voteExtensionHandler.VerifyVoteExtensionHandler())
+	bApp.SetExtendVoteHandler(voteExtensionHandler.ExtendVoteHandler())
+	bApp.SetVerifyVoteExtensionHandler(voteExtensionHandler.VerifyVoteExtensionHandler())
 
 	// --- Module Options ---
 
