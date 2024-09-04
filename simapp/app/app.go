@@ -709,10 +709,22 @@ func NewChainApp(
 	// must be done after relayer is created
 	app.AvailBlobKeeper.SetRelayer(app.Availblobrelayer)
 
+	voteExtensionHandler := availblobkeeper.NewVoteExtHandler(
+		logger,
+		app.AvailBlobKeeper,
+	)
+
 	dph := baseapp.NewDefaultProposalHandler(bApp.Mempool(), bApp)
-	availBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(app.AvailBlobKeeper, dph.PrepareProposalHandler(), dph.ProcessProposalHandler())
+	availBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(
+		app.AvailBlobKeeper,
+		dph.PrepareProposalHandler(),
+		dph.ProcessProposalHandler(),
+		*voteExtensionHandler,
+	)
 	bApp.SetPrepareProposal(availBlobProposalHandler.PrepareProposal)
 	bApp.SetProcessProposal(availBlobProposalHandler.ProcessProposal)
+	app.SetExtendVoteHandler(voteExtensionHandler.ExtendVoteHandler())
+	app.SetVerifyVoteExtensionHandler(voteExtensionHandler.VerifyVoteExtensionHandler())
 
 	// --- Module Options ---
 
