@@ -76,6 +76,10 @@ func UpdateProvenHeight(ctx sdk.Context, store storetypes2.KVStore, provenHeight
 	return updateHeight(store, availblob1.ProvenHeightKey, provenHeight)
 }
 
+func UpdateAvailHeight(ctx sdk.Context, store storetypes2.KVStore, availHeight uint64) error {
+	return updateHeight(store, availblob1.AvailHeightKey, availHeight)
+}
+
 func UpdateVotingEndHeight(ctx sdk.Context, store storetypes2.KVStore, votingEndHeight uint64) error {
 	return updateHeight(store, availblob1.VotingEndHeightKey, votingEndHeight)
 }
@@ -91,6 +95,10 @@ func updateHeight(store storetypes2.KVStore, key collections.Prefix, height uint
 
 func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
 	return k.getHeight(ctx, availblob1.ProvenHeightKey)
+}
+
+func (k *Keeper) GetAvailHeightFromStore(ctx sdk.Context) uint64 {
+	return k.getHeight(ctx, availblob1.AvailHeightKey)
 }
 
 func (k *Keeper) GetVotingEndHeightFromStore(ctx sdk.Context) uint64 {

@@ -69,24 +69,58 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 	return blockInfo, nil
 }
 
-func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) {
+type BlockData struct {
+	Block      int64         `json:"block_number"`
+	Extrinsics []interface{} `json:"data_transactions"`
+}
+
+type ExtrinsicData struct {
+	Data string `json:"string"`
+}
+
+func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (BlockData, error) {
 	handler := NewHTTPClientHandler()
-	// get submitted block data using light client api with avail block height
-	// time.Sleep(20 * time.Second) // wait upto data to be submitted data to be included in the avail blocks
 
-	url := fmt.Sprintf("%s/v2/blocks/%v/data?feilds=data", lightClientUrl)
-	url = fmt.Sprintf(url, blockNumber)
+	// Construct the URL with the block number
+	url := fmt.Sprintf("%s/v2/blocks/%v/data?fields=data", lightClientUrl, blockNumber)
+	fmt.Println("get url.........", url)
 
+	// Perform the GET request, returning the body directly
 	body, err := handler.Get(url)
+
+	fmt.Println("body", blockNumber)
 	if err != nil {
-		return
+		return BlockData{}, fmt.Errorf("failed to fetch data: %w", err)
 	}
 
-	if body != nil {
-		r.logger.Info("submitted data to Avail verfied successfully at",
-			"block_height", blockNumber,
-		)
+	// fmt.Println("blockkkkkk dataaaaaaa.....", string(body))
+
+	// Decode the response body into the BlockData struct
+	var blockData BlockData
+	err = json.Unmarshal(body, &blockData)
+	fmt.Println("hereee.......", err, blockData)
+	if err != nil {
+		return BlockData{}, fmt.Errorf("failed to decode response: %w", err)
 	}
+
+	// Log success
+	r.logger.Info("submitted data to Avail verified successfully at",
+		"block_height", blockNumber,
+	)
+
+	return blockData, nil
+}
+
+func (r *Relayer) IsDataAvailable(from, to uint64, availHeight uint64, lightClientUrl string) (bool, error) {
+	fmt.Println("isDataAvailable................")
+	blockData, err := r.GetSubmittedData(lightClientUrl, int(availHeight))
+	if err != nil {
+		fmt.Println("isDataAvailable.... error...", err)
+		return false, err
+	}
+
+	fmt.Println("blockData.................", blockData)
+	return true, nil
 }
 
 // Define the struct that matches the JSON structure

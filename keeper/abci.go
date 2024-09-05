@@ -83,7 +83,7 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
-	fmt.Println("coming hereee.........", ctx.BlockHeight())
+
 	votingEndHeight := k.GetVotingEndHeightFromStore(ctx)
 	blobStatus := k.GetBlobStatus(ctx)
 	currentHeight := ctx.BlockHeight()

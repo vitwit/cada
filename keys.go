@@ -36,6 +36,8 @@ var (
 	NextHeightKey = collections.NewPrefix(8)
 
 	VotingEndHeightKey = collections.NewPrefix(9)
+
+	AvailHeightKey = collections.NewPrefix(10)
 )
 
 const (
