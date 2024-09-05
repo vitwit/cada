@@ -25,7 +25,7 @@ func ParseStatus(status uint32) string {
 	case IN_VOTING_STATE:
 		return "IN_VOTING"
 	case FAILURE_STATE:
-		return "FAILUTE"
+		return "FAILURE"
 	default:
 		return "UNKNOWN"
 	}
@@ -76,6 +76,10 @@ func UpdateProvenHeight(ctx sdk.Context, store storetypes2.KVStore, provenHeight
 	return updateHeight(store, availblob1.ProvenHeightKey, provenHeight)
 }
 
+func UpdateVotingEndHeight(ctx sdk.Context, store storetypes2.KVStore, votingEndHeight uint64) error {
+	return updateHeight(store, availblob1.VotingEndHeightKey, votingEndHeight)
+}
+
 func updateHeight(store storetypes2.KVStore, key collections.Prefix, height uint64) error {
 	heightBytes := make([]byte, 8)
 
@@ -87,6 +91,10 @@ func updateHeight(store storetypes2.KVStore, key collections.Prefix, height uint
 
 func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
 	return k.getHeight(ctx, availblob1.ProvenHeightKey)
+}
+
+func (k *Keeper) GetVotingEndHeightFromStore(ctx sdk.Context) uint64 {
+	return k.getHeight(ctx, availblob1.VotingEndHeightKey)
 }
 
 func (k *Keeper) GetStartHeightFromStore(ctx sdk.Context) uint64 {

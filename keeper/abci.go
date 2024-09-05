@@ -41,13 +41,6 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 	h.keeper.proposerAddress = req.ProposerAddress
 	proposalTxs := req.Txs
 
-	// h.voteExtHandler.ExtendVoteHandler()(nil,err)
-
-	// resp, err := h.prepareProposalHandler(ctx, req)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
 	votes, err := h.aggregateVotes(ctx, req.LocalLastCommit)
 	if err != nil {
 		fmt.Println("error while aggregating votes", err)
@@ -59,12 +52,11 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 		ExtendedCommitInfo: req.LocalLastCommit,
 	}
 
-	fmt.Println("votes..................", votes, injectedVoteExtTx)
+	fmt.Println("votes..................", votes)
 
 	bz, err := json.Marshal(injectedVoteExtTx)
 	if err != nil {
 		fmt.Println("failed to encode injected vote extension tx", "err", err)
-		// return nil, errors.New("failed to encode injected vote extension tx")
 	}
 
 	proposalTxs = append(proposalTxs, bz)
@@ -84,33 +76,49 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.
 		// return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_REJECT}, nil
 	}
 
-	fmt.Println("injected data is:..............", injectedVoteExtTx)
+	//TODO: write some validations
+
 	return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_ACCEPT}, nil
 
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
 	fmt.Println("coming hereee.........", ctx.BlockHeight())
+	votingEndHeight := k.GetVotingEndHeightFromStore(ctx)
+	blobStatus := k.GetBlobStatus(ctx)
+	currentHeight := ctx.BlockHeight()
+
+	if len(req.Txs) > 0 && currentHeight == int64(votingEndHeight) && blobStatus == IN_VOTING_STATE {
+		var injectedVoteExtTx StakeWeightedVotes
+		if err := json.Unmarshal(req.Txs[0], &injectedVoteExtTx); err != nil {
+			fmt.Println("preblocker failed to decode injected vote extension tx", "err", err)
+		} else {
+			from := k.GetStartHeightFromStore(ctx)
+			to := k.GetEndHeightFromStore(ctx)
+
+			pendingRangeKey := Key(from, to)
+			votingPower := injectedVoteExtTx.Votes[pendingRangeKey]
+
+			if votingPower > 0 {
+				k.setBlobStatusSuccess(ctx)
+			} else {
+				k.SetBlobStatusFailure(ctx)
+			}
+		}
+	}
 
 	currentBlockHeight := ctx.BlockHeight()
 	if !k.IsValidBlockToPostTODA(uint64(currentBlockHeight)) {
 		return nil
 	}
 
-	// fmt.Printf("Ctx.........%+v\n", ctx)
-
-	fmt.Println("block heighttt.........", ctx.BlockHeight(), ctx.ExecMode(), ctx.IsCheckTx(), ctx.IsReCheckTx())
-
 	provenHeight := k.GetProvenHeightFromStore(ctx)
 	fromHeight := provenHeight + 1
-	fmt.Println("from height..", fromHeight)
 	endHeight := min(fromHeight+uint64(k.MaxBlocksForBlob), uint64(ctx.BlockHeight())) //exclusive i.e [fromHeight, endHeight)
-	fmt.Println("end height..", endHeight-1)
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	err := k.SetBlobStatusPending(sdkCtx, fromHeight, endHeight-1)
-	if err != nil {
-		fmt.Println("error while setting blob status...", err)
+	ok := k.SetBlobStatusPending(sdkCtx, fromHeight, endHeight-1)
+	if !ok {
 		return nil
 	}
 
@@ -120,27 +128,16 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 		blocksToSumit = append(blocksToSumit, int64(i))
 	}
 
-	fmt.Println("blocks to submittttttttt.........", blocksToSumit)
-
 	// only proposar should should run the this
 	if bytes.Equal(req.ProposerAddress, k.proposerAddress) {
-		// update blob status to success
-		// err = k.SetBlobStatusSuccess(sdkCtx, fromHeight, endHeight)
-		// if err != nil {
-		// 	return nil
-		// }
-
-		// Todo: run the relayer routine
-		// relayer doesn't have to make submitBlob Transaction, it should just start DA submission
 		k.relayer.PostBlocks(ctx, blocksToSumit, k.cdc, req.ProposerAddress)
-
 	}
 
 	return nil
 }
 
 func (k *Keeper) IsValidBlockToPostTODA(height uint64) bool {
-	if uint64(height) <= uint64(1) {
+	if height <= uint64(1) {
 		return false
 	}
 
@@ -161,7 +158,7 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 	var totalStake int64
 
 	for _, v := range ci.Votes {
-		// TODO: why??
+		// if a validator did not vote for a block, his vote extension should not be processed
 		if v.BlockIdFlag != cmtproto.BlockIDFlagCommit {
 			continue
 		}
@@ -169,9 +166,14 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 		var voteExt VoteExtension
 		if err := json.Unmarshal(v.VoteExtension, &voteExt); err != nil {
 			h.VoteExtHandler.logger.Error("failed to decode vote extension", "err", err, "validator", fmt.Sprintf("%x", v.Validator.Address))
-			//return nil, err
+			continue
 		}
 
+		if voteExt.Votes == nil {
+			continue
+		}
+
+		// TODO: remove if this is not used anywhere
 		totalStake += v.Validator.Power
 
 		for voteRange, isVoted := range voteExt.Votes {
