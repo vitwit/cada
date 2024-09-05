@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"encoding/binary"
 	"errors"
 	"fmt"
 
@@ -42,6 +41,7 @@ type Keeper struct {
 	publishToAvailBlockInterval int
 	PublishToAvailBlockInterval uint64
 	MaxBlocksForBlob            uint
+	VotingInterval              uint64
 	injectedProofsLimit         int
 	app_id                      int
 
@@ -82,8 +82,9 @@ func NewKeeper(
 		app_id:                      appId,
 
 		unprovenBlocks:              make(map[int64][]byte),
-		MaxBlocksForBlob:            10, //Todo: call this from app.go, later change to params
+		MaxBlocksForBlob:            20, //Todo: call this from app.go, later change to params
 		PublishToAvailBlockInterval: 5,  //Todo: call this from app.go, later change to params
+		VotingInterval:              5,
 	}
 }
 
@@ -91,18 +92,9 @@ func (k *Keeper) SetRelayer(r *relayer.Relayer) {
 	k.relayer = r
 }
 
-func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, startHeight, endHeight uint64) error {
-
+func (k *Keeper) GetBlobStatus(ctx sdk.Context) uint32 {
 	store := ctx.KVStore(k.storeKey)
-
-	if !CanUpdateStatusToPending(store) { //TOodo: we should check for expiration too
-		return errors.New("a block range with same start height is already being processed")
-	}
-
-	UpdateBlobStatus(ctx, store, PENDING_STATE)
-	UpdateStartHeight(ctx, store, startHeight)
-	UpdateEndHeight(ctx, store, endHeight)
-	return nil
+	return GetStatusFromStore(store)
 }
 
 // Todo: remove this method later
@@ -127,32 +119,17 @@ func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatu
 		return nil, errors.New("can update the status if it is not pending")
 	}
 
-	newStatus := READY_STATE
+	newStatus := IN_VOTING_STATE
 	if !req.IsSuccess {
 		newStatus = FAILURE_STATE
 	} else {
-		UpdateProvenHeight(ctx, store, endHeight)
+		currentHeight := ctx.BlockHeight()
+		UpdateVotingEndHeight(ctx, store, uint64(currentHeight)+k.VotingInterval)
 	}
 
 	UpdateBlobStatus(ctx, store, newStatus)
 
 	return &types.MsgUpdateBlobStatusResponse{}, nil
-}
-
-func (k *Keeper) CheckHeight(endHeight uint64) error {
-	// Step 1: Encode 41 into a byte slice
-	// var endHeight uint64 = 41
-	heightBytes := make([]byte, 8)
-	binary.BigEndian.PutUint64(heightBytes, endHeight)
-
-	fmt.Println("Encoded byte slice for 41:", heightBytes)
-
-	// Step 2: Decode the byte slice back to a uint64
-	decodedHeight := binary.BigEndian.Uint64(heightBytes)
-
-	fmt.Println("Decoded height:", decodedHeight)
-
-	return nil
 }
 
 func (k *Keeper) SubmitBlobStatus(ctx sdk.Context, _ *types.QuerySubmitBlobStatusRequest) (*types.QuerySubmitBlobStatusResponse, error) {
@@ -162,9 +139,13 @@ func (k *Keeper) SubmitBlobStatus(ctx sdk.Context, _ *types.QuerySubmitBlobStatu
 	endHeight := k.GetEndHeightFromStore(ctx)
 	status := GetStatusFromStore(store)
 	statusString := ParseStatus(status)
+	provenHeight := k.GetProvenHeightFromStore(ctx)
+	votingEndHeight := k.GetVotingEndHeightFromStore(ctx)
 
 	return &types.QuerySubmitBlobStatusResponse{
-		Range:  &types.Range{From: startHeight, To: endHeight},
-		Status: statusString,
+		Range:                &types.Range{From: startHeight, To: endHeight},
+		Status:               statusString,
+		ProvenHeight:         provenHeight,
+		LastBlobVotingEndsAt: votingEndHeight,
 	}, nil
 }

@@ -46,24 +46,36 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 
 		pendingRangeKey := Key(from, end)
 
+		blobStatus := h.Keeper.GetBlobStatus(ctx)
+		currentHeight := ctx.BlockHeight()
+		voteEndHeight := h.Keeper.GetVotingEndHeightFromStore(ctx)
 		Votes := make(map[string]bool, 1)
+
+		abciResponseVoteExt := &abci.ResponseExtendVote{}
+
+		if currentHeight+1 != int64(voteEndHeight) || blobStatus != IN_VOTING_STATE {
+			voteExt := VoteExtension{
+				Votes: Votes,
+			}
+
+			//TODO: use better marshalling instead of json (eg: proto marshalling)
+			votesBytes, err := json.Marshal(voteExt)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal vote extension: %w", err)
+			}
+			abciResponseVoteExt.VoteExtension = votesBytes
+			return abciResponseVoteExt, nil
+		}
+
 		Votes[pendingRangeKey] = true
 		voteExt := VoteExtension{
 			Votes: Votes,
 		}
 
-		fmt.Println("before marshalling....", voteExt)
-
 		//TODO: use proto marshalling instead
 		votesBytes, err := json.Marshal(voteExt)
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal vote extension: %w", err)
-		}
-
-		var AfterVoteExt VoteExtension
-		err = json.Unmarshal(votesBytes, &AfterVoteExt)
-		if err != nil {
-			fmt.Println("muurshalling error.......................")
 		}
 
 		return &abci.ResponseExtendVote{

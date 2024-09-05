@@ -138,7 +138,6 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 			fmt.Println("error while submitting tx...", err)
 		}
 	}
-
 }
 
 // var availdHomePath = xfilepath.JoinFromHome(xfilepath.Path("availsdk"))
