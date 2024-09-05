@@ -1,86 +1,153 @@
-package client
+package chainclient
 
 import (
-	"bytes"
 	"fmt"
-	"os"
 
 	cometrpc "github.com/cometbft/cometbft/rpc/client/http"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-)
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/go-bip39"
 
-// "github.com/emerishq/demeris-backend-models/cns"
+	// "github.com/tendermint/starport/starport/pkg/xfilepath"
+
+	"github.com/cosmos/cosmos-sdk/types/module"
+)
 
 const (
-	StagingEnvKey      = "staging"
-	AkashMnemonicKey   = "AKASH_MNEMONIC"
-	CosmosMnemonicKey  = "COSMOS_MNEMONIC"
-	TerraMnemonicKey   = "TERRA_MNEMONIC"
-	OsmosisMnemonicKey = "OSMOSIS_MNEMONIC"
+	defaultGasAdjustment = 1.0
+	defaultGasLimit      = 300000
 )
 
-func CreateChainClient(keyringServiceName, chainID, homePath string, codec codec.Codec) (*ChainClient, error) {
-	nodeAddress := "http://localhost:26657"
-	kr, err := keyring.New(keyringServiceName, KeyringBackendTest, homePath, os.Stdin, codec)
-	if err != nil {
-		return nil, err
-	}
+// var availdHomePath = xfilepath.JoinFromHome(xfilepath.Path("availsdk"))
 
-	wsClient, err := cometrpc.New(nodeAddress, "/websocket")
-	if err != nil {
-		return nil, err
-	}
-	out := &bytes.Buffer{}
+func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string,
+	cdc codec.BinaryCodec, homepath string, fromAddress sdk.AccAddress) client.Context {
+	encodingConfig := MakeEncodingConfig()
 
-	address := "cosmos1ux2hl3y42nz6vtdl8k7t7f05k9p3r2k62zfvtv"
-	clientCtx := NewClientCtx(kr, wsClient, chainID, codec, out, address).WithChainID(chainID).WithNodeURI(nodeAddress)
-	fmt.Println("client ctxxx.......", clientCtx.FromName, clientCtx.FromAddress)
+	broadcastMode := flags.BroadcastSync
 
-	factory := NewFactory(clientCtx)
-	return &ChainClient{
-		factory:   factory,
-		clientCtx: clientCtx,
-		out:       out,
-	}, nil
+	return client.Context{}.
+		WithCodec(cdc.(codec.Codec)).
+		WithChainID(chainID).
+		WithFromAddress(fromAddress).
+		WithFromName("testkey").
+		WithKeyringDir(homepath).
+		WithBroadcastMode(broadcastMode).
+		WithTxConfig(authTx.NewTxConfig(cdc.(codec.Codec), authTx.DefaultSignModes)).
+		WithKeyring(kr).
+		WithAccountRetriever(authtypes.AccountRetriever{}).
+		WithClient(c).WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
+		WithSkipConfirmation(true)
 }
 
-// GetClient is to create client and imports mnemonic and returns created chain client
-func GetClient(chainID string, cc ChainClient, homePath string, codec codec.Codec) (c *ChainClient, err error) {
-	// get chain info
-	// info, err := LoadSingleChainInfo(env, chainName)
+// NewFactory creates a new Factory.
+func NewFactory(clientCtx client.Context) tx.Factory {
+	return tx.Factory{}.
+		WithChainID(clientCtx.ChainID).
+		WithKeybase(clientCtx.Keyring).
+		WithGas(defaultGasLimit).
+		WithGasAdjustment(defaultGasAdjustment).
+		WithSignMode(signing.SignMode_SIGN_MODE_DIRECT).
+		WithAccountRetriever(clientCtx.AccountRetriever).
+		WithTxConfig(clientCtx.TxConfig)
+}
+
+// MakeEncodingConfig creates an EncodingConfig for an amino based test configuration.
+func MakeEncodingConfig(modules ...module.AppModuleBasic) EncodingConfig {
+	aminoCodec := codec.NewLegacyAmino()
+	interfaceRegistry := codectypes.NewInterfaceRegistry()
+	codec := codec.NewProtoCodec(interfaceRegistry)
+	txCfg := authTx.NewTxConfig(codec, authTx.DefaultSignModes)
+
+	encCfg := EncodingConfig{
+		InterfaceRegistry: interfaceRegistry,
+		Codec:             codec,
+		TxConfig:          txCfg,
+		Amino:             aminoCodec,
+	}
+
+	mb := module.NewBasicManager(modules...)
+
+	std.RegisterLegacyAminoCodec(encCfg.Amino)
+	std.RegisterInterfaces(encCfg.InterfaceRegistry)
+	mb.RegisterLegacyAminoCodec(encCfg.Amino)
+	mb.RegisterInterfaces(encCfg.InterfaceRegistry)
+
+	return encCfg
+}
+
+// EncodingConfig specifies the concrete encoding types to use for a given app.
+// This is provided for compatibility between protobuf and amino implementations.
+type EncodingConfig struct {
+	InterfaceRegistry codectypes.InterfaceRegistry
+	Codec             codec.Codec
+	TxConfig          client.TxConfig
+	Amino             *codec.LegacyAmino
+}
+
+// ImportMnemonic is to import existing account mnemonic in keyring
+func ImportMnemonic(keyName, mnemonic, hdPath string, c client.Context) (*keyring.Record, error) {
+	info, err := AccountCreate(keyName, mnemonic, hdPath, c) // return account also
+	if err != nil {
+		return nil, err
+	}
+
+	return info, nil
+}
+
+// AccountCreate creates an account by name and mnemonic (optional) in the keyring.
+func AccountCreate(accountName, mnemonic, hdPath string, c client.Context) (*keyring.Record, error) {
+	if mnemonic == "" {
+		entropySeed, err := bip39.NewEntropy(256)
+		if err != nil {
+			return nil, err
+		}
+		mnemonic, err = bip39.NewMnemonic(entropySeed)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	algos, _ := c.Keyring.SupportedAlgorithms()
+	algo, err := keyring.NewSigningAlgoFromString(string(hd.Secp256k1Type), algos)
+	if err != nil {
+		return nil, err
+	}
+
+	path := hd.CreateHDPath(118, 0, 0).String()
+	// fmt.Println("pathhh......", path)
+
+	// record, str, err := c.Keyring.NewMnemonic("test_key1", keyring.English, path, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
+	// fmt.Println("recorddddd.......", err, str, record)
+
+	// k, _, err = kb.NewMnemonic("test", English, types.FullFundraiserPath, DefaultBIP39Passphrase, hd.Secp256k1)
+	info, err := c.Keyring.NewAccount(accountName, mnemonic, keyring.DefaultBIP39Passphrase, path, algo)
+	fmt.Println("after creationnnn.........", info, err)
+	if err != nil {
+		return nil, err
+	}
+	// pk, err := info.GetPubKey()
 	// if err != nil {
 	// 	return nil, err
 	// }
 
-	// initSDKConfig(info.NodeInfo.Bech32Config)
-	c, err = CreateChainClient(sdk.KeyringServiceName(), chainID, homePath, codec)
-	if err != nil {
-		return nil, err
-	}
+	// addr := sdk.AccAddress(pk.Address())
+	// fmt.Println("address hereee...", addr)
 
-	// // mnemonic := cc.Mnemonic
-	// // if env == StagingEnvKey {
-	// // 	mnemonic = GetMnemonic(chainName)
-	// // }
+	// aa, err := info.GetAddress()
+	// fmt.Println("here aa and err.......", aa, err)
 
-	// // c.AddressPrefix = info.NodeInfo.Bech32Config.PrefixAccount
-	// // c.HDPath = info.DerivationPath
-	// // c.Enabled = info.Enabled
-	// // c.ChainName = info.ChainName
-	// c.Mnemonic = ALICE_MNEMONIC
-	// c.ChainName = chainID
-	// // if len(info.Denoms) != 0 {
-	// // 	c.Denom = info.Denoms[0].Name
-	// // }
-
-	// fmt.Println("mnemonic and chain id....", c.Mnemonic, c.ChainName, c.Key)
-
-	err = c.ImportMnemonic(c.Key, c.Mnemonic, c.HDPath)
-	if err != nil {
-		return nil, err
-	}
-
-	return c, nil
+	// account := c.ToAccount(info)
+	// account.Mnemonic = mnemonic
+	return info, nil
 }

@@ -36,8 +36,6 @@ func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string,
 
 	broadcastMode := flags.BroadcastSync
 
-	// homepath := "/home/vitwit/.availsdk"
-
 	return client.Context{}.
 		WithCodec(cdc.(codec.Codec)).
 		WithChainID(chainID).
@@ -88,28 +86,6 @@ func MakeEncodingConfig(modules ...module.AppModuleBasic) EncodingConfig {
 	return encCfg
 }
 
-// func MakeTestEncodingConfig(modules ...module.AppModuleBasic) TestEncodingConfig {
-// 	aminoCodec := codec.NewLegacyAmino()
-// 	interfaceRegistry := testutil.CodecOptions{}.NewInterfaceRegistry()
-// 	codec := codec.NewProtoCodec(interfaceRegistry)
-
-// 	encCfg := TestEncodingConfig{
-// 		InterfaceRegistry: interfaceRegistry,
-// 		Codec:             codec,
-// 		TxConfig:          tx.NewTxConfig(codec, tx.DefaultSignModes),
-// 		Amino:             aminoCodec,
-// 	}
-
-// 	mb := module.NewBasicManager(modules...)
-
-// 	std.RegisterLegacyAminoCodec(encCfg.Amino)
-// 	std.RegisterInterfaces(encCfg.InterfaceRegistry)
-// 	mb.RegisterLegacyAminoCodec(encCfg.Amino)
-// 	mb.RegisterInterfaces(encCfg.InterfaceRegistry)
-
-// 	return encCfg
-// }
-
 // EncodingConfig specifies the concrete encoding types to use for a given app.
 // This is provided for compatibility between protobuf and amino implementations.
 type EncodingConfig struct {
@@ -122,7 +98,6 @@ type EncodingConfig struct {
 // ImportMnemonic is to import existing account mnemonic in keyring
 func ImportMnemonic(keyName, mnemonic, hdPath string, c client.Context) (*keyring.Record, error) {
 	info, err := AccountCreate(keyName, mnemonic, hdPath, c) // return account also
-	// fmt.Println("here the accc details.......", keyName, mnemonic, hdPath)
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +113,6 @@ func AccountCreate(accountName, mnemonic, hdPath string, c client.Context) (*key
 			return nil, err
 		}
 		mnemonic, err = bip39.NewMnemonic(entropySeed)
-		fmt.Println("mnemoniccccc here.....", mnemonic)
 		if err != nil {
 			return nil, err
 		}
@@ -176,5 +150,4 @@ func AccountCreate(accountName, mnemonic, hdPath string, c client.Context) (*key
 	// account := c.ToAccount(info)
 	// account.Mnemonic = mnemonic
 	return info, nil
-	// return nil
 }

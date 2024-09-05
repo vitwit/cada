@@ -59,7 +59,8 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 		ExtendedCommitInfo: req.LocalLastCommit,
 	}
 
-	fmt.Println("votes..................", votes, injectedVoteExtTx)
+	fmt.Println("votes..................", votes)
+	fmt.Println("injectedVoteExtTx............", injectedVoteExtTx.ExtendedCommitInfo.String())
 
 	bz, err := json.Marshal(injectedVoteExtTx)
 	if err != nil {
