@@ -1,12 +1,6 @@
-## Avail DA Module
+# Cada (Cosmos Avail DA module)
 
-### Objective
-The goal of the Avail DA Module is to enable Cosmos chains to leverage the Avail Network for data availability without requiring the chain to function as a rollup via the Rollkit framework. This approach provides a seamless integration for existing Layer 1 (L1) Cosmos chains to benefit from data availability, similar to integrating any other Cosmos SDK module.
-
-### Key Elements
-
-#### Block Interval
-The `Block Interval` defines the frequency at which block data is posted to the Avail Network. For example, if the interval is set to `10`, data will be submitted at block heights `11`, `21`, `31`, and so on. At each of these intervals, the block data from the previous interval will be posted. 
+CADA is a module designed to connect Cosmos sovereign chains with the Avail network, making it easier for any Cosmos chain or rollapp to use Avail as their Data Availability (DA) layer. With CADA, developers can improve the scalability and security of their decentralized applications within the Cosmos ecosystem. It enables better data handling and availability, allowing Cosmos-based chains to tap into the strengths of Avail and build a more connected and resilient blockchain network.
 
 For example:
 - At height `11`, blocks from `1` to `10` are posted.
@@ -62,3 +56,4 @@ The `Proven Height` represents the latest block height of the Cosmos chain for w
    - In case of any failures or expiration of the verification window, the data will be reposted following the same procedure.
 
 ---
+For detailed instructions on how to integrate the module with a spawn generated application, please refer to the [integration guide](./docs/spawn.md).
