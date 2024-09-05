@@ -6,6 +6,7 @@ BOB_MNEMONIC="remain then chuckle hockey protect sausage govern curve hobby aisl
 SAI_MNEMONIC="festival borrow upon ritual remind song execute chase toward fan neck subway canal throw nothing ticket frown leave thank become extend balcony strike fame"
 TEJA_MNEMONIC="claim infant gather cereal sentence general cheese float hero dwarf miracle oven tide virus question choice say relax similar rice surround deal smooth rival"
 UNKNOWN_MNOMONIC="purpose clutch ill track skate syrup cost among piano elegant close chaos come quit orchard acquire plunge hockey swift tongue salt supreme sting night"
+DAEMON_HOME="/home/vitwit/.availsdk"
 
 if [ -z "$SIMD_BIN" ]; then echo "SIMD_BIN is not set. Make sure to run make install before"; exit 1; fi
 echo "using $SIMD_BIN"
@@ -29,3 +30,5 @@ $SIMD_BIN genesis add-genesis-account unknown 5000000000stake --keyring-backend 
 
 $SIMD_BIN genesis gentx alice 1000000stake --chain-id demo
 $SIMD_BIN genesis collect-gentxs
+
+sed -i "s/\"vote_extensions_enable_height\": \"0\"/\"vote_extensions_enable_height\": \"1\"/g" $DAEMON_HOME/config/genesis.json
