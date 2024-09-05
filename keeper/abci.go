@@ -162,7 +162,8 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 	var totalStake int64
 
 	for _, v := range ci.Votes {
-		// TODO: why??
+		// Process only votes with BlockIDFlagCommit, indicating the validator committed to the block.
+		// Skip votes with other flags (e.g., BlockIDFlagUnknown, BlockIDFlagNil).
 		if v.BlockIdFlag != cmtproto.BlockIDFlagCommit {
 			continue
 		}

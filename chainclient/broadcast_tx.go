@@ -47,27 +47,9 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 		return fmt.Errorf("error creating keyring: %w", err)
 	}
 
-	// List all keys in the keyring
-	// keys, err := kr.List()
-	// if err != nil {
-	// 	fmt.Println("error listing keys:", err)
-	// }
-
 	info, err := kr.Key(keyName)
 	valAddr, err := info.GetAddress()
 	fmt.Println("after address................", valAddr)
-
-	// valAddr, err := sdk.AccAddressFromBech32(addr.String())
-	// fmt.Println("val addr, err..", valAddr, err, addr)
-
-	// fmt.Println("keysss........", keys)
-
-	// // Print out the keys
-	// for _, keyInfo := range keys {
-	// 	addr, err := keyInfo.GetAddress()
-	// 	fmt.Println("err..", err)
-	// 	fmt.Printf("Name: %s, Address: %s\n", keyInfo.Name, addr)
-	// }
 
 	// Create an RPC client
 	rpcClient, err := cometrpc.NewWithTimeout(rpcAddress, "/websocket", 3)
@@ -77,12 +59,6 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 
 	// Create a new client context
 	clientCtx := NewClientCtx(kr, rpcClient, ctx.ChainID(), cdc, homePath, valAddr)
-
-	// Retrieve the validator address (replace with actual logic to get the address)
-	// valAddr, err = sdk.AccAddressFromBech32("cosmos1fhqer4tc50nut2evvnj6yegcah2yfu3s844n9a")
-	// if err != nil {
-	// 	return fmt.Errorf("error parsing validator address: %w", err)
-	// }
 
 	// Set the client context's from fields
 	clientCtx.FromName = keyName
@@ -105,7 +81,6 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	// Create a transaction factory and set the validator address in the message
 	// factory := NewFactory(clientCtx)
 	msg.ValidatorAddress = valAddr.String()
-	// time.Sleep(10 * time.Second)
 
 	// Generate and broadcast the transaction
 	if err := clitx.GenerateOrBroadcastTxWithFactory(clientCtx, factory, &msg); err != nil {
