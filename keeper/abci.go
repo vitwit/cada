@@ -73,9 +73,6 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 		Votes:              votes,
 		ExtendedCommitInfo: req.LocalLastCommit,
 	}
-
-	fmt.Println("votes..................", votes)
-
 	bz, err := json.Marshal(injectedVoteExtTx)
 	if err != nil {
 		fmt.Println("failed to encode injected vote extension tx", "err", err)
@@ -126,7 +123,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 			pendingRangeKey := Key(from, to)
 			votingPower := injectedVoteExtTx.Votes[pendingRangeKey]
 
-			if votingPower > 0 {
+			if votingPower > 0 { // TODO: calculate voting power properly
 				k.setBlobStatusSuccess(ctx)
 			} else {
 				k.SetBlobStatusFailure(ctx)
@@ -140,7 +137,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	}
 
 	provenHeight := k.GetProvenHeightFromStore(ctx)
-	fromHeight := provenHeight + 1
+	fromHeight := provenHeight + 1                                                     // Calcualte pending range of blocks to post data
 	endHeight := min(fromHeight+uint64(k.MaxBlocksForBlob), uint64(ctx.BlockHeight())) //exclusive i.e [fromHeight, endHeight)
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
@@ -196,7 +193,8 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 	var totalStake int64
 
 	for _, v := range ci.Votes {
-		// if a validator did not vote for a block, his vote extension should not be processed
+		// Process only votes with BlockIDFlagCommit, indicating the validator committed to the block.
+		// Skip votes with other flags (e.g., BlockIDFlagUnknown, BlockIDFlagNil).
 		if v.BlockIdFlag != cmtproto.BlockIDFlagCommit {
 			continue
 		}

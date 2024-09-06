@@ -42,7 +42,7 @@ var (
 
 const (
 	// ModuleName is the name of the module
-	ModuleName = "availdamodule"
+	ModuleName = "cada"
 
 	// StoreKey to be used when creating the KVStore
 	StoreKey = ModuleName
@@ -52,9 +52,6 @@ const (
 
 	// QuerierRoute to be used for querier msgs
 	QuerierRoute = ModuleName
-
-	// TransientStoreKey defines the transient store key
-	TransientStoreKey = "transient_" + ModuleName
 )
 
 // PendingBlobsStoreKey generates a store key for pending blobs based on the given block range.

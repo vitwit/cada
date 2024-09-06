@@ -1,9 +1,7 @@
 package relayer
 
 import (
-	"crypto/rand"
 	"encoding/base64"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -17,24 +15,19 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// SubmitDataToClient submits block data to the light client and handles the response.
-func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) (BlockInfo, error) {
-	fmt.Println("calling twiceeeee.........", blocks)
+func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) (BlockInfo, error) {
 	var blockInfo BlockInfo
 	// if r.submittedBlocksCache[blocks[0]] {
 	// 	return blockInfo, nil
 	// }
 
-	// r.submittedBlocksCache[blocks[0]] = true
-	delete(r.submittedBlocksCache, blocks[0]-int64(len(blocks)))
+	// // r.submittedBlocksCache[blocks[0]] = true
+	// delete(r.submittedBlocksCache, blocks[0]-int64(len(blocks)))
 
 	handler := NewHTTPClientHandler()
 	datab := base64.StdEncoding.EncodeToString(data)
 
 	jsonData := []byte(fmt.Sprintf(`{"data":"%s"}`, datab))
-
-	// Define the URL
-	//url := "http://127.0.0.1:8000/v2/submit"
 
 	url := fmt.Sprintf("%s/v2/submit", lightClientUrl)
 
@@ -44,8 +37,6 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 		fmt.Printf("Error: %v\n", err)
 		return blockInfo, err
 	}
-
-	// Create an instance of the struct
 
 	// Unmarshal the JSON data into the struct
 	err = json.Unmarshal(responseBody, &blockInfo)
@@ -71,49 +62,29 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 	return blockInfo, nil
 }
 
-// BlockData represents the data for a specific block, including the block number and a list of extrinsics.
-type BlockData struct {
-	Block      int64           `json:"block_number"`
-	Extrinsics []ExtrinsicData `json:"data_transactions"`
-}
-
-// ExtrinsicData represents the data for an individual transaction or extrinsic within a block.
-type ExtrinsicData struct {
-	Data string `json:"data"`
-}
-
-// GetSubmittedData fetches the data that was submitted to a light client at a specific block height.
 func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (BlockData, error) {
 	handler := NewHTTPClientHandler()
 
 	// Construct the URL with the block number
 	url := fmt.Sprintf("%s/v2/blocks/%v/data?fields=data", lightClientUrl, blockNumber)
-	fmt.Println("get url.........", url)
 
 	// Perform the GET request, returning the body directly
 	body, err := handler.Get(url)
-
-	fmt.Println("body", blockNumber)
 	if err != nil {
-		return BlockData{}, fmt.Errorf("failed to fetch data: %w", err)
+		return BlockData{}, fmt.Errorf("failed to fetch data from the avail: %w", err)
 	}
 
 	// Decode the response body into the BlockData struct
 	var blockData BlockData
 	err = json.Unmarshal(body, &blockData)
 	if err != nil {
-		return BlockData{}, fmt.Errorf("failed to decode response: %w", err)
+		return BlockData{}, fmt.Errorf("failed to decode block response: %w", err)
 	}
-
-	// Log success
-	r.logger.Info("submitted data to Avail verified successfully at",
-		"block_height", blockNumber,
-	)
 
 	return blockData, nil
 }
 
-// IsDataAvailable checks whether Cosmos block data between a specified range has been submitted and is available in the Avail DA layer.
+// IsDataAvailable is to query the avail light client and check if the data is made available at the given height
 func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to uint64, availHeight uint64, lightClientUrl string) (bool, error) {
 	availBlock, err := r.GetSubmittedData(lightClientUrl, int(availHeight))
 	if err != nil {
@@ -149,9 +120,8 @@ type GetBlock struct {
 	DataTransactions []string `json:"data_transactions"`
 }
 
-// SubmitData1 submits data to a Substrate blockchain's Data Availability (DA) layer using a specified API URL.
-// It handles creating, signing, and submitting an extrinsic to the blockchain, and then waits for its status.
-func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte, blocks []int64) error {
+// submitData creates a transaction and makes a Avail data submission
+func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, data []byte, blocks []int64) error {
 	api, err := gsrpc.NewSubstrateAPI(ApiURL)
 	if err != nil {
 		r.logger.Error("cannot create api:%w", err)
@@ -202,8 +172,6 @@ func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte
 		r.logger.Error("cannot create KeyPair:%w", err)
 		return err
 	}
-
-	// fmt.Println("keyring pair", keyringPair)
 
 	key, err := types.CreateStorageKey(meta, "System", "Account", keyringPair.PublicKey)
 	if err != nil {
@@ -356,7 +324,7 @@ func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte
 				}
 				fmt.Printf("Txn inside finalized block\n")
 				hash := status.AsFinalized
-				err = getData1(hash, api, string(data))
+				err = GetDataFromAvailDA(hash, api, string(data))
 				if err != nil {
 					r.logger.Error("cannot get data:%v", err)
 					return err
@@ -370,32 +338,12 @@ func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte
 	}
 }
 
-// RandToken generates a random hex value.
-func RandToken1(n int) (string, error) {
-	bytes := make([]byte, n)
-	if _, err := rand.Read(bytes); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(bytes), nil
-}
-
-// getData1 retrieves a block by its hash from the Substrate blockchain and checks if the specified data
-// is present in any of the block's extrinsics. The function verifies that the data matches a specific call
-// in the extrinsics and reports whether the data was found or not.
-func getData1(hash types.Hash, api *gsrpc.SubstrateAPI, data string) error {
-
+func GetDataFromAvailDA(hash types.Hash, api *gsrpc.SubstrateAPI, data string) error {
 	block, err := api.RPC.Chain.GetBlock(hash)
 	if err != nil {
 		return fmt.Errorf("cannot get block by hash:%w", err)
 	}
 
-	// Encode the struct to JSON
-	// jsonData, err := json.Marshal(block.Block.Header)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// fmt.Println("length of extrinsics: ", len(block.Block.Extrinsics))
 	for _, ext := range block.Block.Extrinsics {
 
 		// these values below are specific indexes only for data submission, differs with each extrinsic

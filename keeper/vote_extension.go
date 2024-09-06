@@ -72,9 +72,14 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 
 		ok, err := h.Keeper.relayer.IsDataAvailable(ctx, from, end, availHeight, "http://localhost:8000")
 		fmt.Println("checking light client...", ok, err)
+		if ok {
+			h.logger.Info("submitted data to Avail verified successfully at",
+				"block_height", availHeight,
+			)
+		}
 
 		// ok, checkLightClient()
-		Votes[pendingRangeKey] = true
+		Votes[pendingRangeKey] = ok
 		voteExt := VoteExtension{
 			Votes: Votes,
 		}
