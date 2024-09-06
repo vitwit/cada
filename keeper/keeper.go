@@ -55,7 +55,6 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	appOpts servertypes.AppOptions,
 	storeService storetypes.KVStoreService,
-	// sk *stakingkeeper.Keeper,
 	uk *upgradekeeper.Keeper,
 	key storetypes2.StoreKey,
 	publishToAvailBlockInterval int,
@@ -65,7 +64,6 @@ func NewKeeper(
 	sb := collections.NewSchemaBuilder(storeService)
 
 	return &Keeper{
-		// stakingKeeper: sk,
 		upgradeKeeper: uk,
 
 		Validators:              collections.NewMap(sb, availblob1.ValidatorsKey, "validators", collections.StringKey, collections.StringValue),
@@ -104,7 +102,7 @@ func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*
 }
 
 func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
-	//Todo: status should be changed to Voting or Ready, depending on the request
+	// status should be changed to Voting or Ready, depending on the request
 	store := ctx.KVStore(k.storeKey)
 	provenHeight := k.GetProvenHeightFromStore(ctx)
 	endHeight := k.GetEndHeightFromStore(ctx)
@@ -124,11 +122,11 @@ func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatu
 		newStatus = FAILURE_STATE
 	} else {
 		currentHeight := ctx.BlockHeight()
-		UpdateAvailHeight(ctx, store, req.AvailHeight)
-		UpdateVotingEndHeight(ctx, store, uint64(currentHeight)+k.VotingInterval)
+		UpdateAvailHeight(ctx, store, req.AvailHeight)                            // updates avail height at which the blocks got submitted to DA
+		UpdateVotingEndHeight(ctx, store, uint64(currentHeight)+k.VotingInterval) // TODO: Now voting interval is 5, so check whether we can process votes at next block after tx exec.
 	}
 
-	UpdateBlobStatus(ctx, store, newStatus)
+	UpdateBlobStatus(ctx, store, newStatus) // updates blob status after based on tx exec
 
 	return &types.MsgUpdateBlobStatusResponse{}, nil
 }
