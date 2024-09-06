@@ -14,6 +14,7 @@ import (
 	"github.com/centrifuge/go-substrate-rpc-client/v4/registry/state"
 	"github.com/centrifuge/go-substrate-rpc-client/v4/signature"
 	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) (BlockInfo, error) {
@@ -70,12 +71,12 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 }
 
 type BlockData struct {
-	Block      int64         `json:"block_number"`
-	Extrinsics []interface{} `json:"data_transactions"`
+	Block      int64           `json:"block_number"`
+	Extrinsics []ExtrinsicData `json:"data_transactions"`
 }
 
 type ExtrinsicData struct {
-	Data string `json:"string"`
+	Data string `json:"data"`
 }
 
 func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (BlockData, error) {
@@ -93,12 +94,9 @@ func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (Bloc
 		return BlockData{}, fmt.Errorf("failed to fetch data: %w", err)
 	}
 
-	// fmt.Println("blockkkkkk dataaaaaaa.....", string(body))
-
 	// Decode the response body into the BlockData struct
 	var blockData BlockData
 	err = json.Unmarshal(body, &blockData)
-	fmt.Println("hereee.......", err, blockData)
 	if err != nil {
 		return BlockData{}, fmt.Errorf("failed to decode response: %w", err)
 	}
@@ -111,16 +109,34 @@ func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (Bloc
 	return blockData, nil
 }
 
-func (r *Relayer) IsDataAvailable(from, to uint64, availHeight uint64, lightClientUrl string) (bool, error) {
-	fmt.Println("isDataAvailable................")
-	blockData, err := r.GetSubmittedData(lightClientUrl, int(availHeight))
+// query the avail light client and check if the data is made available at the given height
+func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to uint64, availHeight uint64, lightClientUrl string) (bool, error) {
+	availBlock, err := r.GetSubmittedData(lightClientUrl, int(availHeight))
 	if err != nil {
-		fmt.Println("isDataAvailable.... error...", err)
 		return false, err
 	}
 
-	fmt.Println("blockData.................", blockData)
-	return true, nil
+	var blocks []int64
+	for i := from; i <= to; i++ {
+		blocks = append(blocks, int64(i))
+	}
+
+	cosmosBlocksData := r.GetBlocksDataFromLocal(ctx, blocks)
+	base64CosmosBlockData := base64.StdEncoding.EncodeToString(cosmosBlocksData)
+
+	// TODO: any better / optimized way to check if data is really available?
+	return isDataIncludedInBlock(availBlock, base64CosmosBlockData), nil
+}
+
+// bruteforce comparision check
+func isDataIncludedInBlock(availBlock BlockData, base64cosmosData string) bool {
+	for _, data := range availBlock.Extrinsics {
+		if data.Data == base64cosmosData {
+			return true
+		}
+	}
+
+	return false
 }
 
 // Define the struct that matches the JSON structure
