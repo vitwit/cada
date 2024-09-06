@@ -10,6 +10,7 @@ import (
 
 const DelayAfterUpgrade = int64(10)
 
+// TODO: not using irrelevant
 func (k *Keeper) prepareInjectData(ctx sdk.Context, currentBlockTime time.Time, latestProvenHeight int64) types.InjectedData {
 	// return types.InjectedData{
 	// 	PendingBlocks: k.preparePostBlocks(ctx, currentBlockTime),
@@ -17,6 +18,7 @@ func (k *Keeper) prepareInjectData(ctx sdk.Context, currentBlockTime time.Time, 
 	return types.InjectedData{}
 }
 
+// TODO: not using irrelevant
 func (k *Keeper) addAvailblobDataToTxs(injectDataBz []byte, maxTxBytes int64, txs [][]byte) [][]byte {
 	if injectDataBz != nil && len(injectDataBz) > 0 {
 		var finalTxs [][]byte
@@ -36,6 +38,7 @@ func (k *Keeper) addAvailblobDataToTxs(injectDataBz []byte, maxTxBytes int64, tx
 	return txs
 }
 
+// TODO: not using irrelevant
 func (k *Keeper) preparePostBlocks(ctx sdk.Context, currentBlockTime time.Time) types.PendingBlocks {
 	// provenHeight, err := k.GetProvenHeight(ctx)
 	// if err != nil {
@@ -65,13 +68,14 @@ func (k *Keeper) preparePostBlocks(ctx sdk.Context, currentBlockTime time.Time) 
 	return types.PendingBlocks{}
 }
 
-// shouldGetExpiredBlocks checks if this chain has recently upgraded.
+// shouldGetExpiredBlocks checks if this chain has recently upgraded.    // TODO: not using irrelevant
 // If so, it will delay publishing expired blocks so that the relayer has time to populate block proof cache first
 func (k *Keeper) shouldGetExpiredBlock(ctx sdk.Context) bool {
 	_, lastUpgradeHeight, _ := k.upgradeKeeper.GetLastCompletedUpgrade(ctx)
 	return ctx.BlockHeight() >= lastUpgradeHeight+DelayAfterUpgrade
 }
 
+// TODO: not using irrelevant
 func (k *Keeper) marshalMaxBytes(injectData *types.InjectedData, maxBytes int64, latestProvenHeight int64) []byte {
 	if len(injectData.PendingBlocks.BlockHeights) == 0 {
 		return nil

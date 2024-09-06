@@ -7,6 +7,7 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
+// TODO: not using irrelevant
 func (k Keeper) processPendingBlocks(ctx sdk.Context, currentBlockTime time.Time, pendingBlocks *types.PendingBlocks) error {
 	// if pendingBlocks != nil {
 	// 	height := ctx.BlockHeight()

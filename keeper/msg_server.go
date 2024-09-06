@@ -19,6 +19,7 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
+// TODO: remove this method
 func (s msgServer) SetAvailAddress(ctx context.Context, msg *types.MsgSetAvailAddress) (*types.MsgSetAvailAddressResponse, error) {
 	valAddr, err := msg.Validate(s.k.stakingKeeper.ValidatorAddressCodec())
 	if err != nil {
@@ -40,6 +41,7 @@ func (s msgServer) SetAvailAddress(ctx context.Context, msg *types.MsgSetAvailAd
 	return new(types.MsgSetAvailAddressResponse), nil
 }
 
+// SubmitBlob processes a request to submit a blob
 func (s msgServer) SubmitBlob(ctx context.Context, req *types.MsgSubmitBlobRequest) (*types.MsgSubmitBlobResponse, error) {
 
 	fmt.Println("msgServer sub,itblob.............", req)
@@ -47,6 +49,7 @@ func (s msgServer) SubmitBlob(ctx context.Context, req *types.MsgSubmitBlobReque
 	return s.k.SubmitBlob(sdkCtx, req)
 }
 
+// UpdateBlobStatus processes a request to update the status of a blob.
 func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 

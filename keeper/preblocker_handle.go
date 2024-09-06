@@ -7,6 +7,7 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
+// TODO: not using irrelevant
 func (k *Keeper) preblockerPendingBlocks(ctx sdk.Context, blockTime time.Time, proposerAddr []byte, pendingBlocks *types.PendingBlocks) error {
 	// if pendingBlocks != nil {
 	// 	if reflect.DeepEqual(k.proposerAddress, proposerAddr) {

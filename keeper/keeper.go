@@ -88,10 +88,12 @@ func NewKeeper(
 	}
 }
 
+// SetRelayer sets the relayer instance for the Keeper.
 func (k *Keeper) SetRelayer(r *relayer.Relayer) {
 	k.relayer = r
 }
 
+// GetBlobStatus retrieves the current status of the blob from the store.
 func (k *Keeper) GetBlobStatus(ctx sdk.Context) uint32 {
 	store := ctx.KVStore(k.storeKey)
 	return GetStatusFromStore(store)
@@ -103,6 +105,9 @@ func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*
 	return &types.MsgSubmitBlobResponse{}, nil
 }
 
+// UpdateBlobStatus updates the status of the blob.
+// This method verifies the blocks range and updates the status to either Voting or Failure,
+// depending on the request's success flag.
 func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
 	//Todo: status should be changed to Voting or Ready, depending on the request
 	store := ctx.KVStore(k.storeKey)
@@ -133,6 +138,7 @@ func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatu
 	return &types.MsgUpdateBlobStatusResponse{}, nil
 }
 
+// SubmitBlobStatus queries and returns the current blob status.
 func (k *Keeper) SubmitBlobStatus(ctx sdk.Context, _ *types.QuerySubmitBlobStatusRequest) (*types.QuerySubmitBlobStatusResponse, error) {
 	// Todo: implement query
 	store := ctx.KVStore(k.storeKey)

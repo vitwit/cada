@@ -91,6 +91,7 @@ func (qs queryServer) ExpiredBlocks(ctx context.Context, _ *types.QueryExpiredBl
 	}, nil
 }
 
+// SubmitBlobStatus handles a request to query and return the current status of a blob.
 func (qs queryServer) SubmitBlobStatus(ctx context.Context, req *types.QuerySubmitBlobStatusRequest) (*types.QuerySubmitBlobStatusResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
