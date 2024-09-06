@@ -11,9 +11,11 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
+// SubmitBlobTx2 submits a blob transaction to the chain using a chain client.
+// This function creates a chain client, sets the validator address from the client, and broadcasts the transaction.
 func (k Keeper) SubmitBlobTx2(ctx sdk.Context, msg types.MsgSubmitBlobRequest) error {
 	cdc := k.cdc
-	homepath := "/home/vitwit/.availsdk"
+	homepath := "/home/vitwit/.availsdk" // TODO: get from config
 
 	cc, err := dacli.CreateChainClient(sdk.KeyringServiceName(), ctx.ChainID(), homepath, cdc.(codec.Codec))
 	if err != nil {

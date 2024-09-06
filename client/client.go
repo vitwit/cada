@@ -11,7 +11,8 @@ const (
 	KeyringBackendTest = "test"
 )
 
-// ChainClient is client to interact with SPN.
+// ChainClient represents a client used for interacting with a network.
+// It contains configurations and credentials necessary for broadcasting transactions and interacting with the chain.
 type ChainClient struct {
 	factory            tx.Factory
 	clientCtx          client.Context

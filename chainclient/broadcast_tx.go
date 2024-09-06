@@ -12,6 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// BroadcastTx generates and broadcasts the transaction.
 func (c *ChainClient) BroadcastTx(msg types.MsgSubmitBlobRequest, fromName string, fromAddr sdk.AccAddress) error {
 	fmt.Println("from name and from address.........", fromName, fromAddr)
 

@@ -8,6 +8,7 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
+// GetQueryCmd returns the root query command for the avail-da module.
 func GetQueryCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   availblob.ModuleName,
@@ -20,6 +21,7 @@ func GetQueryCmd() *cobra.Command {
 	return cmd
 }
 
+// GetLatestBlobStatusInfo returns a command to query the latest status of blob submissions.
 func GetLatestBlobStatusInfo() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-da-status",

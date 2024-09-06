@@ -9,53 +9,65 @@ import "sdk/avail/v1beta1/tx.proto";
 
 option go_package =  "github.com/vitwit/avail-da-module/types";
 
-// query request
-message QuerySubmitBlobStatusRequest {
-}
-
-// query response
-message QuerySubmitBlobStatusResponse {
-  Range range = 1;
-  string status = 2;
-  uint64 proven_height = 3;
-  uint64 last_blob_voting_ends_at = 4;
-}
 
 // Query defines the gRPC querier service.
 service Query {
 
-  // submit Blob Status
+  // SubmitBlobStatus queries the current status of blob submissions.
   rpc SubmitBlobStatus(QuerySubmitBlobStatusRequest)
     returns (QuerySubmitBlobStatusResponse) {
     option (google.api.http).get = "/availblob/v1beta1/submitBlobStatus";
   }
+
   // Validators returns registered validators of the module.
   rpc Validators(QueryValidatorsRequest)
       returns (QueryValidatorsResponse) {
     option (google.api.http).get = "/availblob/v1beta1/validators";
   }
 
-
-
   // Todo: will be removed
   rpc AvailAddress(QueryAvailAddressRequest) returns (QueryAvailAddressResponse) {
     option (google.api.http).get = "/availblob/v1beta1/avail_address";
   }
 
-  // proven height
+  // ProvenHeight retrieves the current proven height, which is the height up to which data has been posted.
   rpc ProvenHeight(QueryProvenHeightRequest) returns (QueryProvenHeightResponse) {
     option (google.api.http).get = "/availblob/v1beta1/proven_height";
   }
 
-  // pending blocks
+  // PendingBlocks retrieves a list of blocks that are pending.
   rpc PendingBlocks(QueryPendingBlocksRequest) returns (QueryPendingBlocksResponse) {
     option (google.api.http).get = "/availblob/v1beta1/pending_blocks";
   }
 
-  // expired blocks
+  // ExpiredBlocks retrieves a list of blocks that have expired.
   rpc ExpiredBlocks(QueryExpiredBlocksRequest) returns (QueryExpiredBlocksResponse) {
     option (google.api.http).get = "/availblob/v1beta1/expired_blocks";
   }
+}
+
+// QuerySubmitBlobStatusRequest is the request type for the SubmitBlobStatus RPC method.
+message QuerySubmitBlobStatusRequest {
+}
+
+// QuerySubmitBlobStatusResponse is the response type for the SubmitBlobStatus RPC method.
+message QuerySubmitBlobStatusResponse {
+
+  // range specifies the range of blocks that are being submitted.
+  // It contains information about the starting and ending block heights.
+  Range range = 1;
+
+  // status indicates the current status of the blob submission.
+  // Possible values might include statuses like "pending", "in_voting", "success", or "failure".
+  string status = 2;
+
+  // proven_height represents the height up to which data has been successfully proven.
+  // This height indicates the extent of posted data to avail light client.
+  uint64 proven_height = 3;
+
+  // last_blob_voting_ends_at denotes the block height at which the last voting on the blob ended.
+  // This provides information on when the last voting period for the blob concluded.
+  uint64 last_blob_voting_ends_at = 4;
 }
 
 // QueryValidatorsRequest is the request type for the Query/Validators RPC method.
@@ -69,34 +81,46 @@ message QueryValidatorsResponse {
 
 // QueryAvailAddressRequest is the request type for the Query/AvailAddress RPC method.
 message QueryAvailAddressRequest {
-  string validator_address = 1;
+  string validator_address = 1;   // TODO: deprecate
 }
 
 // QueryAvailAddressResponse is the response type for the Query/AvailAddress RPC method.
 message QueryAvailAddressResponse {
-  string avail_address = 1;
+  string avail_address = 1;   // TODO: deprecate
 }
 
-// proven Height
+// QueryProvenHeightRequest is the request type for the ProvenHeight RPC method.
 message QueryProvenHeightRequest {}
 
+// QueryProvenHeightResponse is the response type for the ProvenHeight RPC method.
 message QueryProvenHeightResponse {
+
+  // proven_height represents the height up to which data has been successfully proven.
+  // This height indicates the extent of posted data to avail light client.
   uint64 proven_height = 1;
 }
 
+// BlockWithExpiration represents a block along with its expiration timestamp.
 message BlockWithExpiration {
+  // height represents the block height of the block with expiration.
   int64 height = 1;
+
+  // expiration represents the timestamp indicating when the block is considered expired.
   google.protobuf.Timestamp expiration = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 
+// QueryPendingBlocksRequest is the request type for the PendingBlocks RPC method.
 message QueryPendingBlocksRequest {}
 
+// QueryPendingBlocksResponse is the response type for the PendingBlocks RPC method.
 message QueryPendingBlocksResponse {
   repeated BlockWithExpiration pending_blocks = 1;
 }
 
+// QueryExpiredBlocksRequest is the request type for the ExpiredBlocks RPC method.
 message QueryExpiredBlocksRequest {}
 
+// QueryExpiredBlocksResponse is the response type for the ExpiredBlocks RPC method.
 message QueryExpiredBlocksResponse {
   google.protobuf.Timestamp current_time = 1 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   repeated BlockWithExpiration expired_blocks = 2;

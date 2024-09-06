@@ -17,6 +17,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// SubmitDataToClient submits block data to the light client and handles the response.
 func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) (BlockInfo, error) {
 	fmt.Println("calling twiceeeee.........", blocks)
 	var blockInfo BlockInfo
@@ -70,15 +71,18 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 	return blockInfo, nil
 }
 
+// BlockData represents the data for a specific block, including the block number and a list of extrinsics.
 type BlockData struct {
 	Block      int64           `json:"block_number"`
 	Extrinsics []ExtrinsicData `json:"data_transactions"`
 }
 
+// ExtrinsicData represents the data for an individual transaction or extrinsic within a block.
 type ExtrinsicData struct {
 	Data string `json:"data"`
 }
 
+// GetSubmittedData fetches the data that was submitted to a light client at a specific block height.
 func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (BlockData, error) {
 	handler := NewHTTPClientHandler()
 
@@ -109,7 +113,7 @@ func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (Bloc
 	return blockData, nil
 }
 
-// query the avail light client and check if the data is made available at the given height
+// IsDataAvailable checks whether Cosmos block data between a specified range has been submitted and is available in the Avail DA layer.
 func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to uint64, availHeight uint64, lightClientUrl string) (bool, error) {
 	availBlock, err := r.GetSubmittedData(lightClientUrl, int(availHeight))
 	if err != nil {
@@ -128,7 +132,7 @@ func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to uint64, availHeight 
 	return isDataIncludedInBlock(availBlock, base64CosmosBlockData), nil
 }
 
-// bruteforce comparision check
+// isDataIncludedInBlock checks whether the provided Cosmos block data is included in the given Avail block.
 func isDataIncludedInBlock(availBlock BlockData, base64cosmosData string) bool {
 	for _, data := range availBlock.Extrinsics {
 		if data.Data == base64cosmosData {
@@ -139,13 +143,14 @@ func isDataIncludedInBlock(availBlock BlockData, base64cosmosData string) bool {
 	return false
 }
 
-// Define the struct that matches the JSON structure
+// GetBlock represents the data structure for a block with its associated transactions.
 type GetBlock struct {
 	BlockNumber      int      `json:"block_number"`
 	DataTransactions []string `json:"data_transactions"`
 }
 
-// submitData creates a transaction and makes a Avail data submission
+// SubmitData1 submits data to a Substrate blockchain's Data Availability (DA) layer using a specified API URL.
+// It handles creating, signing, and submitting an extrinsic to the blockchain, and then waits for its status.
 func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte, blocks []int64) error {
 	api, err := gsrpc.NewSubstrateAPI(ApiURL)
 	if err != nil {
@@ -374,6 +379,9 @@ func RandToken1(n int) (string, error) {
 	return hex.EncodeToString(bytes), nil
 }
 
+// getData1 retrieves a block by its hash from the Substrate blockchain and checks if the specified data
+// is present in any of the block's extrinsics. The function verifies that the data matches a specific call
+// in the extrinsics and reports whether the data was found or not.
 func getData1(hash types.Hash, api *gsrpc.SubstrateAPI, data string) error {
 
 	block, err := api.RPC.Chain.GetBlock(hash)

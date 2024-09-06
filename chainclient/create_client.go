@@ -21,8 +21,9 @@ const (
 	OsmosisMnemonicKey = "OSMOSIS_MNEMONIC"
 )
 
+// CreateChainClient initializes a new ChainClient
 func CreateChainClient(keyringServiceName, chainID, homePath string, codec codec.Codec) (*ChainClient, error) {
-	nodeAddress := "http://localhost:26657"
+	nodeAddress := "http://localhost:26657" // TODO: get from config
 	kr, err := keyring.New(keyringServiceName, KeyringBackendTest, homePath, os.Stdin, codec)
 	if err != nil {
 		return nil, err
@@ -34,7 +35,7 @@ func CreateChainClient(keyringServiceName, chainID, homePath string, codec codec
 	}
 	out := &bytes.Buffer{}
 
-	address := "cosmos1ux2hl3y42nz6vtdl8k7t7f05k9p3r2k62zfvtv"
+	address := "cosmos1ux2hl3y42nz6vtdl8k7t7f05k9p3r2k62zfvtv" // TODO: remove hardcode
 	clientCtx := NewClientCtx(kr, wsClient, chainID, codec, out, address).WithChainID(chainID).WithNodeURI(nodeAddress)
 	fmt.Println("client ctxxx.......", clientCtx.FromName, clientCtx.FromAddress)
 

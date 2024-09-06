@@ -9,7 +9,7 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
-func (r *Relayer) StartBlobLifeCycle(msg types.MsgSubmitBlobRequest, cmd *cobra.Command) {
+func (r *Relayer) StartBlobLifeCycle(msg types.MsgSubmitBlobRequest, cmd *cobra.Command) { // TODO: deprecate
 
 	fmt.Println("inside like cycle.................", msg, cmd == nil)
 	clientCtx, err := client.GetClientTxContext(cmd)

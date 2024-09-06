@@ -19,7 +19,7 @@ import (
 // It will not publish the block being proposed.
 
 func (r *Relayer) NextBlocksToSumbit(ctx sdk.Context) (types.MsgSubmitBlobRequest, bool) {
-	height := ctx.BlockHeight()
+	height := ctx.BlockHeight() // TODO: not using deprecate
 	// only publish new blocks on interval
 	if height < 2 || (height-1)%int64(r.availPublishBlockInterval) != 0 {
 		return types.MsgSubmitBlobRequest{}, false
@@ -33,7 +33,7 @@ func (r *Relayer) NextBlocksToSumbit(ctx sdk.Context) (types.MsgSubmitBlobReques
 	}, true
 
 }
-func (r *Relayer) ProposePostNextBlocks(ctx sdk.Context, provenHeight int64) []int64 {
+func (r *Relayer) ProposePostNextBlocks(ctx sdk.Context, provenHeight int64) []int64 { // TODO: deprecated code
 	height := ctx.BlockHeight()
 
 	if height <= 1 {
@@ -56,11 +56,14 @@ func (r *Relayer) ProposePostNextBlocks(ctx sdk.Context, provenHeight int64) []i
 	return blocks
 }
 
-// PostBlocks is call in the preblocker, the proposer will publish at this point with their block accepted
+// PostBlocks is called in the PreBlocker. The proposer will publish the blocks at this point
+// once their block has been accepted. The method launches the posting process in a separate
+// goroutine to handle the submission of blocks asynchronously.
 func (r *Relayer) PostBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCodec, proposer []byte) {
 	go r.postBlocks(ctx, blocks, cdc, proposer)
 }
 
+// GetBlocksDataFromLocal retrieves block data from the local provider for the specified block heights.
 func (r *Relayer) GetBlocksDataFromLocal(ctx sdk.Context, blocks []int64) []byte {
 	if len(blocks) == 0 {
 		return []byte{}
@@ -155,6 +158,8 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 
 }
 
+// ExecuteTX creates and broadcasts a transaction that updates the blob status using
+// the provided message.
 func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec) error {
 	// Define keyring and RPC client configuration
 

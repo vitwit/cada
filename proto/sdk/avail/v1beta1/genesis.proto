@@ -6,9 +6,9 @@ import "sdk/avail/v1beta1/query.proto";
 
 option go_package = "github.com/vitwit/avail-da-module/types";
 
-// GenesisState defines the auth module's genesis state.
+// GenesisState defines the avail da  module's genesis state.
 message GenesisState { 
-    repeated Validator validators = 1 [ (gogoproto.nullable) = false ];
+    repeated Validator validators = 1 [ (gogoproto.nullable) = false ]; // TODO: deprecate
 
     // the height of the last block that was proven to be posted to Avail.
     // increment only, never skipping heights.

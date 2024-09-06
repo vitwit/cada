@@ -104,6 +104,7 @@ func (c *ChainClient) AccountCreate(accountName, mnemonic, hdPath string) error 
 // 	// sdkConfig.SetBech32PrefixForConsensusNode(config.Bech32PrefixConsAddr(), config.Bech32PrefixConsPub())
 // }
 
+// NewClientCtx creates a new client context
 func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string, cdc codec.BinaryCodec, out io.Writer, address string) client.Context {
 	encodingConfig := MakeEncodingConfig()
 	authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)

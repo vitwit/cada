@@ -17,7 +17,7 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
-// NewTxCmd
+// NewTxCmd creates and returns a Cobra command for transaction subcommands related to the availblob module.
 func NewTxCmd(keeper *keeper.Keeper) *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        availblob.ModuleName,
@@ -35,10 +35,10 @@ func NewTxCmd(keeper *keeper.Keeper) *cobra.Command {
 	return txCmd
 }
 
-// init keeper client cmd
+// InitKepperClientCmd creates and returns a Cobra command to initialize the keeper client.
 func InitKepperClientCmd(keeper *keeper.Keeper) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "init-keeper-client",
+		Use:     "init-keeper-client", // TODO: remove this subcommand
 		Short:   "initlialize a client to use in keeper",
 		Example: "init-keeper-client",
 		Args:    cobra.ExactArgs(0),
@@ -55,7 +55,7 @@ func InitKepperClientCmd(keeper *keeper.Keeper) *cobra.Command {
 	return cmd
 }
 
-// submit blob
+// NewSubmitBlobCmd creates and returns a Cobra command to submit a blob with a specified range of blocks.
 func NewSubmitBlobCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "submit-blob [from_block] [to_block]",
@@ -95,7 +95,7 @@ func NewSubmitBlobCmd() *cobra.Command {
 	return cmd
 }
 
-// update status
+// NewUpdateBlobStatusCmd creates and returns a Cobra command to update the status of a blob within a specified range of blocks.
 func NewUpdateBlobStatusCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "update-blob [from_block] [to_block] [status] [avail_height]",
@@ -146,6 +146,7 @@ func NewUpdateBlobStatusCmd() *cobra.Command {
 	return cmd
 }
 
+// ParseStatus converts a string status to a boolean value indicating success or failure.
 func ParseStatus(status string) (bool, error) {
 	status = strings.ToUpper(status)
 	if status == "SUCCESS" {
