@@ -17,6 +17,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
+// GetBinPath returns the path to the Avail SDK home directory within the user's home directory.
 func GetBinPath() string {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -28,6 +29,8 @@ func GetBinPath() string {
 	return availdHomePath
 }
 
+// ExecuteTX handles the creation and submission of a transaction to update blob status on the chain.
+// It uses keyring and RPC client configurations to interact with the network.
 func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec) error {
 	// Define keyring and RPC client configuration
 
