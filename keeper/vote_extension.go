@@ -39,10 +39,11 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 
 	return func(ctx sdk.Context, req *abci.RequestExtendVote) (*abci.ResponseExtendVote, error) {
 
-		fmt.Println("coming to extend vote handler.........")
 		// TODO: implement proper logic, this is for demo purpose only
 		from := h.Keeper.GetStartHeightFromStore(ctx)
 		end := h.Keeper.GetEndHeightFromStore(ctx)
+
+		availHeight := h.Keeper.GetAvailHeightFromStore(ctx)
 
 		pendingRangeKey := Key(from, end)
 
@@ -67,6 +68,10 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 			return abciResponseVoteExt, nil
 		}
 
+		ok, err := h.Keeper.relayer.IsDataAvailable(ctx, from, end, availHeight, "http://localhost:8000")
+		fmt.Println("checking light client...", ok, err)
+
+		// ok, checkLightClient()
 		Votes[pendingRangeKey] = true
 		voteExt := VoteExtension{
 			Votes: Votes,

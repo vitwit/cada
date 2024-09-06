@@ -124,6 +124,7 @@ func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatu
 		newStatus = FAILURE_STATE
 	} else {
 		currentHeight := ctx.BlockHeight()
+		UpdateAvailHeight(ctx, store, req.AvailHeight)
 		UpdateVotingEndHeight(ctx, store, uint64(currentHeight)+k.VotingInterval)
 	}
 

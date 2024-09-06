@@ -14,6 +14,7 @@ import (
 	"github.com/centrifuge/go-substrate-rpc-client/v4/registry/state"
 	"github.com/centrifuge/go-substrate-rpc-client/v4/signature"
 	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) (BlockInfo, error) {
@@ -69,24 +70,73 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 	return blockInfo, nil
 }
 
-func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) {
+type BlockData struct {
+	Block      int64           `json:"block_number"`
+	Extrinsics []ExtrinsicData `json:"data_transactions"`
+}
+
+type ExtrinsicData struct {
+	Data string `json:"data"`
+}
+
+func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (BlockData, error) {
 	handler := NewHTTPClientHandler()
-	// get submitted block data using light client api with avail block height
-	// time.Sleep(20 * time.Second) // wait upto data to be submitted data to be included in the avail blocks
 
-	url := fmt.Sprintf("%s/v2/blocks/%v/data?feilds=data", lightClientUrl)
-	url = fmt.Sprintf(url, blockNumber)
+	// Construct the URL with the block number
+	url := fmt.Sprintf("%s/v2/blocks/%v/data?fields=data", lightClientUrl, blockNumber)
+	fmt.Println("get url.........", url)
 
+	// Perform the GET request, returning the body directly
 	body, err := handler.Get(url)
+
+	fmt.Println("body", blockNumber)
 	if err != nil {
-		return
+		return BlockData{}, fmt.Errorf("failed to fetch data: %w", err)
 	}
 
-	if body != nil {
-		r.logger.Info("submitted data to Avail verfied successfully at",
-			"block_height", blockNumber,
-		)
+	// Decode the response body into the BlockData struct
+	var blockData BlockData
+	err = json.Unmarshal(body, &blockData)
+	if err != nil {
+		return BlockData{}, fmt.Errorf("failed to decode response: %w", err)
 	}
+
+	// Log success
+	r.logger.Info("submitted data to Avail verified successfully at",
+		"block_height", blockNumber,
+	)
+
+	return blockData, nil
+}
+
+// query the avail light client and check if the data is made available at the given height
+func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to uint64, availHeight uint64, lightClientUrl string) (bool, error) {
+	availBlock, err := r.GetSubmittedData(lightClientUrl, int(availHeight))
+	if err != nil {
+		return false, err
+	}
+
+	var blocks []int64
+	for i := from; i <= to; i++ {
+		blocks = append(blocks, int64(i))
+	}
+
+	cosmosBlocksData := r.GetBlocksDataFromLocal(ctx, blocks)
+	base64CosmosBlockData := base64.StdEncoding.EncodeToString(cosmosBlocksData)
+
+	// TODO: any better / optimized way to check if data is really available?
+	return isDataIncludedInBlock(availBlock, base64CosmosBlockData), nil
+}
+
+// bruteforce comparision check
+func isDataIncludedInBlock(availBlock BlockData, base64cosmosData string) bool {
+	for _, data := range availBlock.Extrinsics {
+		if data.Data == base64cosmosData {
+			return true
+		}
+	}
+
+	return false
 }
 
 // Define the struct that matches the JSON structure
