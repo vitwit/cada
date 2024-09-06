@@ -61,12 +61,9 @@ func (r *Relayer) PostBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 	go r.postBlocks(ctx, blocks, cdc, proposer)
 }
 
-// postBlocks will publish rollchain blocks to avail
-// start height is inclusive, end height is exclusive
-func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCodec, proposer []byte) {
-	// process blocks instead of random data
+func (r *Relayer) GetBlocksDataFromLocal(ctx sdk.Context, blocks []int64) []byte {
 	if len(blocks) == 0 {
-		return
+		return []byte{}
 	}
 
 	var bb []byte
@@ -75,23 +72,36 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 		res, err := r.localProvider.GetBlockAtHeight(ctx, height)
 		if err != nil {
 			r.logger.Error("Error getting block", "height:", height, "error", err)
-			return
+			return []byte{}
 		}
 
 		blockProto, err := res.Block.ToProto()
 		if err != nil {
 			r.logger.Error("Error protoing block", "error", err)
-			return
+			return []byte{}
 		}
 
 		blockBz, err := blockProto.Marshal()
 		if err != nil {
 			r.logger.Error("Error marshaling block", "error", err)
-			return
+			return []byte{}
 		}
 
 		bb = append(bb, blockBz...)
 	}
+
+	return bb
+}
+
+// postBlocks will publish rollchain blocks to avail
+// start height is inclusive, end height is exclusive
+func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCodec, proposer []byte) {
+	// process blocks instead of random data
+	if len(blocks) == 0 {
+		return
+	}
+
+	bb := r.GetBlocksDataFromLocal(ctx, blocks)
 
 	fmt.Println("is it coming here where we post to DA")
 

@@ -68,7 +68,7 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 			return abciResponseVoteExt, nil
 		}
 
-		ok, err := h.Keeper.relayer.IsDataAvailable(from, end, availHeight, "http://localhost:8000")
+		ok, err := h.Keeper.relayer.IsDataAvailable(ctx, from, end, availHeight, "http://localhost:8000")
 		fmt.Println("checking light client...", ok, err)
 
 		// ok, checkLightClient()
