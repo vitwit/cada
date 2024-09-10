@@ -10,50 +10,6 @@ CADA is a module designed to connect Cosmos sovereign chains with the Avail netw
 
 
 
-### MaxBlocksLimitForBlob
-
-* The `maxBlocksLimitForBlob` defines the maximum number blobs to be posted to Avail DA at once (in on Avail Transaction).
-
-### Blob Interval
-* The `Blob Interval` defines the frequency at which block data is posted to the Avail Network. 
-* For example, if the interval is set to `5`, data will be submitted at block heights `6`, `11`, `16`, and so on. 
-* At each of these intervals, the block data from the proven height to min(current height, proven height + maxBlocksLimitForBlob) will be posted. 
-
-Example:
-For Blob Interval = 5 and Maximum Blocks Limit for Blob = 10 :-
-
-- At height `6` and provenHeight = `0`, blocks from `1` to `5` are posted.
-
-- At height `11` and provenHeight still `0`, blocks from `1` to `10` are posted.
-
-### Relayer
-* The `Relayer` acts as the transport layer, responsible for handling requests from the `prepareBlocker` and facilitating transactions between the Cosmos chain and the Avail DA network. 
-* It performs key functions such as submitting block data to Avail and updating block status on the Cosmos chain. Every validator in the network is required to run the relayer process.
-* Relayer should initialized with a chain account so that the validator can use this account to sign `MsgUpdateStatusBlob` transaction.
-
-### Voting Interval
-* The `Voting Interval` is the period before validators verify whether data is truly included in Avail and confirm it with the network using vote extensions.
-
-
-## State
-
-The module keeps state of the following primary objects:
-
-1. **Blocks Height Range**: Tracks the start and end of the current blocks range being posted to Avail.
-2. **Blob Submission Status**: Indicates the current status of the blob submission process (`READY`, `PENDING`, `IN_VOTING`, `FAILURE`).
-3. **Voting End Height**: The block height at which the voting for the current blocks should conclude.
-4. **Avail Height**: The Avail block height at which the data is made available.
-5. **Proven Height**: The latest block height of the Cosmos chain for which data has been successfully posted to Avail and verified by the network.
-
-The module uses the following keys to manage the aforementioned state:
-
-* **Height Range Start Key**: `0x07` - Stores the start of the range of current blocks being posted to Avail.
-* **Height Range End Key**: `0x08` - Stores the end of the range of current blocks being posted to Avail.
-* **Blob Status Key**: `0x06` - Stores the status of the blob submission process.
-* **Voting End Height Key**: `0x09` - Stores the block height at which voting should end for the current blocks.
-* **Avail Height Key**: `0x0A` - Stores the Avail block height where the data is made available.
-
-
 
 ## Architecture
 
