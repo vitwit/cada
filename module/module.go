@@ -41,7 +41,6 @@ func NewAppModule(cdc codec.Codec, keeper *keeper.Keeper) AppModule {
 		keeper: keeper,
 	}
 }
-
 func NewAppModuleBasic(m AppModule) module.AppModuleBasic {
 	return module.CoreAppModuleBasicAdaptor(availblob.ModuleName, m)
 }
@@ -65,7 +64,6 @@ func (AppModule) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwrunt
 func (am AppModule) GetTxCmd() *cobra.Command {
 	return cli.NewTxCmd(am.keeper)
 }
-
 func (AppModule) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
@@ -82,18 +80,16 @@ func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServerImpl(am.keeper))
-
 	// Register in place module state migration migrations
 	// m := keeper.NewMigrator(am.keeper)
 	// if err := cfg.RegisterMigration(rollchain.ModuleName, 1, m.Migrate1to2); err != nil {
-	// 	panic(fmt.Sprintf("failed to migrate x/%s from version 1 to 2: %v", rollchain.ModuleName, err))
+	//  panic(fmt.Sprintf("failed to migrate x/%s from version 1 to 2: %v", rollchain.ModuleName, err))
 	// }
 }
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.
 func (AppModule) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.NewGenesisState())
-
 }
 
 // ValidateGenesis performs genesis state validation for the rollchain module.
@@ -102,7 +98,6 @@ func (AppModule) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig,
 	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", availblob.ModuleName, err)
 	}
-
 	return data.Validate()
 }
 
@@ -112,11 +107,9 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 	var genesisState types.GenesisState
 	err := cdc.UnmarshalJSON(data, &genesisState)
 	_ = err
-
 	if err := am.keeper.InitGenesis(ctx, &genesisState); err != nil {
 		panic(err)
 	}
-
 	return nil
 }
 
@@ -124,10 +117,8 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 // module.
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	gs := am.keeper.ExportGenesis(ctx)
-
 	return cdc.MustMarshalJSON(gs)
 }
-
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	return nil
 }
@@ -137,3 +128,35 @@ func (am AppModule) IsOnePerModuleType() {}
 
 // IsAppModule implements the appmodule.AppModule interface.
 func (am AppModule) IsAppModule() {}
+
+// AppModuleBasic defines the basic application module used by the params module.
+type AppModuleBasic struct {
+	cdc    codec.Codec
+	keeper keeper.Keeper
+}
+
+// Name returns the params module's name.
+func (AppModuleBasic) Name() string {
+	return availblob.ModuleName
+}
+
+// RegisterLegacyAminoCodec registers the params module's types on the given LegacyAmino codec.
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	types.RegisterLegacyAminoCodec(cdc)
+}
+
+// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the params module.
+func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwruntime.ServeMux) {
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
+}
+func (ab AppModuleBasic) GetTxCmd() *cobra.Command {
+	return cli.NewTxCmd(&ab.keeper)
+}
+func (AppModuleBasic) GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
+}
+func (am AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
+	types.RegisterInterfaces(registry)
+}
