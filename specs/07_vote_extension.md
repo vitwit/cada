@@ -4,13 +4,13 @@ order: 7
 
 # Vote Extensions
 
-This specification details the functionality and purpose of the `ExtendVoteHandler` and `VerifyVoteExtensionHandler` methods within the VoteExtHandler struct. These methods are part of a voting extension process where validators extend their votes based on the availability of data in the blockchain.
+This specification details the functionality and purpose of the `ExtendVoteHandler` and `VerifyVoteExtensionHandler` methods within the VoteExtHandler struct. These methods are part of a voting extension process where validators extend their votes based on the availability of data in the Avail DA network.
 
 ### ExtendVoteHandler
 
-The `ExtendVoteHandler` method is responsible for generating a `vote extension`. It checks the availability of specific data in the blockchain by interacting with an Avail light client. The vote extension is then created based on the outcome of this check.
+The `ExtendVoteHandler` method is responsible for generating a `vote extension`. It checks the availability of specific data in the Avail by interacting with an Avail light client. The vote extension is then created based on the outcome of this check.
 
-* The method first begins by retrieving several voting-related parameters, including the start and end heights of the blocks being processed, the availability height, and the status of the current blob (data)
+* The method first begins by retrieving several voting-related parameters, including the start and end heights of the blocks being processed, the Avail block height, and the status of the current blob (data)
 
 ```go
 from := h.Keeper.GetStartHeightFromStore(ctx)
