@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/8df99a29-913f-4f10-976a-f68cd923a831)
+
 # `x/cada`
 
 ## Table of Conetents
