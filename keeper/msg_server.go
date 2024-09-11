@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/vitwit/avail-da-module/types"
@@ -41,10 +40,14 @@ func (s msgServer) SetAvailAddress(ctx context.Context, msg *types.MsgSetAvailAd
 }
 
 func (s msgServer) SubmitBlob(ctx context.Context, req *types.MsgSubmitBlobRequest) (*types.MsgSubmitBlobResponse, error) {
-
-	fmt.Println("msgServer sub,itblob.............", req)
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	return s.k.SubmitBlob(sdkCtx, req)
+
+	_, err := s.k.SubmitBlob(sdkCtx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgSubmitBlobResponse{}, nil
 }
 
 func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {

@@ -8,7 +8,7 @@ replace github.com/vitwit/avail-da-module => ../
 replace (
 	cosmossdk.io/core => cosmossdk.io/core v0.11.0
 	cosmossdk.io/x/upgrade => cosmossdk.io/x/upgrade v0.1.1 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
-	github.com/cosmos/cosmos-sdk => github.com/vitwit/cosmos-sdk v0.50.6-0.20240809182747-cd5b906bd4f6
+	github.com/cosmos/cosmos-sdk => github.com/vitwit/cosmos-sdk v0.50.6-0.20240905105834-9a5babf69986
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/prometheus/client_model => github.com/prometheus/client_model v0.6.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/prometheus/common => github.com/prometheus/common v0.47.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
@@ -37,7 +37,7 @@ require (
 	cosmossdk.io/client/v2 v2.0.0-beta.4
 	cosmossdk.io/core v0.12.0
 	cosmossdk.io/log v1.3.1
-	cosmossdk.io/math v1.3.0 // indirect
+	cosmossdk.io/math v1.3.0
 	cosmossdk.io/store v1.1.0
 	cosmossdk.io/tools/confix v0.1.1
 	cosmossdk.io/x/circuit v0.1.1
@@ -57,7 +57,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.19.0
-	github.com/stretchr/testify v1.9.0 // indirect
+	github.com/stretchr/testify v1.9.0
 	github.com/vitwit/avail-da-module v0.0.0-20240725103806-4280f8cc7eb9
 	golang.org/x/sync v0.7.0
 )

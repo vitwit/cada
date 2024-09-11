@@ -24,10 +24,46 @@ var (
 	_ module.AppModule          = AppModule{}
 	_ module.AppModuleGenesis   = AppModule{}
 	_ appmodule.HasBeginBlocker = AppModule{}
+	_ module.AppModuleBasic     = AppModuleBasic{}
 )
 
 // ConsensusVersion defines the current module consensus version.
 const ConsensusVersion = 1
+
+// AppModuleBasic defines the basic application module used by the params module.
+type AppModuleBasic struct {
+	cdc    codec.Codec
+	keeper keeper.Keeper
+}
+
+// Name returns the params module's name.
+func (AppModuleBasic) Name() string {
+	return availblob.ModuleName
+}
+
+// RegisterLegacyAminoCodec registers the params module's types on the given LegacyAmino codec.
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	types.RegisterLegacyAminoCodec(cdc)
+}
+
+// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the params module.
+func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwruntime.ServeMux) {
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
+}
+
+func (ab AppModuleBasic) GetTxCmd() *cobra.Command {
+	return cli.NewTxCmd(&ab.keeper)
+}
+
+func (AppModuleBasic) GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
+}
+
+func (am AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
+	types.RegisterInterfaces(registry)
+}
 
 type AppModule struct {
 	cdc    codec.Codec

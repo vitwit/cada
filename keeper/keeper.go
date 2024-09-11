@@ -47,7 +47,7 @@ type Keeper struct {
 
 	unprovenBlocks map[int64][]byte
 
-	proposerAddress []byte
+	ProposerAddress []byte
 	ClientCmd       *cobra.Command
 }
 

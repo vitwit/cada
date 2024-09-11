@@ -2,6 +2,7 @@ package relayer
 
 import (
 	"fmt"
+	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/vitwit/avail-da-module/types"
@@ -107,7 +108,7 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 		r.logger.Error("Error while submitting block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", string(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.rpcClient.config.AppID),
 		)
 
 		// execute tx about failure submission

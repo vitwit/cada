@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 
 	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
@@ -44,7 +45,7 @@ func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, b
 		r.logger.Error("Error while posting block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", string(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.rpcClient.config.AppID),
 		)
 	}
 
@@ -52,7 +53,7 @@ func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, b
 		r.logger.Info("Successfully posted block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", string(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.rpcClient.config.AppID),
 			"block_hash", blockInfo.BlockHash,
 			"block_number", blockInfo.BlockNumber,
 			"hash", blockInfo.Hash,
@@ -219,7 +220,7 @@ func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, dat
 		r.logger.Info("Posted block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", string(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.rpcClient.config.AppID),
 		)
 	}
 
