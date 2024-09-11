@@ -1,172 +1,114 @@
 package keeper_test
 
-// import (
-// 	"encoding/json"
-// 	"errors"
-// 	"testing"
+import (
+	"encoding/json"
+	"testing"
 
-// 	"cosmossdk.io/log"
-// 	"github.com/cometbft/cometbft/abci/types"
-// 	sdk "github.com/cosmos/cosmos-sdk/types"
-// 	"github.com/stretchr/testify/assert"
-// 	"github.com/stretchr/testify/mock"
-// 	"github.com/vitwit/avail-da-module/keeper"
-// )
+	"cosmossdk.io/log"
+	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/vitwit/avail-da-module/keeper"
+)
 
-// // MockKeeper embeds keeper.Keeper and overrides methods for mocking
-// type MockKeeper struct {
-// 	*keeper.Keeper // Embedding keeper.Keeper
-// 	mock.Mock      // Embedding testify's Mock for stubbing methods
-// }
+// MockKeeper is a mock implementation of the Keeper interface
+type MockKeeper struct {
+	mock.Mock
+}
 
-// func (m *MockKeeper) GetStartHeightFromStore(ctx sdk.Context) uint64 {
-// 	args := m.Called(ctx)
-// 	return args.Get(0).(uint64)
-// }
+func (m *MockKeeper) GetStartHeightFromStore(ctx types.Context) uint64 {
+	args := m.Called(ctx)
+	return args.Get(0).(uint64)
+}
 
-// func (m *MockKeeper) GetEndHeightFromStore(ctx sdk.Context) uint64 {
-// 	args := m.Called(ctx)
-// 	return args.Get(0).(uint64)
-// }
+func (m *MockKeeper) GetEndHeightFromStore(ctx types.Context) uint64 {
+	args := m.Called(ctx)
+	return args.Get(0).(uint64)
+}
 
-// func (m *MockKeeper) GetAvailHeightFromStore(ctx sdk.Context) uint64 {
-// 	args := m.Called(ctx)
-// 	return args.Get(0).(uint64)
-// }
+func (m *MockKeeper) GetAvailHeightFromStore(ctx types.Context) uint64 {
+	args := m.Called(ctx)
+	return args.Get(0).(uint64)
+}
 
-// func (m *MockKeeper) GetBlobStatus(ctx sdk.Context) string {
-// 	args := m.Called(ctx)
-// 	return args.String(0)
-// }
+func (m *MockKeeper) GetBlobStatus(ctx types.Context) string {
+	args := m.Called(ctx)
+	return args.String(0)
+}
 
-// func (m *MockKeeper) GetVotingEndHeightFromStore(ctx sdk.Context) uint64 {
-// 	args := m.Called(ctx)
-// 	return args.Get(0).(uint64)
-// }
+func (m *MockKeeper) GetVotingEndHeightFromStore(ctx types.Context) uint64 {
+	args := m.Called(ctx)
+	return args.Get(0).(uint64)
+}
 
-// func (m *MockKeeper) IsDataAvailable(ctx sdk.Context, from, to, height uint64, url string) (bool, error) {
-// 	args := m.Called(ctx, from, to, height, url)
-// 	return args.Bool(0), args.Error(1)
-// }
+// TestVoteExtHandler tests the VoteExtHandler methods
+func TestVoteExtHandler(t *testing.T) {
+	logger := log.NewNopLogger()
+	mockKeeper := new(MockKeeper)
+	handler := NewVoteExtHandler(logger, mockKeeper)
 
-// // MockLogger is a mock implementation of the Logger interface
-// type MockLogger struct {
-// 	mock.Mock
-// }
+	ctx := types.Context{} // Create a mock context
 
-// // Debug implements log.Logger.
-// func (m *MockLogger) Debug(msg string, keyVals ...any) {
-// 	panic("unimplemented")
-// }
+	// Test case 1: Voting not in progress
+	mockKeeper.On("GetStartHeightFromStore", ctx).Return(uint64(1))
+	mockKeeper.On("GetEndHeightFromStore", ctx).Return(uint64(2))
+	mockKeeper.On("GetAvailHeightFromStore", ctx).Return(uint64(3))
+	mockKeeper.On("GetBlobStatus", ctx).Return("NOT_IN_VOTING_STATE")
+	mockKeeper.On("GetVotingEndHeightFromStore", ctx).Return(uint64(4))
 
-// // Error implements log.Logger.
-// func (m *MockLogger) Error(msg string, keyVals ...any) {
-// 	panic("unimplemented")
-// }
+	req := &abci.RequestExtendVote{}
+	resp, err := handler.ExtendVoteHandler()(ctx, req)
 
-// // Impl implements log.Logger.
-// func (m *MockLogger) Impl() any {
-// 	panic("unimplemented")
-// }
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
 
-// // Warn implements log.Logger.
-// func (m *MockLogger) Warn(msg string, keyVals ...any) {
-// 	panic("unimplemented")
-// }
+	var voteExt VoteExtension
+	err = json.Unmarshal(resp.VoteExtension, &voteExt)
+	assert.NoError(t, err)
+	assert.Empty(t, voteExt.Votes)
 
-// // With implements log.Logger.
-// func (m *MockLogger) With(keyVals ...any) log.Logger {
-// 	panic("unimplemented")
-// }
+	// Test case 2: Voting in progress, data available
+	mockKeeper.On("GetBlobStatus", ctx).Return("IN_VOTING_STATE")
+	mockKeeper.On("GetVotingEndHeightFromStore", ctx).Return(uint64(5))
+	mockKeeper.On("GetAvailHeightFromStore", ctx).Return(uint64(3))
+	mockKeeper.On("relayer.IsDataAvailable", ctx, uint64(1), uint64(2), uint64(3), "http://localhost:8000").Return(true, nil)
 
-// func (m *MockLogger) Info(msg string, keyvals ...interface{}) {
-// 	m.Called(msg, keyvals)
-// }
+	resp, err = handler.ExtendVoteHandler()(ctx, req)
 
-// func TestVoteExtHandler(t *testing.T) {
-// 	// Set up
-// 	mockKeeper := &MockKeeper{}
-// 	mockLogger := new(MockLogger)
-// 	handler := keeper.NewVoteExtHandler(mockLogger, mockKeeper)
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
 
-// 	ctx := sdk.Context{} // Initialize a suitable context for testing
+	err = json.Unmarshal(resp.VoteExtension, &voteExt)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, voteExt.Votes)
+	assert.True(t, voteExt.Votes[Key(1, 2)]) // Check if the vote is recorded
 
-// 	// Define test cases
-// 	tests := []struct {
-// 		name         string
-// 		mockSetup    func()
-// 		req          *types.RequestExtendVote
-// 		expectedResp *types.ResponseExtendVote
-// 		expectedErr  error
-// 	}{
-// 		{
-// 			name: "Successful ExtendVoteHandler",
-// 			mockSetup: func() {
-// 				mockKeeper.On("GetStartHeightFromStore", ctx).Return(uint64(100))
-// 				mockKeeper.On("GetEndHeightFromStore", ctx).Return(uint64(200))
-// 				mockKeeper.On("GetAvailHeightFromStore", ctx).Return(uint64(150))
-// 				mockKeeper.On("GetBlobStatus", ctx).Return("IN_VOTING_STATE")
-// 				mockKeeper.On("GetVotingEndHeightFromStore", ctx).Return(uint64(100))
-// 				mockKeeper.On("IsDataAvailable", ctx, uint64(100), uint64(200), uint64(150), "http://localhost:8000").Return(true, nil)
-// 				mockLogger.On("Info", "submitted data to Avail verified successfully at", []interface{}{"block_height", uint64(150)})
-// 			},
-// 			req: &types.RequestExtendVote{},
-// 			expectedResp: &types.ResponseExtendVote{
-// 				VoteExtension: marshalVoteExtension(t, &keeper.VoteExtension{
-// 					Votes: map[string]bool{"100 200": true},
-// 				}),
-// 			},
-// 			expectedErr: nil,
-// 		},
-// 		{
-// 			name: "ExtendVoteHandler Error Marshal",
-// 			mockSetup: func() {
-// 				mockKeeper.On("GetStartHeightFromStore", ctx).Return(uint64(100))
-// 				mockKeeper.On("GetEndHeightFromStore", ctx).Return(uint64(200))
-// 				mockKeeper.On("GetAvailHeightFromStore", ctx).Return(uint64(150))
-// 				mockKeeper.On("GetBlobStatus", ctx).Return("IN_VOTING_STATE")
-// 				mockKeeper.On("GetVotingEndHeightFromStore", ctx).Return(uint64(100))
-// 				mockKeeper.On("IsDataAvailable", ctx, uint64(100), uint64(200), uint64(150), "http://localhost:8000").Return(true, nil)
-// 				mockLogger.On("Info", "submitted data to Avail verified successfully at", []interface{}{"block_height", uint64(150)})
-// 			},
-// 			req:          &types.RequestExtendVote{},
-// 			expectedResp: nil,
-// 			expectedErr:  errors.New("failed to marshal vote extension: json: unsupported type: map[interface {}]interface {}"),
-// 		},
-// 		{
-// 			name:      "Successful VerifyVoteExtensionHandler",
-// 			mockSetup: func() {},
-// 			req:       &types.RequestVerifyVoteExtension{},
-// 			expectedResp: &types.ResponseVerifyVoteExtension{
-// 				Status: types.ResponseVerifyVoteExtension_ACCEPT,
-// 			},
-// 			expectedErr: nil,
-// 		},
-// 	}
+	// Test case 3: Error during marshalling
+	mockKeeper.On("GetBlobStatus", ctx).Return("NOT_IN_VOTING_STATE")
+	mockKeeper.On("GetVotingEndHeightFromStore", ctx).Return(uint64(4))
+	handler.Keeper = nil // Set keeper to nil to trigger marshalling error
+	resp, err = handler.ExtendVoteHandler()(ctx, req)
 
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			tt.mockSetup()
-// 			resp, err := handler.ExtendVoteHandler()(ctx, tt.req)
-// 			if tt.expectedErr != nil {
-// 				assert.EqualError(t, err, tt.expectedErr.Error())
-// 			} else {
-// 				assert.NoError(t, err)
-// 				assert.Equal(t, tt.expectedResp, resp)
-// 			}
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+}
 
-// 			verResp, verErr := handler.VerifyVoteExtensionHandler()(ctx, tt.req)
-// 			assert.NoError(t, verErr)
-// 			assert.Equal(t, tt.expectedResp, verResp)
-// 		})
-// 	}
-// }
+func Key(i1, i2 int) {
+	panic("unimplemented")
+}
 
-// // Helper function to marshal VoteExtension for comparison
-// func marshalVoteExtension(t *testing.T, voteExt *keeper.VoteExtension) []byte {
-// 	data, err := json.Marshal(voteExt)
-// 	if err != nil {
-// 		t.Fatalf("failed to marshal vote extension: %v", err)
-// 	}
-// 	return data
-// }
+// TestVerifyVoteExtensionHandler tests the VerifyVoteExtensionHandler method
+func TestVerifyVoteExtensionHandler(t *testing.T) {
+	logger := log.NewNopLogger()
+	mockKeeper := new(MockKeeper)
+	handler := keeper.NewVoteExtHandler(logger, mockKeeper) // Use the exported NewVoteExtHandler function
+
+	ctx := types.Context{}
+	req := &abci.RequestVerifyVoteExtension{}
+
+	resp, err := handler.VerifyVoteExtensionHandler()(ctx, req)
+
+	assert.NoError(t, err)
+	assert.Equal(t, abci.ResponseVerifyVoteExtension_ACCEPT, resp.Status)
+}

@@ -29,18 +29,19 @@ import (
 
 type TestSuite struct {
 	suite.Suite
-	ctx           sdk.Context
-	addrs         []sdk.AccAddress
-	encodedAddrs  []string
-	queryClient   types.QueryClient
-	keeper        *keeper.Keeper
-	msgserver     types.MsgServer
-	encCfg        moduletestutil.TestEncodingConfig
-	addressCodec  addresstypes.Codec
-	baseApp       *baseapp.BaseApp
-	mockKeeper    *mocks.MockKeeper
-	appOptions    servertypes.AppOptions
-	upgradeKeeper upgradekeeper.Keeper
+	ctx             sdk.Context
+	addrs           []sdk.AccAddress
+	encodedAddrs    []string
+	queryClient     types.QueryClient
+	keeper          *keeper.Keeper
+	msgserver       types.MsgServer
+	encCfg          moduletestutil.TestEncodingConfig
+	addressCodec    addresstypes.Codec
+	baseApp         *baseapp.BaseApp
+	mockKeeper      *mocks.MockKeeper
+	appOptions      servertypes.AppOptions
+	upgradeKeeper   upgradekeeper.Keeper
+	SetupTestKeeper keeper.Keeper
 	// cdc           codec.cdc wrong :(
 }
 
@@ -48,6 +49,8 @@ func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(TestSuite))
 }
 func (s *TestSuite) SetupTest() {
+	s.keeper, s.ctx = keeper.SetupTestKeeper()
+	s.msgserver = keeper.NewMsgServerImpl(s.keeper)
 	s.mockKeeper = new(mocks.MockKeeper)
 	key := storetypes.NewKVStoreKey(name.ModuleName)
 	// upgradekey := corestore.
