@@ -49,7 +49,7 @@ It is stored in the state as follows:
 
 ## Avail Height
 
-The Avail block height at which the data is made available.
+The Avail block height at which the latest blocks data is made available.
 
 It is stored in the state as follows:
 

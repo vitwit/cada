@@ -105,6 +105,9 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	}
 
 	currentBlockHeight := ctx.BlockHeight()
+
+	// The following code is executed at block heights that are multiples of the voteInterval,
+	// i.e., voteInterval+1, 2*voteInterval+1, 3*voteInterval+1, etc.
 	if !k.IsValidBlockToPostTODA(uint64(currentBlockHeight)) {
 		return nil
 	}
