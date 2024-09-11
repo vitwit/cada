@@ -25,7 +25,6 @@ CADA is a module designed to connect Cosmos sovereign chains with the Avail netw
 ## Architecture
 
 ![blocks-data-submission](https://github.com/user-attachments/assets/4e17b98f-ca8c-4b4c-a79e-8c60f123cb2c)
-![vote-extension](https://github.com/user-attachments/assets/c0edb8e7-20fd-468a-9109-4f31718e4467)
 
 
 - At each block interval, a request is sent from the `PreBlocker` ABCI method to the Keeper, specifying the range of block heights that are ready to be posted to the `Avail` DA network.
@@ -51,6 +50,8 @@ CADA is a module designed to connect Cosmos sovereign chains with the Avail netw
     availHeight = tx.availHeight
     votingEndBlock = currentBlock + votingInterval
     ```
+
+![vote-extension](https://github.com/user-attachments/assets/c0edb8e7-20fd-468a-9109-4f31718e4467)
 
 - At block height `VotingEndBlock - 1`, all the validators verify if the specified blocks data is truly made available at the specified Avail height. They cast their vote (YES or NO) using `vote extensions`.
 
