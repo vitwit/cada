@@ -24,7 +24,6 @@ func GetBinPath() string {
 	}
 
 	availdHomePath := filepath.Join(homeDir, ".availsdk")
-	fmt.Println("availdHonmePath.......", availdHomePath)
 	return availdHomePath
 }
 

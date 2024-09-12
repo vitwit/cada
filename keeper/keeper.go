@@ -38,12 +38,10 @@ type Keeper struct {
 
 	cdc codec.BinaryCodec
 
-	publishToAvailBlockInterval int
 	PublishToAvailBlockInterval uint64
 	MaxBlocksForBlob            uint
 	VotingInterval              uint64
-	injectedProofsLimit         int
-	app_id                      int
+	appID                       int
 
 	unprovenBlocks map[int64][]byte
 
@@ -76,8 +74,7 @@ func NewKeeper(
 
 		cdc: cdc,
 
-		publishToAvailBlockInterval: publishToAvailBlockInterval,
-		app_id:                      appId,
+		appID: appId,
 
 		unprovenBlocks:              make(map[int64][]byte),
 		MaxBlocksForBlob:            20, //Todo: call this from app.go, later change to params
@@ -93,12 +90,6 @@ func (k *Keeper) SetRelayer(r *relayer.Relayer) {
 func (k *Keeper) GetBlobStatus(ctx sdk.Context) uint32 {
 	store := ctx.KVStore(k.storeKey)
 	return GetStatusFromStore(store)
-}
-
-// Todo: remove this method later
-func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*types.MsgSubmitBlobResponse, error) {
-
-	return &types.MsgSubmitBlobResponse{}, nil
 }
 
 func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
