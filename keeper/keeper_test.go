@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"path/filepath"
 	"testing"
 
@@ -20,7 +21,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/suite"
-	name "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/keeper"
 	mocks "github.com/vitwit/avail-da-module/keeper/mocks"
 	cada "github.com/vitwit/avail-da-module/module"
@@ -29,30 +29,33 @@ import (
 
 type TestSuite struct {
 	suite.Suite
-	ctx             sdk.Context
-	addrs           []sdk.AccAddress
-	encodedAddrs    []string
-	queryClient     types.QueryClient
-	keeper          *keeper.Keeper
-	msgserver       types.MsgServer
-	encCfg          moduletestutil.TestEncodingConfig
-	addressCodec    addresstypes.Codec
-	baseApp         *baseapp.BaseApp
-	mockKeeper      *mocks.MockKeeper
-	appOptions      servertypes.AppOptions
-	upgradeKeeper   upgradekeeper.Keeper
-	SetupTestKeeper keeper.Keeper
-	// cdc           codec.cdc wrong :(
+	ctx                  sdk.Context
+	addrs                []sdk.AccAddress
+	encodedAddrs         []string
+	queryClient          types.QueryClient
+	keeper               *keeper.Keeper
+	msgserver            types.MsgServer
+	encCfg               moduletestutil.TestEncodingConfig
+	addressCodec         addresstypes.Codec
+	baseApp              *baseapp.BaseApp
+	mockKeeper           *mocks.MockKeeper
+	appOptions           servertypes.AppOptions
+	upgradeKeeper        upgradekeeper.Keeper
+	logger               log.Logger
+	voteExtensionHandler keeper.VoteExtHandler
+	store                storetypes.KVStore
+	// cdc           codec.cdc wrong
 }
 
 func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(TestSuite))
 }
 func (s *TestSuite) SetupTest() {
-	s.keeper, s.ctx = keeper.SetupTestKeeper()
+	// s.keeper, s.ctx = keeper.SetupTestKeeper()
 	s.msgserver = keeper.NewMsgServerImpl(s.keeper)
 	s.mockKeeper = new(mocks.MockKeeper)
-	key := storetypes.NewKVStoreKey(name.ModuleName)
+	key := storetypes.NewKVStoreKey(cada.ModuleName)
+
 	// upgradekey := corestore.
 	storeService := runtime.NewKVStoreService(key)
 	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
@@ -77,4 +80,8 @@ func (s *TestSuite) SetupTest() {
 	queryClient := types.NewQueryClient(queryHelper)
 	s.queryClient = queryClient
 	s.msgserver = keeper.NewMsgServerImpl(s.keeper)
+}
+
+func (s *TestSuite) TestVoteExtHandler() {
+	fmt.Println("test hehe")
 }

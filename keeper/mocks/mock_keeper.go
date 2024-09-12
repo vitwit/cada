@@ -1,9 +1,7 @@
 package keeper_test
 
 import (
-	// sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/mock"
-	// "github.com/vitwit/avail-da-module/types"
 )
 
 type MockKeeper struct {
@@ -30,4 +28,4 @@ type MockKeeper struct {
 // 	return args.Get(0).(*types.MsgUpdateBlobStatusResponse), args.Error(1)
 // }
 
-// // Other methods of MockKeeper can be implemented as needed
+// //Other methods of MockKeeper can be implemented as needed
