@@ -2,7 +2,7 @@ module github.com/vitwit/avail-da-module/simapp
 
 go 1.22.5
 
-replace github.com/vitwit/avail-da-module => ../
+replace github.com/vitwit/avail-da-module => /home/vitwit/avail-setup/avail-da-module
 
 // overrides
 replace (

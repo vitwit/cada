@@ -235,3 +235,5 @@ require (
 )
 
 replace github.com/centrifuge/go-substrate-rpc-client/v4 => github.com/availproject/go-substrate-rpc-client/v4 v4.1.0-avail-2.1.5-rc1
+
+replace github.com/vitwit/avail-da-module => /home/vitwit/avail-setup/avail-da-module
