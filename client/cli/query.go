@@ -37,8 +37,8 @@ func GetLatestBlobStatusInfo() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			req := &types.QuerySubmitBlobStatusRequest{}
-			res, err := queryClient.SubmitBlobStatus(cmd.Context(), req)
+			req := &types.QuerySubmittedBlobStatusRequest{}
+			res, err := queryClient.SubmittedBlobStatus(cmd.Context(), req)
 			if err != nil {
 				log.Fatal(err)
 			}

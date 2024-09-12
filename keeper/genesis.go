@@ -38,7 +38,6 @@ func (k *Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 		panic(err)
 	}
 
-	pendingBlocks, err := k.GetPendingBlocksWithExpiration(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -46,8 +45,6 @@ func (k *Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 	return &types.GenesisState{
 		Validators:   vals.Validators,
 		ProvenHeight: provenHeight,
-
-		PendingBlocks: pendingBlocks,
 	}
 }
 

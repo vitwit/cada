@@ -193,29 +193,3 @@ func (k Keeper) GetExpiredBlocks(ctx context.Context, currentBlockTime time.Time
 	}
 	return expiredBlocks
 }
-
-func (k *Keeper) GetPendingBlocksWithExpiration(ctx context.Context) ([]*types.BlockWithExpiration, error) {
-	iterator, err := k.PendingBlocksToTimeouts.Iterate(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-	defer iterator.Close()
-
-	var pendingBlocks []*types.BlockWithExpiration
-	for ; iterator.Valid(); iterator.Next() {
-		pendingBlock, err := iterator.Key()
-		if err != nil {
-			return nil, err
-		}
-		expiration, err := iterator.Value()
-		if err != nil {
-			return nil, err
-		}
-		pendingBlocks = append(pendingBlocks, &types.BlockWithExpiration{
-			Height:     pendingBlock,
-			Expiration: time.Unix(0, expiration),
-		})
-	}
-
-	return pendingBlocks, nil
-}
