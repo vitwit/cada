@@ -18,20 +18,16 @@ func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, startHeight, endHeight ui
 	return true
 }
 
-func (k *Keeper) setBlobStatusSuccess(ctx sdk.Context) error {
+func (k *Keeper) SetBlobStatus(ctx sdk.Context, state uint32) error {
 	store := ctx.KVStore(k.storeKey)
-	endHeight := k.GetEndHeightFromStore(ctx)
 
-	err := UpdateProvenHeight(ctx, store, endHeight)
-	if err != nil {
-		return err
+	if state == READY_STATE {
+		endHeight := k.GetEndHeightFromStore(ctx)
+		err := UpdateProvenHeight(ctx, store, endHeight)
+		if err != nil {
+			return err
+		}
 	}
-	return UpdateBlobStatus(ctx, store, READY_STATE)
-}
 
-func (k *Keeper) SetBlobStatusFailure(ctx sdk.Context) error {
-
-	store := ctx.KVStore(k.storeKey)
-
-	return UpdateBlobStatus(ctx, store, FAILURE_STATE)
+	return UpdateBlobStatus(ctx, store, state)
 }

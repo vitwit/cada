@@ -10,35 +10,8 @@ option go_package = "github.com/vitwit/avail-da-module/types";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  // SetAvailAddress
-  rpc SetAvailAddress(MsgSetAvailAddress) returns (MsgSetAvailAddressResponse);
-
-  // SubmitBlob
-  rpc SubmitBlob(MsgSubmitBlobRequest) returns (MsgSubmitBlobResponse);
-
   // UpdateBlobStatus
   rpc UpdateBlobStatus(MsgUpdateBlobStatusRequest) returns (MsgUpdateBlobStatusResponse);
-}
-
-// MsgSetAvailAddress defines a SDK message for validators to set their Avail address
-message MsgSetAvailAddress {
-  option (cosmos.msg.v1.signer) = "validator_address";
-
-  string validator_address = 1;
-
-  string avail_address = 2;
-}
-
-// MsgSetAvailAddressResponse is the response type for the Msg/SetAvailAddress RPC method.
-message MsgSetAvailAddressResponse {}
-
-// MsgSetAvailAddress defines a SDK message for validators to set their Avail address
-message MsgSubmitBlobRequest {
-  option (cosmos.msg.v1.signer) = "validator_address";
-
-  string validator_address = 1;
-
-  Range blocks_range = 2;
 }
 
 // blocks range from to to
@@ -46,9 +19,6 @@ message Range {
   uint64 from = 1;
   uint64 to = 2;
 }
-
-// MsgSetAvailAddressResponse is the response type for the Msg/SetAvailAddress RPC method.
-message MsgSubmitBlobResponse {}
 
 // message update blob state response
 message MsgUpdateBlobStatusRequest {
@@ -58,7 +28,6 @@ message MsgUpdateBlobStatusRequest {
   Range blocks_range = 2;
   uint64 avail_height = 3; 
   bool is_success = 4;
-
 }
 
 // status of submitblob

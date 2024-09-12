@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"log"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
@@ -26,7 +28,8 @@ func GetLatestBlobStatusInfo() *cobra.Command {
 		Short: "Show what range of blocks are being submitted and thier status",
 		Long: `Show what range of blocks are being submitted and thier status,
 		`,
-		Args: cobra.ExactArgs(0),
+		Example: "simd query cada get-da-status",
+		Args:    cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -35,7 +38,10 @@ func GetLatestBlobStatusInfo() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			req := &types.QuerySubmitBlobStatusRequest{}
-			res, _ := queryClient.SubmitBlobStatus(cmd.Context(), req)
+			res, err := queryClient.SubmitBlobStatus(cmd.Context(), req)
+			if err != nil {
+				log.Fatal(err)
+			}
 
 			return clientCtx.PrintProto(res)
 		},

@@ -10,11 +10,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type StakeWeightedVotes struct {
-	Votes              map[string]int64
-	ExtendedCommitInfo abci.ExtendedCommitInfo
-}
-
 type ProofOfBlobProposalHandler struct {
 	keeper *Keeper
 
@@ -96,11 +91,13 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 			pendingRangeKey := Key(from, to)
 			votingPower := injectedVoteExtTx.Votes[pendingRangeKey]
 
+			state := FAILURE_STATE
+
 			if votingPower > 0 { // TODO: calculate voting power properly
-				k.setBlobStatusSuccess(ctx)
-			} else {
-				k.SetBlobStatusFailure(ctx)
+				state = READY_STATE
 			}
+
+			k.SetBlobStatus(ctx, state)
 		}
 	}
 

@@ -2,7 +2,6 @@ package cli
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -27,72 +26,9 @@ func NewTxCmd(keeper *keeper.Keeper) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	// keeper.ClientCmd = txCmd
-
-	txCmd.AddCommand(NewSubmitBlobCmd())
-	txCmd.AddCommand(NewUpdateBlobStatusCmd(), InitKepperClientCmd(keeper))
+	txCmd.AddCommand(NewUpdateBlobStatusCmd())
 
 	return txCmd
-}
-
-// init keeper client cmd
-func InitKepperClientCmd(keeper *keeper.Keeper) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "init-keeper-client",
-		Short:   "initlialize a client to use in keeper",
-		Example: "init-keeper-client",
-		Args:    cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Println("setting keeper client.....", keeper.ClientCmd == nil)
-			keeper.ClientCmd = cmd
-			fmt.Println("setting keeper client.....", keeper.ClientCmd == nil)
-			return nil
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
-// submit blob
-func NewSubmitBlobCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "submit-blob [from_block] [to_block]",
-		Short:   "request to submit blob with blocks from [from] to [to]",
-		Example: "submit-blob 11 15",
-		Args:    cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			fromBlock, err := strconv.Atoi(args[0])
-			if err != nil {
-				return err
-			}
-			toBlock, err := strconv.Atoi(args[1])
-			if err != nil {
-				return err
-			}
-
-			msg := types.MsgSubmitBlobRequest{
-				BlocksRange: &types.Range{
-					From: uint64(fromBlock),
-					To:   uint64(toBlock),
-				},
-				ValidatorAddress: clientCtx.GetFromAddress().String(),
-			}
-
-			// cmd.Marsha
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
 }
 
 // update status
@@ -101,7 +37,7 @@ func NewUpdateBlobStatusCmd() *cobra.Command {
 		Use: "update-blob [from_block] [to_block] [status] [avail_height]",
 		Short: `update blob status by giving blocks range and status(success|failure)
 		 and the avail height at which the blob is stored`,
-		Example: "update-blob 11 15 success 120",
+		Example: "simd update-blob 11 15 success 120",
 		Args:    cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
