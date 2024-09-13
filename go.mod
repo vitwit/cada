@@ -7,6 +7,7 @@ replace (
 	cosmossdk.io/x/evidence => cosmossdk.io/x/evidence v0.1.0
 	cosmossdk.io/x/upgrade => cosmossdk.io/x/upgrade v0.1.1 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/cosmos/cosmos-sdk => github.com/vitwit/cosmos-sdk v0.50.6-0.20240905105834-9a5babf69986
+	github.com/cosmos/ibc-go/v8 => github.com/cosmos/ibc-go/v8 v8.2.1
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/prometheus/client_model => github.com/prometheus/client_model v0.6.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	//	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v1.1.0
@@ -34,6 +35,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	google.golang.org/genproto/googleapis/api v0.0.0-20240528184218-531527333157
 	google.golang.org/grpc v1.65.0
+	simapp v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -91,7 +93,7 @@ require (
 
 require (
 	cosmossdk.io/errors v1.0.1
-	cosmossdk.io/math v1.3.0 // indirect
+	cosmossdk.io/math v1.3.0
 	cosmossdk.io/x/tx v0.13.3 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
@@ -111,7 +113,7 @@ require (
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cometbft/cometbft-db v0.9.1 // indirect
 	github.com/cosmos/btcutil v1.0.5 // indirect
-	github.com/cosmos/cosmos-db v1.0.2 // indirect
+	github.com/cosmos/cosmos-db v1.0.2
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/iavl v1.1.2 // indirect
@@ -210,7 +212,6 @@ require (
 	github.com/tendermint/go-amino v0.16.0 // indirect
 	github.com/tidwall/btree v1.7.0 // indirect
 	github.com/vedhavyas/go-subkey/v2 v2.0.0 // indirect
-	github.com/vitwit/avail-da-module/simapp v0.0.0-20240906074012-1d8b3a1926e1
 	github.com/zondax/hid v0.9.2 // indirect
 	github.com/zondax/ledger-go v0.14.3 // indirect
 	go.etcd.io/bbolt v1.3.8 // indirect
@@ -218,7 +219,7 @@ require (
 	golang.org/x/crypto v0.25.0 // indirect
 	golang.org/x/exp v0.0.0-20240404231335-c0f41cb1a7a0 // indirect
 	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
+	golang.org/x/sync v0.7.0
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/term v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
@@ -236,4 +237,6 @@ require (
 
 replace github.com/centrifuge/go-substrate-rpc-client/v4 => github.com/availproject/go-substrate-rpc-client/v4 v4.1.0-avail-2.1.5-rc1
 
-replace github.com/vitwit/avail-da-module => /home/vitwit/avail-setup/avail-da-module
+// replace github.com/vitwit/avail-da-module/simapp => /home/vitwit/avail-setup/avail-da-module/simapp
+
+replace simapp => ./simapp

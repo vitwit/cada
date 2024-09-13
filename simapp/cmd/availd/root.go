@@ -18,8 +18,8 @@ import (
 	txmodule "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/vitwit/avail-da-module/simapp/app"
-	"github.com/vitwit/avail-da-module/simapp/app/params"
+	"simapp/app"
+	"simapp/app/params"
 )
 
 // NewRootCmd creates a new root command for chain app. It is called once in the

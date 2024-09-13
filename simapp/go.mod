@@ -1,8 +1,8 @@
-module github.com/vitwit/avail-da-module/simapp
+module simapp
 
 go 1.22.5
 
-replace github.com/vitwit/avail-da-module => /home/vitwit/avail-setup/avail-da-module
+replace github.com/vitwit/avail-da-module => ../
 
 // overrides
 replace (
@@ -55,7 +55,7 @@ require (
 	github.com/cosmos/ibc-go/v8 v8.3.2
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/cobra v1.8.1
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	github.com/vitwit/avail-da-module v0.0.0-20240725103806-4280f8cc7eb9

@@ -9,7 +9,7 @@ func (s *TestSuite) TestSetBlobStatusPending() {
 	testCases := []struct {
 		name         string
 		startHeight  uint64
-		endHeoght    uint64
+		endHeight    uint64
 		expectOutput bool
 	}{
 		{
@@ -22,7 +22,7 @@ func (s *TestSuite) TestSetBlobStatusPending() {
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-			res := s.keeper.SetBlobStatusPending(s.ctx, tc.startHeight, tc.endHeoght)
+			res := s.keeper.SetBlobStatusPending(s.ctx, tc.startHeight, tc.endHeight)
 			status, err := s.queryClient.SubmitBlobStatus(s.ctx, &types.QuerySubmitBlobStatusRequest{})
 			s.Require().NoError(err)
 			if tc.expectOutput {

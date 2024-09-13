@@ -286,6 +286,7 @@ type (
 	ValidatorI interface {
 		GetCtx() *server.Context
 		GetAppConfig() *srvconfig.Config
+		GetRPC() string
 	}
 
 	// Logger is a network logger interface that exposes testnet-level Log() methods for an in-process testing network
@@ -308,6 +309,10 @@ func (v Validator) GetCtx() *server.Context {
 
 func (v Validator) GetAppConfig() *srvconfig.Config {
 	return v.AppConfig
+}
+
+func (v Validator) GetRPC() string {
+	return v.RPCAddress
 }
 
 // CLILogger wraps a cobra.Command and provides command logging methods.

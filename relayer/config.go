@@ -74,7 +74,6 @@ type AvailConfig struct {
 }
 
 func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfig {
-
 	return AvailConfig{
 		ChainID:             cast.ToString(appOpts.Get(FlagChainID)),
 		AppID:               cast.ToInt(appOpts.Get(FlagOverrideAppID)),

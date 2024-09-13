@@ -30,6 +30,8 @@ func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, b
 
 	jsonData := []byte(fmt.Sprintf(`{"data":"%s"}`, datab))
 
+	fmt.Printf("lightClientUrl: %v\n", lightClientUrl)
+
 	url := fmt.Sprintf("%s/v2/submit", lightClientUrl)
 
 	// Make the POST request

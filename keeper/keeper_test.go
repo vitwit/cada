@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"testing"
 
+	cadaApp "simapp/app"
+
 	addresstypes "cosmossdk.io/core/address"
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
@@ -24,7 +26,6 @@ import (
 	availkeeper "github.com/vitwit/avail-da-module/keeper"
 	mocks "github.com/vitwit/avail-da-module/keeper/mocks"
 	module "github.com/vitwit/avail-da-module/module"
-	cadaApp "github.com/vitwit/avail-da-module/simapp/app"
 	"github.com/vitwit/avail-da-module/types"
 )
 

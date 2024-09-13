@@ -8,12 +8,13 @@ import (
 	"os"
 	"path/filepath"
 
+	"simapp/app"
+
 	cmtcfg "github.com/cometbft/cometbft/config"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/vitwit/avail-da-module/simapp/app"
 	"golang.org/x/sync/errgroup"
 
 	"cosmossdk.io/log"

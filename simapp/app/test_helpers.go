@@ -19,7 +19,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/testutil/mock"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module/testutil"
@@ -27,6 +26,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
+	network "github.com/vitwit/avail-da-module/network"
+	relayercfg "github.com/vitwit/avail-da-module/relayer"
 )
 
 // SetupOptions defines arguments that are passed into `Simapp` constructor.
@@ -42,6 +43,7 @@ func setup(withGenesis bool, invCheckPeriod uint) (*ChainApp, GenesisState) {
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[flags.FlagHome] = DefaultNodeHome
 	appOptions[server.FlagInvCheckPeriod] = invCheckPeriod
+	appOptions[relayercfg.FlagLightClientURL] = "http://127.0.0.1:8000"
 
 	app := NewChainApp(log.NewNopLogger(), db, nil, true, appOptions)
 	if withGenesis {
@@ -225,9 +227,14 @@ func NewTestNetworkFixture() network.TestFixture {
 	app := NewChainApp(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(dir))
 
 	appCtr := func(val network.ValidatorI) servertypes.Application {
+		appOptions := simtestutil.AppOptionsMap{
+			flags.FlagHome:                val.GetCtx().Config.RootDir,
+			relayercfg.FlagCosmosNodeRPC:  val.GetRPC(),
+			relayercfg.FlagLightClientURL: "http://127.0.0.1:8000",
+		}
 		return NewChainApp(
 			val.GetCtx().Logger, dbm.NewMemDB(), nil, true,
-			simtestutil.NewAppOptionsWithFlagHome(val.GetCtx().Config.RootDir),
+			appOptions,
 			bam.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
 			bam.SetMinGasPrices(val.GetAppConfig().MinGasPrices),
 			bam.SetChainID(val.GetCtx().Viper.GetString(flags.FlagChainID)),

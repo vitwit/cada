@@ -102,6 +102,8 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 
 	fmt.Println("is it coming here where we post to DA")
 
+	fmt.Printf("r.rpcClient.config.LightClientURL: %v\n", r.rpcClient.config.LightClientURL)
+
 	blockInfo, err := r.SubmitDataToAvailClient(r.rpcClient.config.Seed, r.rpcClient.config.AppID, bb, blocks, r.rpcClient.config.LightClientURL)
 
 	if err != nil {
@@ -120,7 +122,7 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 			},
 			// AvailHeight: uint64(blockInfo.BlockNumber),
 			IsSuccess: false,
-		}, cdc)
+		}, cdc, r.clientCtx.NodeURI)
 		if err != nil {
 			fmt.Println("error while submitting tx...", err)
 		}
@@ -143,7 +145,7 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 		fmt.Println("submit blocks msg.......", msg)
 
 		// TODO : execute tx about successfull submission
-		err = dacli.ExecuteTX(ctx, msg, cdc)
+		err = dacli.ExecuteTX(ctx, msg, cdc, r.clientCtx.NodeURI)
 		if err != nil {
 			fmt.Println("error while submitting tx...", err)
 		}
