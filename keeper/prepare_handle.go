@@ -17,7 +17,7 @@ func (k *Keeper) prepareInjectData(ctx sdk.Context, currentBlockTime time.Time, 
 	return types.InjectedData{}
 }
 
-func (k *Keeper) addAvailblobDataToTxs(injectDataBz []byte, maxTxBytes int64, txs [][]byte) [][]byte {
+func (k *Keeper) AddAvailblobDataToTxs(injectDataBz []byte, maxTxBytes int64, txs [][]byte) [][]byte {
 	if injectDataBz != nil && len(injectDataBz) > 0 {
 		var finalTxs [][]byte
 		totalTxBytes := int64(len(injectDataBz))
