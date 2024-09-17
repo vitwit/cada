@@ -2,7 +2,6 @@ package local
 
 import (
 	cometrpc "github.com/cometbft/cometbft/rpc/client/http"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 

@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 
 	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
@@ -15,7 +16,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) (BlockInfo, error) {
+func (r *Relayer) SubmitDataToAvailClient(_ string, _ int, data []byte, blocks []int64, lightClientURL string) (BlockInfo, error) {
 	var blockInfo BlockInfo
 
 	handler := NewHTTPClientHandler()
@@ -23,7 +24,7 @@ func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, b
 
 	jsonData := []byte(fmt.Sprintf(`{"data":"%s"}`, datab))
 
-	url := fmt.Sprintf("%s/v2/submit", lightClientUrl)
+	url := fmt.Sprintf("%s/v2/submit", lightClientURL)
 
 	// Make the POST request
 	responseBody, err := handler.Post(url, jsonData)
@@ -38,7 +39,7 @@ func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, b
 		r.logger.Error("Error while posting block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", string(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.rpcClient.config.AppID),
 		)
 	}
 
@@ -46,7 +47,7 @@ func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, b
 		r.logger.Info("Successfully posted block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", string(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.rpcClient.config.AppID),
 			"block_hash", blockInfo.BlockHash,
 			"block_number", blockInfo.BlockNumber,
 			"hash", blockInfo.Hash,
@@ -56,11 +57,11 @@ func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, b
 	return blockInfo, nil
 }
 
-func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (BlockData, error) {
+func (r *Relayer) GetSubmittedData(lightClientURL string, blockNumber int) (BlockData, error) {
 	handler := NewHTTPClientHandler()
 
 	// Construct the URL with the block number
-	url := fmt.Sprintf("%s/v2/blocks/%v/data?fields=data", lightClientUrl, blockNumber)
+	url := fmt.Sprintf("%s/v2/blocks/%v/data?fields=data", lightClientURL, blockNumber)
 
 	// Perform the GET request, returning the body directly
 	body, err := handler.Get(url)
@@ -79,8 +80,8 @@ func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (Bloc
 }
 
 // IsDataAvailable is to query the avail light client and check if the data is made available at the given height
-func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to uint64, availHeight uint64, lightClientUrl string) (bool, error) {
-	availBlock, err := r.GetSubmittedData(lightClientUrl, int(availHeight))
+func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to, availHeight uint64, lightClientURL string) (bool, error) {
+	availBlock, err := r.GetSubmittedData(lightClientURL, int(availHeight))
 	if err != nil {
 		return false, err
 	}
@@ -97,7 +98,7 @@ func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to uint64, availHeight 
 	return isDataIncludedInBlock(availBlock, base64CosmosBlockData), nil
 }
 
-// bruteforce comparision check
+// bruteforce comparison check
 func isDataIncludedInBlock(availBlock BlockData, base64cosmosData string) bool {
 	for _, data := range availBlock.Extrinsics {
 		if data.Data == base64cosmosData {
@@ -115,14 +116,14 @@ type GetBlock struct {
 }
 
 // submitData creates a transaction and makes a Avail data submission
-func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, data []byte, blocks []int64) error {
-	api, err := gsrpc.NewSubstrateAPI(ApiURL)
+func (r *Relayer) SubmitDataToAvailDA(apiURL, seed string, availAppID int, data []byte, blocks []int64) error {
+	api, err := gsrpc.NewSubstrateAPI(apiURL)
 	if err != nil {
 		r.logger.Error("cannot create api:%w", err)
 		return err
 	}
 
-	fmt.Println("appurl", ApiURL, "seed", Seed)
+	fmt.Println("appurl", apiURL, "seed", seed)
 	fmt.Println("created substrate api")
 
 	meta, err := api.RPC.State.GetMetadataLatest()
@@ -136,8 +137,8 @@ func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, dat
 	appID := 0
 
 	// if app id is greater than 0 then it must be created before submitting data
-	if AppID != 0 {
-		appID = AppID
+	if availAppID != 0 {
+		appID = availAppID
 	}
 
 	c, err := types.NewCall(meta, "DataAvailability.submit_data", types.NewBytes(data))
@@ -161,7 +162,7 @@ func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, dat
 		return err
 	}
 
-	keyringPair, err := signature.KeyringPairFromSecret(Seed, 42)
+	keyringPair, err := signature.KeyringPairFromSecret(seed, 42)
 	if err != nil {
 		r.logger.Error("cannot create KeyPair:%w", err)
 		return err
@@ -213,7 +214,7 @@ func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, dat
 		r.logger.Info("Posted block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", string(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.rpcClient.config.AppID),
 		)
 	}
 
@@ -226,7 +227,6 @@ func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, dat
 				fmt.Printf("Txn inside block %v\n", status.AsInBlock.Hex())
 			} else if status.IsFinalized {
 				retriever, err := retriever.NewDefaultEventRetriever(state.NewEventProvider(api.RPC.State), api.RPC.State)
-
 				if err != nil {
 					r.logger.Error("Couldn't create event retriever: %s", err)
 					return err
@@ -242,8 +242,7 @@ func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, dat
 					if event.Name == "DataAvailability.DataSubmitted" {
 						from, _ := registry.ProcessDecodedFieldValue[*types.AccountID](
 							event.Fields,
-							func(fieldIndex int, field *registry.DecodedField) bool {
-
+							func(_ int, field *registry.DecodedField) bool {
 								return field.Name == "sp_core.crypto.AccountId32.who"
 							},
 							func(value any) (*types.AccountID, error) {
@@ -253,10 +252,9 @@ func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, dat
 									return nil, fmt.Errorf("unexpected value: %v", value)
 								}
 
-								accByteSlice, err := registry.GetDecodedFieldAsSliceOfType[types.U8](fields, func(fieldIndex int, field *registry.DecodedField) bool {
+								accByteSlice, err := registry.GetDecodedFieldAsSliceOfType[types.U8](fields, func(fieldIndex int, _ *registry.DecodedField) bool {
 									return fieldIndex == 0
 								})
-
 								if err != nil {
 									return nil, err
 								}
@@ -275,10 +273,9 @@ func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, dat
 						// // add, _ := types.NewAddressFromHexAccountID(a)
 						// fmt.Println(from)
 						fmt.Printf("from address read from event: %s \n", a)
-
 						dataHash, err := registry.ProcessDecodedFieldValue[*types.Hash](
 							event.Fields,
-							func(fieldIndex int, field *registry.DecodedField) bool {
+							func(fieldIndex int, _ *registry.DecodedField) bool {
 								return fieldIndex == 1
 							},
 							func(value any) (*types.Hash, error) {
@@ -287,10 +284,9 @@ func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, dat
 									return nil, fmt.Errorf("unexpected value: %v", value)
 								}
 
-								hashByteSlice, err := registry.GetDecodedFieldAsSliceOfType[types.U8](fields, func(fieldIndex int, field *registry.DecodedField) bool {
+								hashByteSlice, err := registry.GetDecodedFieldAsSliceOfType[types.U8](fields, func(fieldIndex int, _ *registry.DecodedField) bool {
 									return fieldIndex == 0
 								})
-
 								if err != nil {
 									return nil, err
 								}
@@ -304,17 +300,17 @@ func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, dat
 								return &hash, nil
 							},
 						)
-						if err != nil {
+
+						switch {
+						case err != nil:
 							fmt.Printf("DataHash parsing err: %s\n", err.Error())
-						} else if dataHash == nil {
+						case dataHash == nil:
 							fmt.Println("DataHash is nil")
-						} else {
+						default:
 							fmt.Printf("DataHash read from event: %s \n", dataHash.Hex())
 						}
-						fmt.Printf("DataHash read from event: %s \n", dataHash.Hex())
 
 					}
-
 				}
 				fmt.Printf("Txn inside finalized block\n")
 				hash := status.AsFinalized
@@ -339,7 +335,6 @@ func GetDataFromAvailDA(hash types.Hash, api *gsrpc.SubstrateAPI, data string) e
 	}
 
 	for _, ext := range block.Block.Extrinsics {
-
 		// these values below are specific indexes only for data submission, differs with each extrinsic
 		if ext.Method.CallIndex.SectionIndex == 29 && ext.Method.CallIndex.MethodIndex == 1 {
 			arg := ext.Method.Args
