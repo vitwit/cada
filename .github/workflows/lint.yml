@@ -12,9 +12,9 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ci-${{ github.ref }}-lint
-  cancel-in-progress: true
+# concurrency:
+#   group: ci-${{ github.ref }}-lint
+#   # cancel-in-progress: true
 
 jobs:
   golangci:
