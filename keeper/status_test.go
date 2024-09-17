@@ -32,3 +32,34 @@ func (s *TestSuite) TestSetBlobStatusPending() {
 		})
 	}
 }
+
+func (s *TestSuite) TestSetBlobStatus() {
+
+	testCases := []struct {
+		name        string
+		startHeight uint64
+		endHeight   uint64
+		status      uint32
+		expectErr   bool
+	}{
+		{
+			"set blob status as pending",
+			10,
+			20,
+			0,
+			false,
+		},
+	}
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			sErr := s.keeper.SetBlobStatus(s.ctx, tc.status)
+			status, err := s.queryClient.SubmittedBlobStatus(s.ctx, &types.QuerySubmittedBlobStatusRequest{})
+			s.Require().NoError(err)
+			if tc.expectErr {
+				s.Require().NoError(sErr)
+				s.Require().Equal(status.Status, "READY_STATE")
+			}
+		})
+	}
+}

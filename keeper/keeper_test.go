@@ -23,7 +23,6 @@ import (
 	"github.com/stretchr/testify/suite"
 	cada "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/keeper"
-	mocks "github.com/vitwit/avail-da-module/keeper/mocks"
 	module "github.com/vitwit/avail-da-module/module"
 	"github.com/vitwit/avail-da-module/types"
 )
@@ -40,7 +39,6 @@ type TestSuite struct {
 	encCfg                     moduletestutil.TestEncodingConfig
 	addressCodec               addresstypes.Codec
 	baseApp                    *baseapp.BaseApp
-	mockKeeper                 *mocks.MockKeeper
 	appOpts                    servertypes.AppOptions
 	app                        *cadaApp.ChainApp
 	upgradeKeeper              upgradekeeper.Keeper
@@ -57,7 +55,6 @@ func TestKeeperTestSuite(t *testing.T) {
 
 func (s *TestSuite) SetupTest() {
 	key := storetypes.NewKVStoreKey(cada.ModuleName)
-	s.mockKeeper = new(mocks.MockKeeper)
 	storeService := runtime.NewKVStoreService(key)
 	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
 	s.ctx = testCtx.Ctx.WithBlockHeader(cmtproto.Header{Time: cmttime.Now()})

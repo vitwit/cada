@@ -12,16 +12,14 @@ func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
 	err = availkeeper.UpdateEndHeight(s.ctx, s.store, uint64(20))
 	s.Require().NoError(err)
 
-	availkeeper.UpdateBlobStatus(s.ctx, s.store, uint32(1))
-	s.Require().NoError(err)
-
 	testCases := []struct {
 		name      string
 		inputMsg  *types.MsgUpdateBlobStatusRequest
+		status    uint32
 		expectErr bool
 	}{
 		{
-			"submit blob request",
+			"update blob status",
 			&types.MsgUpdateBlobStatusRequest{
 				ValidatorAddress: s.addrs[1].String(),
 				BlocksRange: &types.Range{
@@ -31,12 +29,58 @@ func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
 				AvailHeight: 20,
 				IsSuccess:   true,
 			},
+			1,
 			false,
+		},
+		{
+			"status is not in pending",
+			&types.MsgUpdateBlobStatusRequest{
+				ValidatorAddress: s.addrs[1].String(),
+				BlocksRange: &types.Range{
+					From: 11,
+					To:   20,
+				},
+				AvailHeight: 20,
+				IsSuccess:   true,
+			},
+			3,
+			true,
+		},
+		{
+			"data posting is not succeeded",
+			&types.MsgUpdateBlobStatusRequest{
+				ValidatorAddress: s.addrs[1].String(),
+				BlocksRange: &types.Range{
+					From: 11,
+					To:   20,
+				},
+				AvailHeight: 20,
+				IsSuccess:   false,
+			},
+			1,
+			false,
+		},
+		{
+			"invalid blocks range",
+			&types.MsgUpdateBlobStatusRequest{
+				ValidatorAddress: s.addrs[1].String(),
+				BlocksRange: &types.Range{
+					From: 12,
+					To:   20,
+				},
+				AvailHeight: 20,
+				IsSuccess:   true,
+			},
+			1,
+			true,
 		},
 	}
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
+			availkeeper.UpdateBlobStatus(s.ctx, s.store, tc.status)
+			s.Require().NoError(err)
+
 			_, err := s.msgserver.UpdateBlobStatus(s.ctx, tc.inputMsg)
 			if tc.expectErr {
 				s.Require().Error(err)
@@ -46,100 +90,3 @@ func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
 		})
 	}
 }
-
-// func (s *TestSuite) TestUpdateBlobStatus() {
-
-// 	testCases := []struct {
-// 		name         string
-// 		inputMsg     *types.MsgUpdateBlobStatusRequest
-// 		provenHeight uint64
-// 		endHeight    uint64
-// 		status       uint32
-// 		expectErr    bool
-// 	}{
-// 		{
-// 			"update blob status",
-// 			&types.MsgUpdateBlobStatusRequest{
-// 				ValidatorAddress: s.addrs[1].String(),
-// 				BlocksRange: &types.Range{
-// 					From: 11,
-// 					To:   20,
-// 				},
-// 				AvailHeight: 20,
-// 				IsSuccess:   true,
-// 			},
-// 			10,
-// 			20,
-// 			1,
-// 			false,
-// 		},
-// 		{
-// 			"submit invalid block range request",
-// 			&types.MsgUpdateBlobStatusRequest{
-// 				ValidatorAddress: s.addrs[1].String(),
-// 				BlocksRange: &types.Range{
-// 					From: 11,
-// 					To:   20,
-// 				},
-// 				AvailHeight: 20,
-// 				IsSuccess:   true,
-// 			},
-// 			10,
-// 			15,
-// 			1,
-// 			true,
-// 		},
-// 		{
-// 			"status is not in pending state",
-// 			&types.MsgUpdateBlobStatusRequest{
-// 				ValidatorAddress: s.addrs[1].String(),
-// 				BlocksRange: &types.Range{
-// 					From: 11,
-// 					To:   20,
-// 				},
-// 				AvailHeight: 20,
-// 				IsSuccess:   true,
-// 			},
-// 			10,
-// 			20,
-// 			3,
-// 			true,
-// 		},
-// 		{
-// 			"update blob status request is not success",
-// 			&types.MsgUpdateBlobStatusRequest{
-// 				ValidatorAddress: s.addrs[1].String(),
-// 				BlocksRange: &types.Range{
-// 					From: 11,
-// 					To:   20,
-// 				},
-// 				AvailHeight: 20,
-// 				IsSuccess:   false,
-// 			},
-// 			10,
-// 			20,
-// 			1,
-// 			false,
-// 		},
-// 	}
-
-// 	for _, tc := range testCases {
-// 		s.Run(tc.name, func() {
-// 			err := s.keeper.SetProvenHeight(s.ctx, tc.provenHeight)
-// 			s.Require().NoError(err)
-
-// 			err = availkeeper.UpdateEndHeight(s.ctx, s.store, tc.endHeight)
-// 			s.Require().NoError(err)
-
-// 			availkeeper.UpdateBlobStatus(s.ctx, s.store, tc.status)
-// 			s.Require().NoError(err)
-
-// 			err = store.UpdateBlobStatus(s.ctx, s.store, tc.status)
-// 			if tc.expectErr {
-// 				s.Require().Error(err)
-// 			} else {
-// 				s.Require().NoError(err)
-// 			}
-// 		})
-// 	}
-// }
