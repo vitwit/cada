@@ -17,12 +17,6 @@ import (
 
 func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) (BlockInfo, error) {
 	var blockInfo BlockInfo
-	// if r.submittedBlocksCache[blocks[0]] {
-	// 	return blockInfo, nil
-	// }
-
-	// // r.submittedBlocksCache[blocks[0]] = true
-	// delete(r.submittedBlocksCache, blocks[0]-int64(len(blocks)))
 
 	handler := NewHTTPClientHandler()
 	datab := base64.StdEncoding.EncodeToString(data)

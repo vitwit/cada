@@ -119,6 +119,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	}
 
 	var blocksToSumit []int64
+<<<<<<< HEAD
 
 	for i := fromHeight; i < endHeight; i++ {
 		blocksToSumit = append(blocksToSumit, int64(i))
@@ -129,6 +130,18 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 		k.relayer.PostBlocks(ctx, blocksToSumit, k.cdc, req.ProposerAddress)
 	}
 
+=======
+
+	for i := fromHeight; i < endHeight; i++ {
+		blocksToSumit = append(blocksToSumit, int64(i))
+	}
+
+	// only the proposer should be able to post the blocks
+	if bytes.Equal(req.ProposerAddress, k.proposerAddress) {
+		k.relayer.PostBlocks(ctx, blocksToSumit, k.cdc, req.ProposerAddress)
+	}
+
+>>>>>>> da99450ba7959eeb555a583f0724cc95e34110a2
 	return nil
 }
 

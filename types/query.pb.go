@@ -123,6 +123,7 @@ func (m *QuerySubmittedBlobStatusResponse) GetStatus() string {
 }
 
 func (m *QuerySubmittedBlobStatusResponse) GetProvenHeight() uint64 {
+func (m *QuerySubmittedBlobStatusResponse) GetProvenHeight() uint64 {
 	if m != nil {
 		return m.ProvenHeight
 	}
