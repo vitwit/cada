@@ -6,7 +6,7 @@ order: 3
 
 ## UpdateBlobStatus
 
-The `MsgUpdateBlobStatus` is used to update the status of block submissions from `PENDING` to either `IN_VOTING` if the submission is successful, or `FAILURE` if it fails. The responsibility for executing this transaction lies with the individual who originally submitted the blocks data to `Avail` (the proposer of the block where the blocks data submission was initiated).
+The `MsgUpdateBlobStatus` is used to update the status of blocks submission from `PENDING` to either `IN_VOTING` if the submission is successful, or `FAILURE` if it fails. The responsibility for executing this transaction lies with the individual who originally submitted the blocks data to `Avail` (the proposer of the block where the blocks data submission was initiated).
 
 This message will fail under the following conditions:
 

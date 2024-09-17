@@ -23,7 +23,7 @@ For Blob Interval = 5 and Maximum Blocks Limit for Blob = 10 :-
 
 ### Relayer
 
-- The `Relayer` acts as the transport layer, responsible for handling requests from the `prepareBlocker` and facilitating transactions between the Cosmos chain and the Avail DA network.
+- The `Relayer` acts as the transport layer, responsible for handling requests from the `preBlocker` and facilitating transactions between the Cosmos chain and the Avail DA network.
 - It performs key functions such as submitting block data to Avail and updating block status on the Cosmos chain. Every validator in the network is required to run the relayer process.
 - Relayer should initialized with a chain account so that the validator can use this account to sign `MsgUpdateStatusBlob` transaction.
 
