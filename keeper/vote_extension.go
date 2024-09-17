@@ -35,7 +35,7 @@ type VoteExtension struct {
 }
 
 func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
-	return func(ctx sdk.Context, req *abci.RequestExtendVote) (*abci.ResponseExtendVote, error) {
+	return func(ctx sdk.Context, _ *abci.RequestExtendVote) (*abci.ResponseExtendVote, error) {
 		from := h.Keeper.GetStartHeightFromStore(ctx)
 		end := h.Keeper.GetEndHeightFromStore(ctx)
 
@@ -94,7 +94,7 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 }
 
 func (h *VoteExtHandler) VerifyVoteExtensionHandler() sdk.VerifyVoteExtensionHandler {
-	return func(ctx sdk.Context, req *abci.RequestVerifyVoteExtension) (*abci.ResponseVerifyVoteExtension, error) {
+	return func(ctx sdk.Context, _ *abci.RequestVerifyVoteExtension) (*abci.ResponseVerifyVoteExtension, error) {
 		// TODO: write proper validation for the votes
 		return &abci.ResponseVerifyVoteExtension{Status: abci.ResponseVerifyVoteExtension_ACCEPT}, nil
 	}

@@ -242,7 +242,7 @@ func (r *Relayer) SubmitDataToAvailDA(apiURL, seed string, availAppID int, data 
 					if event.Name == "DataAvailability.DataSubmitted" {
 						from, _ := registry.ProcessDecodedFieldValue[*types.AccountID](
 							event.Fields,
-							func(fieldIndex int, field *registry.DecodedField) bool {
+							func(_ int, field *registry.DecodedField) bool {
 								return field.Name == "sp_core.crypto.AccountId32.who"
 							},
 							func(value any) (*types.AccountID, error) {
@@ -252,7 +252,7 @@ func (r *Relayer) SubmitDataToAvailDA(apiURL, seed string, availAppID int, data 
 									return nil, fmt.Errorf("unexpected value: %v", value)
 								}
 
-								accByteSlice, err := registry.GetDecodedFieldAsSliceOfType[types.U8](fields, func(fieldIndex int, field *registry.DecodedField) bool {
+								accByteSlice, err := registry.GetDecodedFieldAsSliceOfType[types.U8](fields, func(fieldIndex int, _ *registry.DecodedField) bool {
 									return fieldIndex == 0
 								})
 								if err != nil {
@@ -275,7 +275,7 @@ func (r *Relayer) SubmitDataToAvailDA(apiURL, seed string, availAppID int, data 
 						fmt.Printf("from address read from event: %s \n", a)
 						dataHash, err := registry.ProcessDecodedFieldValue[*types.Hash](
 							event.Fields,
-							func(fieldIndex int, field *registry.DecodedField) bool {
+							func(fieldIndex int, _ *registry.DecodedField) bool {
 								return fieldIndex == 1
 							},
 							func(value any) (*types.Hash, error) {
@@ -284,7 +284,7 @@ func (r *Relayer) SubmitDataToAvailDA(apiURL, seed string, availAppID int, data 
 									return nil, fmt.Errorf("unexpected value: %v", value)
 								}
 
-								hashByteSlice, err := registry.GetDecodedFieldAsSliceOfType[types.U8](fields, func(fieldIndex int, field *registry.DecodedField) bool {
+								hashByteSlice, err := registry.GetDecodedFieldAsSliceOfType[types.U8](fields, func(fieldIndex int, _ *registry.DecodedField) bool {
 									return fieldIndex == 0
 								})
 								if err != nil {
