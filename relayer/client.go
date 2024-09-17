@@ -13,14 +13,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/go-bip39"
-
-	// "github.com/tendermint/starport/starport/pkg/xfilepath"
-
-	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
 const (
@@ -31,7 +28,8 @@ const (
 // var availdHomePath = xfilepath.JoinFromHome(xfilepath.Path("availsdk"))
 
 func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string,
-	cdc codec.BinaryCodec, homepath string, fromAddress sdk.AccAddress) client.Context {
+	cdc codec.BinaryCodec, homepath string, fromAddress sdk.AccAddress,
+) client.Context {
 	encodingConfig := MakeEncodingConfig()
 
 	broadcastMode := flags.BroadcastSync
@@ -106,7 +104,7 @@ func ImportMnemonic(keyName, mnemonic, hdPath string, c client.Context) (*keyrin
 }
 
 // AccountCreate creates an account by name and mnemonic (optional) in the keyring.
-func AccountCreate(accountName, mnemonic, hdPath string, c client.Context) (*keyring.Record, error) {
+func AccountCreate(accountName, mnemonic, _ string, c client.Context) (*keyring.Record, error) {
 	if mnemonic == "" {
 		entropySeed, err := bip39.NewEntropy(256)
 		if err != nil {

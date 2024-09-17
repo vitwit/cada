@@ -1,16 +1,13 @@
 package relayer
 
 import (
-	"sync"
 	"time"
 
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/client"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-
-	"github.com/vitwit/avail-da-module/relayer/local"
-
 	"github.com/cosmos/cosmos-sdk/codec"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	"github.com/vitwit/avail-da-module/relayer/local"
 )
 
 const (
@@ -28,10 +25,7 @@ type Relayer struct {
 	commitHeights      chan int64
 	latestCommitHeight int64
 
-	pollInterval         time.Duration
-	blockProofCacheLimit int
-
-	mu sync.Mutex
+	pollInterval time.Duration
 
 	submittedBlocksCache map[int64]bool
 
@@ -51,7 +45,6 @@ func NewRelayer(
 	logger log.Logger,
 	cdc codec.BinaryCodec,
 	appOpts servertypes.AppOptions,
-	keyDir string,
 ) (*Relayer, error) {
 	cfg := AvailConfigFromAppOpts(appOpts)
 	client, err := NewAvailClient(cfg)

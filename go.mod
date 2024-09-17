@@ -11,8 +11,7 @@ replace (
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/prometheus/client_model => github.com/prometheus/client_model v0.6.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	//	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v1.1.0
-	github.com/prometheus/common => github.com/prometheus/common v0.47.0
-	github.com/prometheus/procfs => github.com/prometheus/procfs v0.12.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
+	// github.com/prometheus/common => github.com/prometheus/common v0.47.0
 	github.com/spf13/viper => github.com/spf13/viper v1.17.0 // v1.18+ breaks app overrides
 )
 
@@ -24,7 +23,6 @@ require (
 	cosmossdk.io/log v1.3.1
 	cosmossdk.io/store v1.1.0
 	cosmossdk.io/x/upgrade v0.1.4
-	github.com/99designs/keyring v1.2.1
 	github.com/centrifuge/go-substrate-rpc-client/v4 v4.2.1
 	github.com/cometbft/cometbft v0.38.10
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
@@ -48,6 +46,7 @@ require (
 	cosmossdk.io/x/evidence v0.1.1 // indirect
 	cosmossdk.io/x/feegrant v0.1.1 // indirect
 	cosmossdk.io/x/nft v0.1.1 // indirect
+	github.com/99designs/keyring v1.2.1 // indirect
 	github.com/aws/aws-sdk-go v1.44.224 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/bits-and-blooms/bitset v1.8.0 // indirect
@@ -116,7 +115,7 @@ require (
 	github.com/cosmos/cosmos-db v1.0.2
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogogateway v1.2.0 // indirect
-	github.com/cosmos/iavl v1.1.2 // indirect
+	github.com/cosmos/iavl v1.1.4 // indirect
 	github.com/cosmos/ics23/go v0.10.0 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.13.3 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect

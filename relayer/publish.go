@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"strconv"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/vitwit/avail-da-module/types"
-
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	dacli "github.com/vitwit/avail-da-module/chainclient"
+	"github.com/vitwit/avail-da-module/types"
 )
 
 func (r *Relayer) ProposePostNextBlocks(ctx sdk.Context, provenHeight int64) []int64 {
@@ -82,7 +81,6 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 	bb := r.GetBlocksDataFromLocal(ctx, blocks)
 
 	blockInfo, err := r.SubmitDataToAvailClient(r.rpcClient.config.Seed, r.rpcClient.config.AppID, bb, blocks, r.rpcClient.config.LightClientURL)
-
 	if err != nil {
 		r.logger.Error("Error while submitting block(s) to Avail DA",
 			"height_start", blocks[0],
@@ -108,15 +106,17 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 	}
 
 	if blockInfo.BlockNumber != 0 {
-		msg := types.MsgUpdateBlobStatusRequest{ValidatorAddress: sdk.AccAddress.String(proposer),
+		msg := types.MsgUpdateBlobStatusRequest{
+			ValidatorAddress: sdk.AccAddress.String(proposer),
 			BlocksRange: &types.Range{
 				From: uint64(blocks[0]),
 				To:   uint64(blocks[len(blocks)-1]),
 			},
 			AvailHeight: uint64(blockInfo.BlockNumber),
-			IsSuccess:   true}
+			IsSuccess:   true,
+		}
 
-		// TODO : execute tx about successfull submission
+		// TODO : execute tx about successful submission
 		err = dacli.ExecuteTX(ctx, msg, cdc, r.clientCtx.NodeURI)
 		if err != nil {
 			fmt.Println("error while submitting tx...", err)

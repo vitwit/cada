@@ -34,13 +34,13 @@ func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlo
 			provenHeight+1, endHeight, req.BlocksRange.From, req.BlocksRange.To)
 	}
 
-	if status != PENDING_STATE {
+	if status != PendingState {
 		return nil, errors.New("can't update the status if it is not pending")
 	}
 
-	newStatus := IN_VOTING_STATE
+	newStatus := InVotingState
 	if !req.IsSuccess {
-		newStatus = FAILURE_STATE
+		newStatus = FailureState
 	} else {
 		currentHeight := sdkCtx.BlockHeight()
 		UpdateAvailHeight(sdkCtx, store, req.AvailHeight) // updates avail height at which the blocks got submitted to DA
@@ -50,5 +50,4 @@ func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlo
 	UpdateBlobStatus(sdkCtx, store, newStatus)
 
 	return &types.MsgUpdateBlobStatusResponse{}, nil
-
 }

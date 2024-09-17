@@ -6,17 +6,15 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	snapshot "cosmossdk.io/store/snapshots/types"
 	storetypes "cosmossdk.io/store/types"
-
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	availblob1 "github.com/vitwit/avail-da-module"
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 )
 
 var _ snapshot.ExtensionSnapshotter = &AvailBlobSnapshotter{}
 
 // SnapshotFormat defines the default snapshot extension encoding format.
-// SnapshotFormat 1 is a proto marshalled UnprovenBlock type.
+// SnapshotFormat 1 is a proto marshaled UnprovenBlock type.
 const SnapshotFormat = 1
 
 // AvailBlobSnapshotter implements the snapshot.ExtensionSnapshotter interface and is used to
@@ -55,7 +53,7 @@ func (*AvailBlobSnapshotter) SupportedFormats() []uint32 {
 
 // SnapshotExtension implements the snapshot.ExntensionSnapshotter interface.
 // SnapshotExtension is used to write data payloads into the underlying protobuf stream from the local client.
-func (s *AvailBlobSnapshotter) SnapshotExtension(height uint64, payloadWriter snapshot.ExtensionPayloadWriter) error {
+func (s *AvailBlobSnapshotter) SnapshotExtension(height uint64, _ snapshot.ExtensionPayloadWriter) error {
 	cacheMS, err := s.cms.CacheMultiStoreWithVersion(int64(height))
 	if err != nil {
 		return err
@@ -125,7 +123,7 @@ func (s *AvailBlobSnapshotter) processAllItems(
 	return nil
 }
 
-func restoreV1(k *Keeper, height int64, unprovenBlockBz []byte) error {
+func restoreV1(_ *Keeper, _ int64, _ []byte) error {
 	// var unprovenBlock availblob1.UnprovenBlock
 	// if err := k.cdc.Unmarshal(unprovenBlockBz, &unprovenBlock); err != nil {
 	// 	return errorsmod.Wrap(err, "failed to unmarshal unproven block")

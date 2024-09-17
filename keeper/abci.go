@@ -57,7 +57,7 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 	}, nil
 }
 
-func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.RequestProcessProposal) (*abci.ResponseProcessProposal, error) {
+func (h *ProofOfBlobProposalHandler) ProcessProposal(_ sdk.Context, req *abci.RequestProcessProposal) (*abci.ResponseProcessProposal, error) {
 	if len(req.Txs) == 0 {
 		return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_ACCEPT}, nil
 	}
@@ -68,19 +68,17 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(ctx sdk.Context, req *abci.
 		// return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_REJECT}, nil
 	}
 
-	//TODO: write some validations
+	// TODO: write some validations
 
 	return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_ACCEPT}, nil
-
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
-
 	votingEndHeight := k.GetVotingEndHeightFromStore(ctx)
 	blobStatus := k.GetBlobStatus(ctx)
 	currentHeight := ctx.BlockHeight()
 
-	if len(req.Txs) > 0 && currentHeight == int64(votingEndHeight) && blobStatus == IN_VOTING_STATE {
+	if len(req.Txs) > 0 && currentHeight == int64(votingEndHeight) && blobStatus == InVotingState {
 		var injectedVoteExtTx StakeWeightedVotes
 		if err := json.Unmarshal(req.Txs[0], &injectedVoteExtTx); err != nil {
 			fmt.Println("preblocker failed to decode injected vote extension tx", "err", err)
@@ -91,10 +89,10 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 			pendingRangeKey := Key(from, to)
 			votingPower := injectedVoteExtTx.Votes[pendingRangeKey]
 
-			state := FAILURE_STATE
+			state := FailureState
 
 			if votingPower > 0 { // TODO: calculate voting power properly
-				state = READY_STATE
+				state = ReadyState
 			}
 
 			k.SetBlobStatus(ctx, state)
@@ -107,8 +105,9 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	}
 
 	provenHeight := k.GetProvenHeightFromStore(ctx)
-	fromHeight := provenHeight + 1                                                     // Calcualte pending range of blocks to post data
-	endHeight := min(fromHeight+uint64(k.MaxBlocksForBlob), uint64(ctx.BlockHeight())) //exclusive i.e [fromHeight, endHeight)
+	fromHeight := provenHeight + 1
+	endHeight := min(fromHeight+uint64(k.MaxBlocksForBlob), uint64(ctx.BlockHeight())) // exclusive i.e [fromHeight, endHeight)
+	// Calculate pending range of blocks to post data
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	ok := k.SetBlobStatusPending(sdkCtx, fromHeight, endHeight-1)

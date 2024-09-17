@@ -50,7 +50,6 @@ var DefaultAvailConfig = AvailConfig{
 
 // AvailConfig defines the configuration for the in-process Avail relayer.
 type AvailConfig struct {
-
 	// avail light node url
 	LightClientURL string `mapstructure:"light-client-url"`
 

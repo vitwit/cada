@@ -72,7 +72,7 @@ func (s *TestSuite) SetupTest() {
 	s.baseApp.SetInterfaceRegistry(s.encCfg.InterfaceRegistry)
 	s.addrs = simtestutil.CreateIncrementalAccounts(7)
 
-	s.keeper = *keeper.NewKeeper(s.encCfg.Codec, s.appOpts, storeService, &s.upgradeKeeper, key, 10, 1)
+	s.keeper = *keeper.NewKeeper(s.encCfg.Codec, storeService, &s.upgradeKeeper, key, 1)
 
 	s.store = s.ctx.KVStore(key)
 

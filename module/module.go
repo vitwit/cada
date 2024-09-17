@@ -129,7 +129,6 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 // DefaultGenesis returns default genesis state as raw bytes for the module.
 func (AppModule) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.NewGenesisState())
-
 }
 
 // ValidateGenesis performs genesis state validation for the rollchain module.
@@ -164,7 +163,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 	return cdc.MustMarshalJSON(gs)
 }
 
-func (am AppModule) BeginBlock(ctx context.Context) error {
+func (am AppModule) BeginBlock(_ context.Context) error {
 	return nil
 }
 

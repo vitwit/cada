@@ -5,14 +5,13 @@ import (
 )
 
 func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, startHeight, endHeight uint64) bool {
-
 	store := ctx.KVStore(k.storeKey)
 
-	if !CanUpdateStatusToPending(store) { //TOodo: we should check for expiration too
+	if !CanUpdateStatusToPending(store) { // TOodo: we should check for expiration too
 		return false
 	}
 
-	UpdateBlobStatus(ctx, store, PENDING_STATE)
+	UpdateBlobStatus(ctx, store, PendingState)
 	UpdateStartHeight(ctx, store, startHeight)
 	UpdateEndHeight(ctx, store, endHeight)
 	return true
@@ -21,7 +20,7 @@ func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, startHeight, endHeight ui
 func (k *Keeper) SetBlobStatus(ctx sdk.Context, state uint32) error {
 	store := ctx.KVStore(k.storeKey)
 
-	if state == READY_STATE {
+	if state == ReadyState {
 		endHeight := k.GetEndHeightFromStore(ctx)
 		err := UpdateProvenHeight(ctx, store, endHeight)
 		if err != nil {
