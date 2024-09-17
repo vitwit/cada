@@ -80,8 +80,6 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 
 	bb := r.GetBlocksDataFromLocal(ctx, blocks)
 
-	fmt.Println("is it coming here where we post to DA")
-
 	blockInfo, err := r.SubmitDataToAvailClient(r.rpcClient.config.Seed, r.rpcClient.config.AppID, bb, blocks, r.rpcClient.config.LightClientURL)
 
 	if err != nil {
@@ -109,9 +107,6 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 	}
 
 	if blockInfo.BlockNumber != 0 {
-		fmt.Println("proposer addressss........", sdk.AccAddress.String(proposer),
-			uint64(blocks[0]), uint64(blocks[len(blocks)-1]), uint64(blockInfo.BlockNumber))
-
 		msg := types.MsgUpdateBlobStatusRequest{ValidatorAddress: sdk.AccAddress.String(proposer),
 			BlocksRange: &types.Range{
 				From: uint64(blocks[0]),
@@ -119,8 +114,6 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 			},
 			AvailHeight: uint64(blockInfo.BlockNumber),
 			IsSuccess:   true}
-
-		fmt.Println("submit blocks msg.......", msg)
 
 		// TODO : execute tx about successfull submission
 		err = dacli.ExecuteTX(ctx, msg, cdc)
