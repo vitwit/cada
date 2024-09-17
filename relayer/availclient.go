@@ -1,12 +1,7 @@
 package relayer
 
-import (
-	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
-)
-
 // AvailClient is the client that handles data submission
 type AvailClient struct {
-	api    *gsrpc.SubstrateAPI
 	config AvailConfig
 }
 

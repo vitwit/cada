@@ -18,7 +18,7 @@ type queryServer struct {
 	k *Keeper
 }
 
-func (qs queryServer) SubmittedBlobStatus(ctx context.Context, req *types.QuerySubmittedBlobStatusRequest) (*types.QuerySubmittedBlobStatusResponse, error) {
+func (qs queryServer) SubmittedBlobStatus(ctx context.Context, _ *types.QuerySubmittedBlobStatusRequest) (*types.QuerySubmittedBlobStatusResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	store := sdkCtx.KVStore(qs.k.storeKey)

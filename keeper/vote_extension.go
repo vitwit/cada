@@ -35,9 +35,7 @@ type VoteExtension struct {
 }
 
 func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
-
-	return func(ctx sdk.Context, req *abci.RequestExtendVote) (*abci.ResponseExtendVote, error) {
-
+	return func(ctx sdk.Context, _ *abci.RequestExtendVote) (*abci.ResponseExtendVote, error) {
 		from := h.Keeper.GetStartHeightFromStore(ctx)
 		end := h.Keeper.GetEndHeightFromStore(ctx)
 
@@ -52,12 +50,12 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 
 		abciResponseVoteExt := &abci.ResponseExtendVote{}
 
-		if currentHeight+1 != int64(voteEndHeight) || blobStatus != IN_VOTING_STATE {
+		if currentHeight+1 != int64(voteEndHeight) || blobStatus != InVotingState {
 			voteExt := VoteExtension{
 				Votes: Votes,
 			}
 
-			//TODO: use better marshalling instead of json (eg: proto marshalling)
+			// TODO: use better marshaling instead of json (eg: proto marshaling)
 			votesBytes, err := json.Marshal(voteExt)
 			if err != nil {
 				return nil, fmt.Errorf("failed to marshal vote extension: %w", err)
@@ -73,12 +71,17 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 			)
 		}
 
+		if err != nil {
+			fmt.Printf("error while checking for submitted data to avail %v", err)
+			return abciResponseVoteExt, err
+		}
+
 		Votes[pendingRangeKey] = ok
 		voteExt := VoteExtension{
 			Votes: Votes,
 		}
 
-		//TODO: use proto marshalling instead
+		// TODO: use proto marshaling instead
 		votesBytes, err := json.Marshal(voteExt)
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal vote extension: %w", err)
@@ -91,7 +94,7 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 }
 
 func (h *VoteExtHandler) VerifyVoteExtensionHandler() sdk.VerifyVoteExtensionHandler {
-	return func(ctx sdk.Context, req *abci.RequestVerifyVoteExtension) (*abci.ResponseVerifyVoteExtension, error) {
+	return func(_ sdk.Context, _ *abci.RequestVerifyVoteExtension) (*abci.ResponseVerifyVoteExtension, error) {
 		// TODO: write proper validation for the votes
 		return &abci.ResponseVerifyVoteExtension{Status: abci.ResponseVerifyVoteExtension_ACCEPT}, nil
 	}

@@ -5,19 +5,17 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/spf13/cobra"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-
+	"github.com/spf13/cobra"
 	availblob "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/keeper"
 	"github.com/vitwit/avail-da-module/types"
 )
 
 // NewTxCmd
-func NewTxCmd(keeper *keeper.Keeper) *cobra.Command {
+func NewTxCmd(_ *keeper.Keeper) *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        availblob.ModuleName,
 		Short:                      availblob.ModuleName + " transaction subcommands",

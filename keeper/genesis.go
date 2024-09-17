@@ -49,7 +49,7 @@ func (k *Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 }
 
 // SetAvailGenesisState imports avail light client's full state
-func (k Keeper) SetAvailGenesisState(ctx sdk.Context, gs *types.GenesisState) {
+func (k Keeper) SetAvailGenesisState(_ sdk.Context, _ *types.GenesisState) {
 	// if gs != nil {
 	// 	store := ctx.KVStore(k.storeKey)
 	// 	for _, metadata := range gs.Metadata {

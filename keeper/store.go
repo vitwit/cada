@@ -10,21 +10,21 @@ import (
 )
 
 const (
-	READY_STATE     uint32 = 0
-	PENDING_STATE   uint32 = 1
-	IN_VOTING_STATE uint32 = 2
-	FAILURE_STATE   uint32 = 3
+	ReadyState    uint32 = 0
+	PendingState  uint32 = 1
+	InVotingState uint32 = 2
+	FailureState  uint32 = 3
 )
 
 func ParseStatus(status uint32) string {
 	switch status {
-	case READY_STATE:
+	case ReadyState:
 		return "SUCCESS"
-	case PENDING_STATE:
+	case PendingState:
 		return "PENDING"
-	case IN_VOTING_STATE:
+	case InVotingState:
 		return "IN_VOTING"
-	case FAILURE_STATE:
+	case FailureState:
 		return "FAILURE"
 	default:
 		return "UNKNOWN"
@@ -33,20 +33,20 @@ func ParseStatus(status uint32) string {
 
 func CanUpdateStatusToPending(store storetypes2.KVStore) bool {
 	statusBytes := store.Get(availblob1.BlobStatusKey)
-	if statusBytes == nil || len(statusBytes) == 0 {
+	if len(statusBytes) == 0 {
 		return true
 	}
 
 	status := binary.BigEndian.Uint32(statusBytes)
 
-	return status == READY_STATE || status == FAILURE_STATE
+	return status == ReadyState || status == FailureState
 }
 
 func GetStatusFromStore(store storetypes2.KVStore) uint32 {
 	statusBytes := store.Get(availblob1.BlobStatusKey)
 
-	if statusBytes == nil || len(statusBytes) == 0 {
-		return READY_STATE
+	if len(statusBytes) == 0 {
+		return ReadyState
 	}
 
 	status := binary.BigEndian.Uint32(statusBytes)
@@ -54,8 +54,7 @@ func GetStatusFromStore(store storetypes2.KVStore) uint32 {
 	return status
 }
 
-func UpdateBlobStatus(ctx sdk.Context, store storetypes2.KVStore, status uint32) error {
-
+func UpdateBlobStatus(_ sdk.Context, store storetypes2.KVStore, status uint32) error {
 	statusBytes := make([]byte, 4)
 
 	binary.BigEndian.PutUint32(statusBytes, status)
@@ -64,23 +63,23 @@ func UpdateBlobStatus(ctx sdk.Context, store storetypes2.KVStore, status uint32)
 	return nil
 }
 
-func UpdateStartHeight(ctx sdk.Context, store storetypes2.KVStore, startHeight uint64) error {
+func UpdateStartHeight(_ sdk.Context, store storetypes2.KVStore, startHeight uint64) error {
 	return updateHeight(store, availblob1.PrevHeightKey, startHeight)
 }
 
-func UpdateEndHeight(ctx sdk.Context, store storetypes2.KVStore, endHeight uint64) error {
+func UpdateEndHeight(_ sdk.Context, store storetypes2.KVStore, endHeight uint64) error {
 	return updateHeight(store, availblob1.NextHeightKey, endHeight)
 }
 
-func UpdateProvenHeight(ctx sdk.Context, store storetypes2.KVStore, provenHeight uint64) error {
+func UpdateProvenHeight(_ sdk.Context, store storetypes2.KVStore, provenHeight uint64) error {
 	return updateHeight(store, availblob1.ProvenHeightKey, provenHeight)
 }
 
-func UpdateAvailHeight(ctx sdk.Context, store storetypes2.KVStore, availHeight uint64) error {
+func UpdateAvailHeight(_ sdk.Context, store storetypes2.KVStore, availHeight uint64) error {
 	return updateHeight(store, availblob1.AvailHeightKey, availHeight)
 }
 
-func UpdateVotingEndHeight(ctx sdk.Context, store storetypes2.KVStore, votingEndHeight uint64, isLastVoting bool) error {
+func UpdateVotingEndHeight(_ sdk.Context, store storetypes2.KVStore, votingEndHeight uint64, isLastVoting bool) error {
 	key := availblob1.VotingEndHeightKey
 	if isLastVoting {
 		key = availblob1.LastVotingEndHeightKey
@@ -118,7 +117,6 @@ func (k *Keeper) GetStartHeightFromStore(ctx sdk.Context) uint64 {
 }
 
 func (k *Keeper) GetEndHeightFromStore(ctx sdk.Context) uint64 {
-
 	return k.getHeight(ctx, availblob1.NextHeightKey)
 }
 
@@ -126,7 +124,7 @@ func (k *Keeper) getHeight(ctx sdk.Context, key collections.Prefix) uint64 {
 	store := ctx.KVStore(k.storeKey)
 	heightBytes := store.Get(key)
 
-	if heightBytes == nil || len(heightBytes) == 0 {
+	if len(heightBytes) == 0 {
 		return 0
 	}
 
