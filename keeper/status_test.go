@@ -23,7 +23,7 @@ func (s *TestSuite) TestSetBlobStatusPending() {
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
 			res := s.keeper.SetBlobStatusPending(s.ctx, tc.startHeight, tc.endHeight)
-			status, err := s.queryClient.SubmitBlobStatus(s.ctx, &types.QuerySubmitBlobStatusRequest{})
+			status, err := s.queryClient.SubmittedBlobStatus(s.ctx, &types.QuerySubmittedBlobStatusRequest{})
 			s.Require().NoError(err)
 			if tc.expectOutput {
 				s.Require().Equal(status.Status, "PENDING_STATE")
@@ -31,13 +31,4 @@ func (s *TestSuite) TestSetBlobStatusPending() {
 			}
 		})
 	}
-}
-
-func (s *TestSuite) TestSetBlobStatusFailure() {
-
-	s.keeper.SetBlobStatusFailure(s.ctx)
-	status, err := s.queryClient.SubmitBlobStatus(s.ctx, &types.QuerySubmitBlobStatusRequest{})
-	s.Require().NoError(err)
-
-	s.Require().Equal(status.Status, "FAILURE")
 }

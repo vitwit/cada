@@ -30,7 +30,6 @@ func Key(from, to uint64) string {
 	return fmt.Sprintln(from, " ", to)
 }
 
-// TODO: change the Vote Extension to be actually usable
 type VoteExtension struct {
 	Votes map[string]bool
 }
@@ -39,7 +38,6 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 
 	return func(ctx sdk.Context, req *abci.RequestExtendVote) (*abci.ResponseExtendVote, error) {
 
-		// TODO: implement proper logic, this is for demo purpose only
 		from := h.Keeper.GetStartHeightFromStore(ctx)
 		end := h.Keeper.GetEndHeightFromStore(ctx)
 
@@ -68,15 +66,13 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 			return abciResponseVoteExt, nil
 		}
 
-		ok, err := h.Keeper.relayer.IsDataAvailable(ctx, from, end, availHeight, "http://localhost:8000")
-		fmt.Println("checking light client...", ok, err)
+		ok, err := h.Keeper.relayer.IsDataAvailable(ctx, from, end, availHeight, "http://localhost:8000") // TODO: read light client url from config
 		if ok {
 			h.logger.Info("submitted data to Avail verified successfully at",
 				"block_height", availHeight,
 			)
 		}
 
-		// ok, checkLightClient()
 		Votes[pendingRangeKey] = ok
 		voteExt := VoteExtension{
 			Votes: Votes,

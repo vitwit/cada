@@ -82,9 +82,7 @@ func (k *Keeper) marshalMaxBytes(injectData *types.InjectedData, maxBytes int64,
 		return nil
 	}
 
-	proofLimit := k.injectedProofsLimit
 	for int64(len(injectDataBz)) > maxBytes {
-		proofLimit = proofLimit - 1
 
 		injectDataBz, err = k.cdc.Marshal(injectData)
 		if err != nil {

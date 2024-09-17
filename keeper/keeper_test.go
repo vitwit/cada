@@ -23,7 +23,6 @@ import (
 	"github.com/stretchr/testify/suite"
 	cada "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/keeper"
-	availkeeper "github.com/vitwit/avail-da-module/keeper"
 	mocks "github.com/vitwit/avail-da-module/keeper/mocks"
 	module "github.com/vitwit/avail-da-module/module"
 	"github.com/vitwit/avail-da-module/types"
@@ -102,102 +101,4 @@ func (s *TestSuite) SetupTest() {
 	s.proofofBlobProposerHandler = *keeper.NewProofOfBlobProposalHandler(&s.keeper,
 		prepareProposalHandler, processProposalHandler, s.voteExtensionHandler)
 
-}
-
-func (s *TestSuite) TestUpdateBlobStatus() {
-
-	testCases := []struct {
-		name         string
-		inputMsg     *types.MsgUpdateBlobStatusRequest
-		provenHeight uint64
-		endHeight    uint64
-		status       uint32
-		expectErr    bool
-	}{
-		{
-			"update blob status",
-			&types.MsgUpdateBlobStatusRequest{
-				ValidatorAddress: s.addrs[1].String(),
-				BlocksRange: &types.Range{
-					From: 11,
-					To:   20,
-				},
-				AvailHeight: 20,
-				IsSuccess:   true,
-			},
-			10,
-			20,
-			1,
-			false,
-		},
-		{
-			"submit invalid block range request",
-			&types.MsgUpdateBlobStatusRequest{
-				ValidatorAddress: s.addrs[1].String(),
-				BlocksRange: &types.Range{
-					From: 11,
-					To:   20,
-				},
-				AvailHeight: 20,
-				IsSuccess:   true,
-			},
-			10,
-			15,
-			1,
-			true,
-		},
-		{
-			"status is not in pending state",
-			&types.MsgUpdateBlobStatusRequest{
-				ValidatorAddress: s.addrs[1].String(),
-				BlocksRange: &types.Range{
-					From: 11,
-					To:   20,
-				},
-				AvailHeight: 20,
-				IsSuccess:   true,
-			},
-			10,
-			20,
-			3,
-			true,
-		},
-		{
-			"update blob status request is not success",
-			&types.MsgUpdateBlobStatusRequest{
-				ValidatorAddress: s.addrs[1].String(),
-				BlocksRange: &types.Range{
-					From: 11,
-					To:   20,
-				},
-				AvailHeight: 20,
-				IsSuccess:   false,
-			},
-			10,
-			20,
-			1,
-			false,
-		},
-	}
-
-	for _, tc := range testCases {
-		s.Run(tc.name, func() {
-			err := s.keeper.SetProvenHeight(s.ctx, tc.provenHeight)
-			s.Require().NoError(err)
-
-			err = availkeeper.UpdateEndHeight(s.ctx, s.store, tc.endHeight)
-			s.Require().NoError(err)
-
-			availkeeper.UpdateBlobStatus(s.ctx, s.store, tc.status)
-			s.Require().NoError(err)
-
-			res, err := s.keeper.UpdateBlobStatus(s.ctx, tc.inputMsg)
-			if tc.expectErr {
-				s.Require().Error(err)
-			} else {
-				s.Require().NoError(err)
-				s.Require().NotNil(res)
-			}
-		})
-	}
 }

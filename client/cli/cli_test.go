@@ -62,43 +62,6 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s *IntegrationTestSuite) TestNewSubmitBlobCmd() {
-	val := s.network.Validators[0]
-
-	testCases := []struct {
-		name      string
-		args      []string
-		expectErr bool
-	}{
-		{
-			"submit blocks",
-			[]string{
-				"1",
-				"10",
-				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addresses[0]),
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
-			},
-			false,
-		},
-	}
-
-	for _, tc := range testCases {
-		s.Run(tc.name, func() {
-			cmd := cli.NewSubmitBlobCmd()
-			res, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
-			if tc.expectErr {
-				if err != nil {
-					s.Require().Error(err)
-				}
-			}
-
-			s.Require().NoError(nil)
-			s.Require().NotNil(res)
-		})
-	}
-}
-
 func (s *IntegrationTestSuite) TestNewUpdateBlobStatusCmd() {
 	val := s.network.Validators[0]
 

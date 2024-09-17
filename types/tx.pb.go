@@ -61,24 +61,24 @@ func (BlobStatus) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_7f88203cb33986bc, []int{0}
 }
 
-// MsgSetAvailAddress defines a SDK message for validators to set their Avail address
-type MsgSetAvailAddress struct {
-	ValidatorAddress string `protobuf:"bytes,1,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
-	AvailAddress     string `protobuf:"bytes,2,opt,name=avail_address,json=availAddress,proto3" json:"avail_address,omitempty"`
+// blocks range from to to
+type Range struct {
+	From uint64 `protobuf:"varint,1,opt,name=from,proto3" json:"from,omitempty"`
+	To   uint64 `protobuf:"varint,2,opt,name=to,proto3" json:"to,omitempty"`
 }
 
-func (m *MsgSetAvailAddress) Reset()         { *m = MsgSetAvailAddress{} }
-func (m *MsgSetAvailAddress) String() string { return proto.CompactTextString(m) }
-func (*MsgSetAvailAddress) ProtoMessage()    {}
-func (*MsgSetAvailAddress) Descriptor() ([]byte, []int) {
+func (m *Range) Reset()         { *m = Range{} }
+func (m *Range) String() string { return proto.CompactTextString(m) }
+func (*Range) ProtoMessage()    {}
+func (*Range) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7f88203cb33986bc, []int{0}
 }
-func (m *MsgSetAvailAddress) XXX_Unmarshal(b []byte) error {
+func (m *Range) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgSetAvailAddress) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Range) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgSetAvailAddress.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Range.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -88,48 +88,117 @@ func (m *MsgSetAvailAddress) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *MsgSetAvailAddress) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgSetAvailAddress.Merge(m, src)
+func (m *Range) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Range.Merge(m, src)
 }
-func (m *MsgSetAvailAddress) XXX_Size() int {
+func (m *Range) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgSetAvailAddress) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgSetAvailAddress.DiscardUnknown(m)
+func (m *Range) XXX_DiscardUnknown() {
+	xxx_messageInfo_Range.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgSetAvailAddress proto.InternalMessageInfo
+var xxx_messageInfo_Range proto.InternalMessageInfo
 
-func (m *MsgSetAvailAddress) GetValidatorAddress() string {
+func (m *Range) GetFrom() uint64 {
+	if m != nil {
+		return m.From
+	}
+	return 0
+}
+
+func (m *Range) GetTo() uint64 {
+	if m != nil {
+		return m.To
+	}
+	return 0
+}
+
+// message update blob state response
+type MsgUpdateBlobStatusRequest struct {
+	ValidatorAddress string `protobuf:"bytes,1,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
+	BlocksRange      *Range `protobuf:"bytes,2,opt,name=blocks_range,json=blocksRange,proto3" json:"blocks_range,omitempty"`
+	AvailHeight      uint64 `protobuf:"varint,3,opt,name=avail_height,json=availHeight,proto3" json:"avail_height,omitempty"`
+	IsSuccess        bool   `protobuf:"varint,4,opt,name=is_success,json=isSuccess,proto3" json:"is_success,omitempty"`
+}
+
+func (m *MsgUpdateBlobStatusRequest) Reset()         { *m = MsgUpdateBlobStatusRequest{} }
+func (m *MsgUpdateBlobStatusRequest) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateBlobStatusRequest) ProtoMessage()    {}
+func (*MsgUpdateBlobStatusRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7f88203cb33986bc, []int{1}
+}
+func (m *MsgUpdateBlobStatusRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateBlobStatusRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateBlobStatusRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateBlobStatusRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateBlobStatusRequest.Merge(m, src)
+}
+func (m *MsgUpdateBlobStatusRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateBlobStatusRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateBlobStatusRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateBlobStatusRequest proto.InternalMessageInfo
+
+func (m *MsgUpdateBlobStatusRequest) GetValidatorAddress() string {
 	if m != nil {
 		return m.ValidatorAddress
 	}
 	return ""
 }
 
-func (m *MsgSetAvailAddress) GetAvailAddress() string {
+func (m *MsgUpdateBlobStatusRequest) GetBlocksRange() *Range {
 	if m != nil {
-		return m.AvailAddress
+		return m.BlocksRange
 	}
-	return ""
+	return nil
 }
 
-// MsgSetAvailAddressResponse is the response type for the Msg/SetAvailAddress RPC method.
-type MsgSetAvailAddressResponse struct {
+func (m *MsgUpdateBlobStatusRequest) GetAvailHeight() uint64 {
+	if m != nil {
+		return m.AvailHeight
+	}
+	return 0
 }
 
-func (m *MsgSetAvailAddressResponse) Reset()         { *m = MsgSetAvailAddressResponse{} }
-func (m *MsgSetAvailAddressResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgSetAvailAddressResponse) ProtoMessage()    {}
-func (*MsgSetAvailAddressResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_7f88203cb33986bc, []int{1}
+func (m *MsgUpdateBlobStatusRequest) GetIsSuccess() bool {
+	if m != nil {
+		return m.IsSuccess
+	}
+	return false
 }
-func (m *MsgSetAvailAddressResponse) XXX_Unmarshal(b []byte) error {
+
+// message update blob state response
+type MsgUpdateBlobStatusResponse struct {
+}
+
+func (m *MsgUpdateBlobStatusResponse) Reset()         { *m = MsgUpdateBlobStatusResponse{} }
+func (m *MsgUpdateBlobStatusResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateBlobStatusResponse) ProtoMessage()    {}
+func (*MsgUpdateBlobStatusResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7f88203cb33986bc, []int{2}
+}
+func (m *MsgUpdateBlobStatusResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgSetAvailAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgUpdateBlobStatusResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgSetAvailAddressResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgUpdateBlobStatusResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -139,17 +208,17 @@ func (m *MsgSetAvailAddressResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *MsgSetAvailAddressResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgSetAvailAddressResponse.Merge(m, src)
+func (m *MsgUpdateBlobStatusResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateBlobStatusResponse.Merge(m, src)
 }
-func (m *MsgSetAvailAddressResponse) XXX_Size() int {
+func (m *MsgUpdateBlobStatusResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgSetAvailAddressResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgSetAvailAddressResponse.DiscardUnknown(m)
+func (m *MsgUpdateBlobStatusResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateBlobStatusResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgSetAvailAddressResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpdateBlobStatusResponse proto.InternalMessageInfo
 
 // MsgSetAvailAddress defines a SDK message for validators to set their Avail address
 type MsgSubmitBlobRequest struct {
@@ -402,11 +471,7 @@ var xxx_messageInfo_MsgUpdateBlobStatusResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterEnum("sdk.avail.v1beta1.BlobStatus", BlobStatus_name, BlobStatus_value)
-	proto.RegisterType((*MsgSetAvailAddress)(nil), "sdk.avail.v1beta1.MsgSetAvailAddress")
-	proto.RegisterType((*MsgSetAvailAddressResponse)(nil), "sdk.avail.v1beta1.MsgSetAvailAddressResponse")
-	proto.RegisterType((*MsgSubmitBlobRequest)(nil), "sdk.avail.v1beta1.MsgSubmitBlobRequest")
 	proto.RegisterType((*Range)(nil), "sdk.avail.v1beta1.Range")
-	proto.RegisterType((*MsgSubmitBlobResponse)(nil), "sdk.avail.v1beta1.MsgSubmitBlobResponse")
 	proto.RegisterType((*MsgUpdateBlobStatusRequest)(nil), "sdk.avail.v1beta1.MsgUpdateBlobStatusRequest")
 	proto.RegisterType((*MsgUpdateBlobStatusResponse)(nil), "sdk.avail.v1beta1.MsgUpdateBlobStatusResponse")
 }
@@ -414,43 +479,37 @@ func init() {
 func init() { proto.RegisterFile("sdk/avail/v1beta1/tx.proto", fileDescriptor_7f88203cb33986bc) }
 
 var fileDescriptor_7f88203cb33986bc = []byte{
-	// 565 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0x3d, 0x6f, 0xd3, 0x50,
-	0x14, 0x8d, 0x93, 0x14, 0xd1, 0x9b, 0x02, 0xee, 0xa3, 0x90, 0xc8, 0xa5, 0x56, 0x09, 0x42, 0x8d,
-	0x52, 0xc5, 0x56, 0xca, 0x06, 0x53, 0x92, 0xa6, 0x10, 0xa9, 0x0d, 0x95, 0xdd, 0x2c, 0x2c, 0xd6,
-	0x73, 0xfc, 0x70, 0xac, 0xc4, 0x7d, 0x69, 0xde, 0x73, 0xf8, 0x18, 0x10, 0x62, 0x62, 0x64, 0x64,
-	0xe7, 0x0f, 0xf4, 0x67, 0xc0, 0xd6, 0x91, 0xb1, 0x4a, 0x86, 0xfe, 0x0d, 0xe4, 0xe7, 0xf4, 0x43,
-	0x4e, 0x2d, 0xca, 0xc2, 0x94, 0x97, 0x73, 0x8e, 0xef, 0x3d, 0xe7, 0xfa, 0xfa, 0x81, 0xc2, 0x9c,
-	0xbe, 0x8e, 0xc7, 0xd8, 0x1b, 0xe8, 0xe3, 0xaa, 0x4d, 0x38, 0xae, 0xea, 0xfc, 0xbd, 0x36, 0x1c,
-	0x51, 0x4e, 0xd1, 0x32, 0x73, 0xfa, 0x9a, 0xe0, 0xb4, 0x19, 0xa7, 0xe4, 0xbb, 0x94, 0xf9, 0x94,
-	0xe9, 0x3e, 0x73, 0xf5, 0x71, 0x35, 0xfc, 0x89, 0xb4, 0xca, 0x8a, 0x4b, 0x5d, 0x2a, 0x8e, 0x7a,
-	0x78, 0x8a, 0xd0, 0xe2, 0x27, 0x40, 0x7b, 0xcc, 0x35, 0x09, 0xaf, 0x85, 0x55, 0x6a, 0x8e, 0x33,
-	0x22, 0x8c, 0xa1, 0x4d, 0x58, 0x1e, 0xe3, 0x81, 0xe7, 0x60, 0x4e, 0x47, 0x16, 0x8e, 0xc0, 0x82,
-	0xb4, 0x2e, 0x95, 0x16, 0x0d, 0xf9, 0x82, 0x38, 0x17, 0x3f, 0x81, 0x3b, 0xc2, 0xc2, 0x85, 0x30,
-	0x2d, 0x84, 0x4b, 0xf8, 0x4a, 0xc5, 0xe7, 0x0f, 0xbf, 0x9c, 0x1d, 0x97, 0xe7, 0x8b, 0x16, 0x1f,
-	0x81, 0x32, 0xdf, 0xdf, 0x20, 0x6c, 0x48, 0x0f, 0x19, 0x29, 0x7e, 0x97, 0x60, 0x25, 0xa4, 0x03,
-	0xdb, 0xf7, 0x78, 0x7d, 0x40, 0x6d, 0x83, 0x1c, 0x05, 0x84, 0xf1, 0x7f, 0x33, 0xf8, 0x02, 0x96,
-	0xec, 0x01, 0xed, 0xf6, 0x99, 0x35, 0xc2, 0x87, 0x2e, 0x11, 0xfe, 0x72, 0x5b, 0x05, 0x6d, 0x6e,
-	0x78, 0x9a, 0x11, 0xf2, 0x46, 0x2e, 0x52, 0x8b, 0x3f, 0x89, 0xc6, 0x37, 0x61, 0x41, 0x08, 0x10,
-	0x82, 0xec, 0xdb, 0x11, 0xf5, 0x45, 0xf7, 0xac, 0x21, 0xce, 0xe8, 0x2e, 0xa4, 0x39, 0x15, 0x7d,
-	0xb2, 0x46, 0x9a, 0xd3, 0x62, 0x1e, 0x1e, 0xc4, 0x62, 0xcc, 0x02, 0x9e, 0x4a, 0x22, 0x7f, 0x67,
-	0xe8, 0x60, 0x4e, 0x42, 0xc6, 0xe4, 0x98, 0x07, 0xec, 0xbf, 0xc7, 0x44, 0x8f, 0x21, 0x7a, 0x5f,
-	0x56, 0x8f, 0x78, 0x6e, 0x8f, 0x17, 0x32, 0xc2, 0x7b, 0x4e, 0x60, 0xaf, 0x04, 0x84, 0xd6, 0x00,
-	0x3c, 0x66, 0xb1, 0xa0, 0xdb, 0x0d, 0x5d, 0x64, 0xd7, 0xa5, 0xd2, 0x6d, 0x63, 0xd1, 0x63, 0x66,
-	0x04, 0x24, 0x0e, 0x6a, 0x0d, 0x56, 0xaf, 0x4d, 0x18, 0x4d, 0xa0, 0xfc, 0x11, 0xe0, 0x12, 0x45,
-	0xab, 0x90, 0xaf, 0xef, 0xbe, 0xae, 0x5b, 0xe6, 0x41, 0xed, 0xa0, 0x63, 0x5a, 0x9d, 0xb6, 0xb9,
-	0xdf, 0x6c, 0xb4, 0x76, 0x5a, 0xcd, 0x6d, 0x39, 0x85, 0xf2, 0x70, 0xff, 0x2a, 0xb9, 0x53, 0x6b,
-	0xed, 0x76, 0x8c, 0xa6, 0x2c, 0xc5, 0x09, 0xb3, 0xd3, 0x68, 0x34, 0x4d, 0x53, 0x4e, 0xc7, 0x89,
-	0xfd, 0x66, 0x7b, 0xbb, 0xd5, 0x7e, 0x29, 0x67, 0x94, 0xec, 0xd7, 0x1f, 0x6a, 0x6a, 0xeb, 0x57,
-	0x1a, 0x32, 0x7b, 0xcc, 0x45, 0x2e, 0xdc, 0x8b, 0x7f, 0x01, 0x4f, 0xaf, 0x19, 0xdb, 0xfc, 0xa2,
-	0x2a, 0x95, 0x1b, 0xc9, 0xce, 0xc3, 0x22, 0x0b, 0xe0, 0x72, 0x09, 0xd0, 0x46, 0xc2, 0xc3, 0xf1,
-	0x6d, 0x57, 0x4a, 0x7f, 0x17, 0xce, 0x1a, 0x1c, 0x81, 0x1c, 0x9f, 0x34, 0x4a, 0xf0, 0x98, 0xb0,
-	0x73, 0x8a, 0x76, 0x53, 0x79, 0xd4, 0x52, 0x59, 0xf8, 0x7c, 0x76, 0x5c, 0x96, 0xea, 0xb5, 0x9f,
-	0x13, 0x55, 0x3a, 0x99, 0xa8, 0xd2, 0xe9, 0x44, 0x95, 0xbe, 0x4d, 0xd5, 0xd4, 0xc9, 0x54, 0x4d,
-	0xfd, 0x9e, 0xaa, 0xa9, 0x37, 0x1b, 0xae, 0xc7, 0x7b, 0x81, 0xad, 0x75, 0xa9, 0xaf, 0x8f, 0x3d,
-	0xfe, 0xce, 0xe3, 0xd1, 0x75, 0x56, 0x71, 0x70, 0xc5, 0xa7, 0x4e, 0x30, 0x20, 0x3a, 0xff, 0x30,
-	0x24, 0xcc, 0xbe, 0x25, 0xae, 0xa4, 0x67, 0x7f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x86, 0x7e, 0xfe,
-	0xc2, 0xf2, 0x04, 0x00, 0x00,
+	// 467 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0xcf, 0x6e, 0xd3, 0x40,
+	0x10, 0xc6, 0xbd, 0x49, 0x8a, 0xe8, 0xa6, 0x42, 0xee, 0x82, 0x48, 0xe4, 0xaa, 0x56, 0xc9, 0x85,
+	0x2a, 0x55, 0x6c, 0xa5, 0xdc, 0xe0, 0x94, 0xa4, 0x2e, 0x44, 0x6a, 0x43, 0x65, 0xd7, 0x17, 0x2e,
+	0xd6, 0xda, 0x5e, 0x1c, 0x2b, 0x76, 0x37, 0xf5, 0xac, 0xcd, 0x9f, 0x0b, 0x88, 0x13, 0x47, 0xde,
+	0x81, 0x17, 0xe8, 0x63, 0x70, 0xec, 0x91, 0x63, 0x95, 0x1c, 0xfa, 0x1a, 0xc8, 0x6b, 0x04, 0x28,
+	0x2d, 0x52, 0x4f, 0x3b, 0xfa, 0x7d, 0x9f, 0x76, 0xbe, 0xd9, 0x1d, 0xac, 0x41, 0x38, 0x33, 0x69,
+	0x41, 0xe3, 0xc4, 0x2c, 0xfa, 0x3e, 0x13, 0xb4, 0x6f, 0x8a, 0xf7, 0xc6, 0x3c, 0xe3, 0x82, 0x93,
+	0x4d, 0x08, 0x67, 0x86, 0xd4, 0x8c, 0xdf, 0x9a, 0xd6, 0x0a, 0x38, 0xa4, 0x1c, 0xcc, 0x14, 0x22,
+	0xb3, 0xe8, 0x97, 0x47, 0xe5, 0xd5, 0x1e, 0x45, 0x3c, 0xe2, 0xb2, 0x34, 0xcb, 0xaa, 0xa2, 0x9d,
+	0x3d, 0xbc, 0x66, 0xd3, 0xb3, 0x88, 0x11, 0x82, 0x1b, 0x6f, 0x33, 0x9e, 0xb6, 0xd1, 0x0e, 0xda,
+	0x6d, 0xd8, 0xb2, 0x26, 0x0f, 0x70, 0x4d, 0xf0, 0x76, 0x4d, 0x92, 0x9a, 0xe0, 0x9d, 0x2b, 0x84,
+	0xb5, 0x63, 0x88, 0xdc, 0x79, 0x48, 0x05, 0x1b, 0x26, 0xdc, 0x77, 0x04, 0x15, 0x39, 0xd8, 0xec,
+	0x3c, 0x67, 0x20, 0xc8, 0x1e, 0xde, 0x2c, 0x68, 0x12, 0x87, 0x54, 0xf0, 0xcc, 0xa3, 0x61, 0x98,
+	0x31, 0x00, 0x79, 0xdf, 0xba, 0xad, 0xfe, 0x11, 0x06, 0x15, 0x27, 0x2f, 0xf0, 0x86, 0x9f, 0xf0,
+	0x60, 0x06, 0x5e, 0x56, 0xf6, 0x97, 0x5d, 0x9a, 0xfb, 0x6d, 0xe3, 0xc6, 0x44, 0x86, 0xcc, 0x67,
+	0x37, 0x2b, 0x77, 0x15, 0xf6, 0x09, 0xde, 0x90, 0x1e, 0x6f, 0xca, 0xe2, 0x68, 0x2a, 0xda, 0x75,
+	0x19, 0xb1, 0x29, 0xd9, 0x2b, 0x89, 0xc8, 0x36, 0xc6, 0x31, 0x78, 0x90, 0x07, 0x41, 0x99, 0xa2,
+	0xb1, 0x83, 0x76, 0xef, 0xdb, 0xeb, 0x31, 0x38, 0x15, 0x78, 0xfe, 0xf8, 0xcb, 0xf5, 0x45, 0xf7,
+	0x66, 0xdc, 0xce, 0x36, 0xde, 0xba, 0x75, 0x42, 0x98, 0xf3, 0x33, 0x60, 0xdd, 0x8f, 0x18, 0xff,
+	0xa5, 0x64, 0x0b, 0xb7, 0x86, 0x47, 0xaf, 0x87, 0x9e, 0x73, 0x3a, 0x38, 0x75, 0x1d, 0xcf, 0x9d,
+	0x38, 0x27, 0xd6, 0x68, 0x7c, 0x38, 0xb6, 0x0e, 0x54, 0x85, 0xb4, 0xf0, 0xc3, 0x7f, 0xc5, 0xc3,
+	0xc1, 0xf8, 0xc8, 0xb5, 0x2d, 0x15, 0xad, 0x0a, 0x8e, 0x3b, 0x1a, 0x59, 0x8e, 0xa3, 0xd6, 0x56,
+	0x85, 0x13, 0x6b, 0x72, 0x30, 0x9e, 0xbc, 0x54, 0xeb, 0x5a, 0xe3, 0xeb, 0x77, 0x5d, 0xd9, 0xff,
+	0x84, 0xeb, 0xc7, 0x10, 0x91, 0x73, 0xac, 0xae, 0xc6, 0x23, 0xbd, 0x5b, 0x9e, 0xed, 0xff, 0x1f,
+	0xa5, 0x19, 0x77, 0xb5, 0x57, 0x53, 0x6b, 0x6b, 0x9f, 0xaf, 0x2f, 0xba, 0x68, 0x38, 0xf8, 0xb1,
+	0xd0, 0xd1, 0xe5, 0x42, 0x47, 0x57, 0x0b, 0x1d, 0x7d, 0x5b, 0xea, 0xca, 0xe5, 0x52, 0x57, 0x7e,
+	0x2e, 0x75, 0xe5, 0xcd, 0xd3, 0x28, 0x16, 0xd3, 0xdc, 0x37, 0x02, 0x9e, 0x9a, 0x45, 0x2c, 0xde,
+	0xc5, 0xa2, 0xda, 0xd8, 0x5e, 0x48, 0x7b, 0x29, 0x0f, 0xf3, 0x84, 0x99, 0xe2, 0xc3, 0x9c, 0x81,
+	0x7f, 0x4f, 0x6e, 0xdd, 0xb3, 0x5f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xf5, 0x5d, 0xb6, 0xfa, 0xd5,
+	0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -465,10 +524,6 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// SetAvailAddress
-	SetAvailAddress(ctx context.Context, in *MsgSetAvailAddress, opts ...grpc.CallOption) (*MsgSetAvailAddressResponse, error)
-	// SubmitBlob
-	SubmitBlob(ctx context.Context, in *MsgSubmitBlobRequest, opts ...grpc.CallOption) (*MsgSubmitBlobResponse, error)
 	// UpdateBlobStatus
 	UpdateBlobStatus(ctx context.Context, in *MsgUpdateBlobStatusRequest, opts ...grpc.CallOption) (*MsgUpdateBlobStatusResponse, error)
 }
@@ -481,9 +536,9 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) SetAvailAddress(ctx context.Context, in *MsgSetAvailAddress, opts ...grpc.CallOption) (*MsgSetAvailAddressResponse, error) {
-	out := new(MsgSetAvailAddressResponse)
-	err := c.cc.Invoke(ctx, "/sdk.avail.v1beta1.Msg/SetAvailAddress", in, out, opts...)
+func (c *msgClient) UpdateBlobStatus(ctx context.Context, in *MsgUpdateBlobStatusRequest, opts ...grpc.CallOption) (*MsgUpdateBlobStatusResponse, error) {
+	out := new(MsgUpdateBlobStatusResponse)
+	err := c.cc.Invoke(ctx, "/sdk.avail.v1beta1.Msg/UpdateBlobStatus", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -510,10 +565,6 @@ func (c *msgClient) UpdateBlobStatus(ctx context.Context, in *MsgUpdateBlobStatu
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// SetAvailAddress
-	SetAvailAddress(context.Context, *MsgSetAvailAddress) (*MsgSetAvailAddressResponse, error)
-	// SubmitBlob
-	SubmitBlob(context.Context, *MsgSubmitBlobRequest) (*MsgSubmitBlobResponse, error)
 	// UpdateBlobStatus
 	UpdateBlobStatus(context.Context, *MsgUpdateBlobStatusRequest) (*MsgUpdateBlobStatusResponse, error)
 }
@@ -522,8 +573,8 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) SetAvailAddress(ctx context.Context, req *MsgSetAvailAddress) (*MsgSetAvailAddressResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetAvailAddress not implemented")
+func (*UnimplementedMsgServer) UpdateBlobStatus(ctx context.Context, req *MsgUpdateBlobStatusRequest) (*MsgUpdateBlobStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBlobStatus not implemented")
 }
 func (*UnimplementedMsgServer) SubmitBlob(ctx context.Context, req *MsgSubmitBlobRequest) (*MsgSubmitBlobResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SubmitBlob not implemented")
@@ -536,20 +587,20 @@ func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_SetAvailAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSetAvailAddress)
+func _Msg_UpdateBlobStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateBlobStatusRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).SetAvailAddress(ctx, in)
+		return srv.(MsgServer).UpdateBlobStatus(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sdk.avail.v1beta1.Msg/SetAvailAddress",
+		FullMethod: "/sdk.avail.v1beta1.Msg/UpdateBlobStatus",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SetAvailAddress(ctx, req.(*MsgSetAvailAddress))
+		return srv.(MsgServer).UpdateBlobStatus(ctx, req.(*MsgUpdateBlobStatusRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -595,8 +646,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SetAvailAddress",
-			Handler:    _Msg_SetAvailAddress_Handler,
+			MethodName: "UpdateBlobStatus",
+			Handler:    _Msg_UpdateBlobStatus_Handler,
 		},
 		{
 			MethodName: "SubmitBlob",
@@ -609,108 +660,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "sdk/avail/v1beta1/tx.proto",
-}
-
-func (m *MsgSetAvailAddress) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgSetAvailAddress) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgSetAvailAddress) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.AvailAddress) > 0 {
-		i -= len(m.AvailAddress)
-		copy(dAtA[i:], m.AvailAddress)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.AvailAddress)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.ValidatorAddress) > 0 {
-		i -= len(m.ValidatorAddress)
-		copy(dAtA[i:], m.ValidatorAddress)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ValidatorAddress)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgSetAvailAddressResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgSetAvailAddressResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgSetAvailAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgSubmitBlobRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgSubmitBlobRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgSubmitBlobRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.BlocksRange != nil {
-		{
-			size, err := m.BlocksRange.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.ValidatorAddress) > 0 {
-		i -= len(m.ValidatorAddress)
-		copy(dAtA[i:], m.ValidatorAddress)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ValidatorAddress)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
 }
 
 func (m *Range) Marshal() (dAtA []byte, err error) {
@@ -743,29 +692,6 @@ func (m *Range) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x8
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgSubmitBlobResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgSubmitBlobResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgSubmitBlobResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
 	return len(dAtA) - i, nil
 }
 
@@ -849,60 +775,15 @@ func (m *MsgUpdateBlobStatusResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
-func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
-	offset -= sovTx(v)
-	base := offset
-	for v >= 1<<7 {
-		dAtA[offset] = uint8(v&0x7f | 0x80)
-		v >>= 7
-		offset++
+func (m *MsgSubmitBlobRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
 	}
-	dAtA[offset] = uint8(v)
-	return base
+	return dAtA[:n], nil
 }
-func (m *MsgSetAvailAddress) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.ValidatorAddress)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.AvailAddress)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgSetAvailAddressResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *MsgSubmitBlobRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.ValidatorAddress)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	if m.BlocksRange != nil {
-		l = m.BlocksRange.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
 func (m *Range) Size() (n int) {
 	if m == nil {
 		return 0
@@ -918,24 +799,23 @@ func (m *Range) Size() (n int) {
 	return n
 }
 
-func (m *MsgSubmitBlobResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
 func (m *MsgUpdateBlobStatusRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.ValidatorAddress)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
+	if m.BlocksRange != nil {
+		{
+			size, err := m.BlocksRange.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
 	}
 	if m.BlocksRange != nil {
 		l = m.BlocksRange.Size()
@@ -965,7 +845,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgSetAvailAddress) Unmarshal(dAtA []byte) error {
+func (m *Range) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -988,10 +868,98 @@ func (m *MsgSetAvailAddress) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgSetAvailAddress: wiretype end group for non-group")
+			return fmt.Errorf("proto: Range: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgSetAvailAddress: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Range: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
+			}
+			m.From = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.From |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
+			}
+			m.To = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.To |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateBlobStatusRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateBlobStatusRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateBlobStatusRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1028,9 +996,9 @@ func (m *MsgSetAvailAddress) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AvailAddress", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BlocksRange", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -1040,24 +1008,67 @@ func (m *MsgSetAvailAddress) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTx
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTx
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.AvailAddress = string(dAtA[iNdEx:postIndex])
+			if m.BlocksRange == nil {
+				m.BlocksRange = &Range{}
+			}
+			if err := m.BlocksRange.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AvailHeight", wireType)
+			}
+			m.AvailHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.AvailHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsSuccess", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IsSuccess = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1079,7 +1090,7 @@ func (m *MsgSetAvailAddress) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgSetAvailAddressResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgUpdateBlobStatusResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1102,10 +1113,10 @@ func (m *MsgSetAvailAddressResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgSetAvailAddressResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgUpdateBlobStatusResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgSetAvailAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgUpdateBlobStatusResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

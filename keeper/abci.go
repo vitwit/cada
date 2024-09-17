@@ -10,11 +10,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type StakeWeightedVotes struct {
-	Votes              map[string]int64
-	ExtendedCommitInfo abci.ExtendedCommitInfo
-}
-
 type ProofOfBlobProposalHandler struct {
 	keeper *Keeper
 
@@ -96,11 +91,13 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 			pendingRangeKey := Key(from, to)
 			votingPower := injectedVoteExtTx.Votes[pendingRangeKey]
 
+			state := FAILURE_STATE
+
 			if votingPower > 0 { // TODO: calculate voting power properly
-				k.setBlobStatusSuccess(ctx)
-			} else {
-				k.SetBlobStatusFailure(ctx)
+				state = READY_STATE
 			}
+
+			k.SetBlobStatus(ctx, state)
 		}
 	}
 
@@ -152,8 +149,6 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 	pendingRangeKey := Key(from, to)
 	votes := make(map[string]int64, 1)
 
-	var totalStake int64
-
 	for _, v := range ci.Votes {
 		// Process only votes with BlockIDFlagCommit, indicating the validator committed to the block.
 		// Skip votes with other flags (e.g., BlockIDFlagUnknown, BlockIDFlagNil).
@@ -170,9 +165,6 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 		if voteExt.Votes == nil {
 			continue
 		}
-
-		// TODO: remove if this is not used anywhere
-		totalStake += v.Validator.Power
 
 		for voteRange, isVoted := range voteExt.Votes {
 			if voteRange != pendingRangeKey || !isVoted {
