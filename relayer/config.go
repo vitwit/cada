@@ -50,7 +50,6 @@ var DefaultAvailConfig = AvailConfig{
 
 // AvailConfig defines the configuration for the in-process Avail relayer.
 type AvailConfig struct {
-
 	// avail light node url
 	LightClientURL string `mapstructure:"light-client-url"`
 
@@ -74,7 +73,6 @@ type AvailConfig struct {
 }
 
 func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfig {
-
 	return AvailConfig{
 		ChainID:             cast.ToString(appOpts.Get(FlagChainID)),
 		AppID:               cast.ToInt(appOpts.Get(FlagOverrideAppID)),

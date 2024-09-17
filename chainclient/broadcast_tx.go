@@ -4,17 +4,15 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	cometrpc "github.com/cometbft/cometbft/rpc/client/http"
 	clitx "github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/vitwit/avail-da-module/types"
-
-	"path/filepath"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/vitwit/avail-da-module/types"
 )
 
 func GetBinPath() string {
@@ -33,11 +31,12 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	// homePath := "/home/vitwit/.availsdk"
 	homePath := GetBinPath()
 	key := os.Getenv("KEY")
-	fmt.Println("get key namee.........", key)
-	if key == "" { //TODO : remove this later
-		key = "alice"
-	}
 	keyName := key
+
+	if keyName == "" {
+		keyName = "alice"
+	}
+
 	rpcAddress := "http://localhost:26657"
 
 	// Create a keyring
@@ -47,8 +46,13 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	}
 
 	info, err := kr.Key(keyName)
+	if err != nil {
+		return err
+	}
 	valAddr, err := info.GetAddress()
-	fmt.Println("after address................", valAddr)
+	if err != nil {
+		return fmt.Errorf("error while getting account address : %w", err)
+	}
 
 	// Create an RPC client
 	rpcClient, err := cometrpc.NewWithTimeout(rpcAddress, "/websocket", 3)

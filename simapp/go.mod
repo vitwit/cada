@@ -9,10 +9,10 @@ replace (
 	cosmossdk.io/core => cosmossdk.io/core v0.11.0
 	cosmossdk.io/x/upgrade => cosmossdk.io/x/upgrade v0.1.1 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/cosmos/cosmos-sdk => github.com/vitwit/cosmos-sdk v0.50.6-0.20240809182747-cd5b906bd4f6
-	// github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
-	// github.com/prometheus/client_model => github.com/prometheus/client_model v0.6.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
-	// github.com/prometheus/common => github.com/prometheus/common v0.47.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
-	// github.com/prometheus/procfs => github.com/prometheus/procfs v0.12.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
+	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
+	github.com/prometheus/client_model => github.com/prometheus/client_model v0.6.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
+	github.com/prometheus/common => github.com/prometheus/common v0.47.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
+	github.com/prometheus/procfs => github.com/prometheus/procfs v0.12.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/spf13/viper => github.com/spf13/viper v1.17.0 // v1.18+ breaks app overrides
 )
 
@@ -102,7 +102,7 @@ require (
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/gogogateway v1.2.0 // indirect
-	github.com/cosmos/iavl v1.1.2 // indirect
+	github.com/cosmos/iavl v1.1.4 // indirect
 	github.com/cosmos/ics23/go v0.10.0 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.13.3 // indirect
 	github.com/creachadair/atomicfile v0.3.1 // indirect

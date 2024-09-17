@@ -56,10 +56,10 @@ const (
 
 func PendingBlobsStoreKey(blocksRange types.Range) []byte {
 	fromBytes := make([]byte, 8)
-	binary.BigEndian.PutUint64(fromBytes, uint64(blocksRange.From))
+	binary.BigEndian.PutUint64(fromBytes, blocksRange.From)
 
 	toBytes := make([]byte, 8)
-	binary.BigEndian.PutUint64(toBytes, uint64(blocksRange.To))
+	binary.BigEndian.PutUint64(toBytes, blocksRange.To)
 
 	key := PendingBlobsKey
 	key = append(key, fromBytes...)

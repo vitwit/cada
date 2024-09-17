@@ -688,11 +688,9 @@ func NewChainApp(
 
 	app.AvailBlobKeeper = availblobkeeper.NewKeeper(
 		appCodec,
-		appOpts,
 		runtime.NewKVStoreService(keys[availblob1.StoreKey]),
 		app.UpgradeKeeper,
 		keys[availblob1.StoreKey],
-		publishToAvailBlockInterval,
 		AvailAppID,
 	)
 
@@ -700,7 +698,6 @@ func NewChainApp(
 		logger,
 		appCodec,
 		appOpts,
-		homePath,
 	)
 	if err != nil {
 		panic(err)

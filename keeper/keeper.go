@@ -2,25 +2,19 @@ package keeper
 
 import (
 	"cosmossdk.io/collections"
+	storetypes "cosmossdk.io/core/store"
 	storetypes2 "cosmossdk.io/store/types"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 	availblob1 "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/relayer"
 	"github.com/vitwit/avail-da-module/types"
-
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-
-	storetypes "cosmossdk.io/core/store"
-
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 )
 
 type Keeper struct {
-	stakingKeeper *stakingkeeper.Keeper
+	// stakingKeeper *stakingkeeper.Keeper
 	upgradeKeeper *upgradekeeper.Keeper
 	relayer       *relayer.Relayer
 
@@ -29,7 +23,7 @@ type Keeper struct {
 	ProvenHeight            collections.Item[uint64]
 	PendingBlocksToTimeouts collections.Map[int64, int64]
 	TimeoutsToPendingBlocks collections.Map[int64, types.PendingBlocks]
-	keyring                 keyring.Keyring
+	// keyring                 keyring.Keyring
 
 	storeKey storetypes2.StoreKey
 
@@ -48,13 +42,10 @@ type Keeper struct {
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	appOpts servertypes.AppOptions,
 	storeService storetypes.KVStoreService,
 	uk *upgradekeeper.Keeper,
 	key storetypes2.StoreKey,
-	publishToAvailBlockInterval int,
-	appId int,
-
+	appID int,
 ) *Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
 
@@ -71,11 +62,11 @@ func NewKeeper(
 
 		cdc: cdc,
 
-		appID: appId,
+		appID: appID,
 
 		unprovenBlocks:              make(map[int64][]byte),
-		MaxBlocksForBlob:            20, //Todo: call this from app.go, later change to params
-		PublishToAvailBlockInterval: 5,  //Todo: call this from app.go, later change to params
+		MaxBlocksForBlob:            20, // Todo: call this from app.go, later change to params
+		PublishToAvailBlockInterval: 5,  // Todo: call this from app.go, later change to params
 		VotingInterval:              5,
 	}
 }

@@ -46,8 +46,8 @@ func (r *Relayer) updateHeight(height int64) {
 }
 
 // pruneCache will delete any headers or proofs that are no longer needed
-func (r *Relayer) pruneCache(provenHeight int64) {
-	r.mu.Lock()
-	// TODO: proofs deletions after completion
-	r.mu.Unlock()
+func (r *Relayer) pruneCache(_ int64) {
+	// r.mu.Lock()
+	// // TODO: proofs deletions after completion
+	// r.mu.Unlock()
 }
