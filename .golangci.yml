@@ -1,0 +1,77 @@
+run:
+  tests: true
+  # timeout for analysis, e.g. 30s, 5m, default is 1m
+  timeout: 5m
+  sort-results: true
+  allow-parallel-runners: true
+
+linters:
+  disable-all: true
+  enable:
+    - depguard
+    - dogsled
+    - exportloopref
+    - goconst
+    - gocritic
+    - gofumpt
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - nakedret
+    - nolintlint
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unused
+
+issues:
+  exclude-rules:
+    - text: "Use of weak random number generator"
+      linters:
+        - gosec
+    - text: "ST1003:"
+      linters:
+        - stylecheck
+    # FIXME: Disabled until golangci-lint updates stylecheck with this fix:
+    # https://github.com/dominikh/go-tools/issues/389
+    - text: "ST1016:"
+      linters:
+        - stylecheck
+    - path: "migrations"
+      text: "SA1019:"
+      linters:
+        - staticcheck
+    - text: "previous case"
+      linters:
+        - typecheck
+    - text: "previous case"
+      linters:
+        - typecheck
+
+  max-issues-per-linter: 10000
+  max-same-issues: 10000
+
+linters-settings:
+  misspell:
+    locale: US
+  gofumpt:
+    extra-rules: true
+  dogsled:
+    max-blank-identifiers: 3
+  maligned:
+    # print struct with more effective memory layout or not, false by default
+    suggest-new: true
+  nolintlint:
+    allow-unused: false
+    allow-leading-space: true
+    require-explanation: false
+    require-specific: false
+  gosimple:
+    checks: ["all"]
+
+  gocritic:
+    disabled-checks:
+      - regexpMust
