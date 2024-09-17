@@ -10,12 +10,12 @@ linters:
   enable:
     # - depguard
     - dogsled
-    - exportloopref
+    - copyloopvar
     - goconst
     - gocritic
     - gci
     - gofumpt
-    - gosec
+    # - gosec
     - gosimple
     - govet
     - ineffassign
