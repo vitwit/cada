@@ -10,11 +10,11 @@ import "sdk/avail/v1beta1/tx.proto";
 option go_package =  "github.com/vitwit/avail-da-module/types";
 
 // query request
-message QuerySubmitBlobStatusRequest {
+message QuerySubmittedBlobStatusRequest {
 }
 
 // query response
-message QuerySubmitBlobStatusResponse {
+message QuerySubmittedBlobStatusResponse {
   Range range = 1;
   string status = 2;
   uint64 proven_height = 3;
@@ -25,79 +25,8 @@ message QuerySubmitBlobStatusResponse {
 service Query {
 
   // submit Blob Status
-  rpc SubmitBlobStatus(QuerySubmitBlobStatusRequest)
-    returns (QuerySubmitBlobStatusResponse) {
+  rpc SubmittedBlobStatus(QuerySubmittedBlobStatusRequest)
+    returns (QuerySubmittedBlobStatusResponse) {
     option (google.api.http).get = "/availblob/v1beta1/submitBlobStatus";
   }
-  // Validators returns registered validators of the module.
-  rpc Validators(QueryValidatorsRequest)
-      returns (QueryValidatorsResponse) {
-    option (google.api.http).get = "/availblob/v1beta1/validators";
-  }
-
-
-
-  // Todo: will be removed
-  rpc AvailAddress(QueryAvailAddressRequest) returns (QueryAvailAddressResponse) {
-    option (google.api.http).get = "/availblob/v1beta1/avail_address";
-  }
-
-  // proven height
-  rpc ProvenHeight(QueryProvenHeightRequest) returns (QueryProvenHeightResponse) {
-    option (google.api.http).get = "/availblob/v1beta1/proven_height";
-  }
-
-  // pending blocks
-  rpc PendingBlocks(QueryPendingBlocksRequest) returns (QueryPendingBlocksResponse) {
-    option (google.api.http).get = "/availblob/v1beta1/pending_blocks";
-  }
-
-  // expired blocks
-  rpc ExpiredBlocks(QueryExpiredBlocksRequest) returns (QueryExpiredBlocksResponse) {
-    option (google.api.http).get = "/availblob/v1beta1/expired_blocks";
-  }
-}
-
-// QueryValidatorsRequest is the request type for the Query/Validators RPC method.
-message QueryValidatorsRequest {}
-
-// QueryValidatorResponse is the response type for the Query/Validators RPC method.
-message QueryValidatorsResponse {
-  // validators is the returned validators from the module
-  repeated Validator validators = 1 [ (gogoproto.nullable) = false ];
-}
-
-// QueryAvailAddressRequest is the request type for the Query/AvailAddress RPC method.
-message QueryAvailAddressRequest {
-  string validator_address = 1;
-}
-
-// QueryAvailAddressResponse is the response type for the Query/AvailAddress RPC method.
-message QueryAvailAddressResponse {
-  string avail_address = 1;
-}
-
-// proven Height
-message QueryProvenHeightRequest {}
-
-message QueryProvenHeightResponse {
-  uint64 proven_height = 1;
-}
-
-message BlockWithExpiration {
-  int64 height = 1;
-  google.protobuf.Timestamp expiration = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-}
-
-message QueryPendingBlocksRequest {}
-
-message QueryPendingBlocksResponse {
-  repeated BlockWithExpiration pending_blocks = 1;
-}
-
-message QueryExpiredBlocksRequest {}
-
-message QueryExpiredBlocksResponse {
-  google.protobuf.Timestamp current_time = 1 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  repeated BlockWithExpiration expired_blocks = 2;
 }

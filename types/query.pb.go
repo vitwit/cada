@@ -10,7 +10,6 @@ import (
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "github.com/cosmos/gogoproto/types"
-	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -18,14 +17,12 @@ import (
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
-var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -34,21 +31,21 @@ var _ = time.Kitchen
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // query request
-type QuerySubmitBlobStatusRequest struct {
+type QuerySubmittedBlobStatusRequest struct {
 }
 
-func (m *QuerySubmitBlobStatusRequest) Reset()         { *m = QuerySubmitBlobStatusRequest{} }
-func (m *QuerySubmitBlobStatusRequest) String() string { return proto.CompactTextString(m) }
-func (*QuerySubmitBlobStatusRequest) ProtoMessage()    {}
-func (*QuerySubmitBlobStatusRequest) Descriptor() ([]byte, []int) {
+func (m *QuerySubmittedBlobStatusRequest) Reset()         { *m = QuerySubmittedBlobStatusRequest{} }
+func (m *QuerySubmittedBlobStatusRequest) String() string { return proto.CompactTextString(m) }
+func (*QuerySubmittedBlobStatusRequest) ProtoMessage()    {}
+func (*QuerySubmittedBlobStatusRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_30ff5d91ce731c68, []int{0}
 }
-func (m *QuerySubmitBlobStatusRequest) XXX_Unmarshal(b []byte) error {
+func (m *QuerySubmittedBlobStatusRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QuerySubmitBlobStatusRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QuerySubmittedBlobStatusRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QuerySubmitBlobStatusRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QuerySubmittedBlobStatusRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -58,38 +55,38 @@ func (m *QuerySubmitBlobStatusRequest) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *QuerySubmitBlobStatusRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QuerySubmitBlobStatusRequest.Merge(m, src)
+func (m *QuerySubmittedBlobStatusRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySubmittedBlobStatusRequest.Merge(m, src)
 }
-func (m *QuerySubmitBlobStatusRequest) XXX_Size() int {
+func (m *QuerySubmittedBlobStatusRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QuerySubmitBlobStatusRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QuerySubmitBlobStatusRequest.DiscardUnknown(m)
+func (m *QuerySubmittedBlobStatusRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySubmittedBlobStatusRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QuerySubmitBlobStatusRequest proto.InternalMessageInfo
+var xxx_messageInfo_QuerySubmittedBlobStatusRequest proto.InternalMessageInfo
 
 // query response
-type QuerySubmitBlobStatusResponse struct {
+type QuerySubmittedBlobStatusResponse struct {
 	Range                *Range `protobuf:"bytes,1,opt,name=range,proto3" json:"range,omitempty"`
 	Status               string `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
 	ProvenHeight         uint64 `protobuf:"varint,3,opt,name=proven_height,json=provenHeight,proto3" json:"proven_height,omitempty"`
 	LastBlobVotingEndsAt uint64 `protobuf:"varint,4,opt,name=last_blob_voting_ends_at,json=lastBlobVotingEndsAt,proto3" json:"last_blob_voting_ends_at,omitempty"`
 }
 
-func (m *QuerySubmitBlobStatusResponse) Reset()         { *m = QuerySubmitBlobStatusResponse{} }
-func (m *QuerySubmitBlobStatusResponse) String() string { return proto.CompactTextString(m) }
-func (*QuerySubmitBlobStatusResponse) ProtoMessage()    {}
-func (*QuerySubmitBlobStatusResponse) Descriptor() ([]byte, []int) {
+func (m *QuerySubmittedBlobStatusResponse) Reset()         { *m = QuerySubmittedBlobStatusResponse{} }
+func (m *QuerySubmittedBlobStatusResponse) String() string { return proto.CompactTextString(m) }
+func (*QuerySubmittedBlobStatusResponse) ProtoMessage()    {}
+func (*QuerySubmittedBlobStatusResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_30ff5d91ce731c68, []int{1}
 }
-func (m *QuerySubmitBlobStatusResponse) XXX_Unmarshal(b []byte) error {
+func (m *QuerySubmittedBlobStatusResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QuerySubmitBlobStatusResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QuerySubmittedBlobStatusResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QuerySubmitBlobStatusResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QuerySubmittedBlobStatusResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -99,591 +96,81 @@ func (m *QuerySubmitBlobStatusResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *QuerySubmitBlobStatusResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QuerySubmitBlobStatusResponse.Merge(m, src)
+func (m *QuerySubmittedBlobStatusResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySubmittedBlobStatusResponse.Merge(m, src)
 }
-func (m *QuerySubmitBlobStatusResponse) XXX_Size() int {
+func (m *QuerySubmittedBlobStatusResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QuerySubmitBlobStatusResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QuerySubmitBlobStatusResponse.DiscardUnknown(m)
+func (m *QuerySubmittedBlobStatusResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySubmittedBlobStatusResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QuerySubmitBlobStatusResponse proto.InternalMessageInfo
+var xxx_messageInfo_QuerySubmittedBlobStatusResponse proto.InternalMessageInfo
 
-func (m *QuerySubmitBlobStatusResponse) GetRange() *Range {
+func (m *QuerySubmittedBlobStatusResponse) GetRange() *Range {
 	if m != nil {
 		return m.Range
 	}
 	return nil
 }
 
-func (m *QuerySubmitBlobStatusResponse) GetStatus() string {
+func (m *QuerySubmittedBlobStatusResponse) GetStatus() string {
 	if m != nil {
 		return m.Status
 	}
 	return ""
 }
 
-func (m *QuerySubmitBlobStatusResponse) GetProvenHeight() uint64 {
+func (m *QuerySubmittedBlobStatusResponse) GetProvenHeight() uint64 {
 	if m != nil {
 		return m.ProvenHeight
 	}
 	return 0
 }
 
-func (m *QuerySubmitBlobStatusResponse) GetLastBlobVotingEndsAt() uint64 {
+func (m *QuerySubmittedBlobStatusResponse) GetLastBlobVotingEndsAt() uint64 {
 	if m != nil {
 		return m.LastBlobVotingEndsAt
 	}
 	return 0
 }
 
-// QueryValidatorsRequest is the request type for the Query/Validators RPC method.
-type QueryValidatorsRequest struct {
-}
-
-func (m *QueryValidatorsRequest) Reset()         { *m = QueryValidatorsRequest{} }
-func (m *QueryValidatorsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryValidatorsRequest) ProtoMessage()    {}
-func (*QueryValidatorsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{2}
-}
-func (m *QueryValidatorsRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryValidatorsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryValidatorsRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryValidatorsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryValidatorsRequest.Merge(m, src)
-}
-func (m *QueryValidatorsRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryValidatorsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryValidatorsRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryValidatorsRequest proto.InternalMessageInfo
-
-// QueryValidatorResponse is the response type for the Query/Validators RPC method.
-type QueryValidatorsResponse struct {
-	// validators is the returned validators from the module
-	Validators []Validator `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators"`
-}
-
-func (m *QueryValidatorsResponse) Reset()         { *m = QueryValidatorsResponse{} }
-func (m *QueryValidatorsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryValidatorsResponse) ProtoMessage()    {}
-func (*QueryValidatorsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{3}
-}
-func (m *QueryValidatorsResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryValidatorsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryValidatorsResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryValidatorsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryValidatorsResponse.Merge(m, src)
-}
-func (m *QueryValidatorsResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryValidatorsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryValidatorsResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryValidatorsResponse proto.InternalMessageInfo
-
-func (m *QueryValidatorsResponse) GetValidators() []Validator {
-	if m != nil {
-		return m.Validators
-	}
-	return nil
-}
-
-// QueryAvailAddressRequest is the request type for the Query/AvailAddress RPC method.
-type QueryAvailAddressRequest struct {
-	ValidatorAddress string `protobuf:"bytes,1,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
-}
-
-func (m *QueryAvailAddressRequest) Reset()         { *m = QueryAvailAddressRequest{} }
-func (m *QueryAvailAddressRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryAvailAddressRequest) ProtoMessage()    {}
-func (*QueryAvailAddressRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{4}
-}
-func (m *QueryAvailAddressRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryAvailAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryAvailAddressRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryAvailAddressRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAvailAddressRequest.Merge(m, src)
-}
-func (m *QueryAvailAddressRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryAvailAddressRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAvailAddressRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryAvailAddressRequest proto.InternalMessageInfo
-
-func (m *QueryAvailAddressRequest) GetValidatorAddress() string {
-	if m != nil {
-		return m.ValidatorAddress
-	}
-	return ""
-}
-
-// QueryAvailAddressResponse is the response type for the Query/AvailAddress RPC method.
-type QueryAvailAddressResponse struct {
-	AvailAddress string `protobuf:"bytes,1,opt,name=avail_address,json=availAddress,proto3" json:"avail_address,omitempty"`
-}
-
-func (m *QueryAvailAddressResponse) Reset()         { *m = QueryAvailAddressResponse{} }
-func (m *QueryAvailAddressResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAvailAddressResponse) ProtoMessage()    {}
-func (*QueryAvailAddressResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{5}
-}
-func (m *QueryAvailAddressResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryAvailAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryAvailAddressResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryAvailAddressResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAvailAddressResponse.Merge(m, src)
-}
-func (m *QueryAvailAddressResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryAvailAddressResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAvailAddressResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryAvailAddressResponse proto.InternalMessageInfo
-
-func (m *QueryAvailAddressResponse) GetAvailAddress() string {
-	if m != nil {
-		return m.AvailAddress
-	}
-	return ""
-}
-
-// proven Height
-type QueryProvenHeightRequest struct {
-}
-
-func (m *QueryProvenHeightRequest) Reset()         { *m = QueryProvenHeightRequest{} }
-func (m *QueryProvenHeightRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryProvenHeightRequest) ProtoMessage()    {}
-func (*QueryProvenHeightRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{6}
-}
-func (m *QueryProvenHeightRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryProvenHeightRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryProvenHeightRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryProvenHeightRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryProvenHeightRequest.Merge(m, src)
-}
-func (m *QueryProvenHeightRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryProvenHeightRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryProvenHeightRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryProvenHeightRequest proto.InternalMessageInfo
-
-type QueryProvenHeightResponse struct {
-	ProvenHeight uint64 `protobuf:"varint,1,opt,name=proven_height,json=provenHeight,proto3" json:"proven_height,omitempty"`
-}
-
-func (m *QueryProvenHeightResponse) Reset()         { *m = QueryProvenHeightResponse{} }
-func (m *QueryProvenHeightResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryProvenHeightResponse) ProtoMessage()    {}
-func (*QueryProvenHeightResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{7}
-}
-func (m *QueryProvenHeightResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryProvenHeightResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryProvenHeightResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryProvenHeightResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryProvenHeightResponse.Merge(m, src)
-}
-func (m *QueryProvenHeightResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryProvenHeightResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryProvenHeightResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryProvenHeightResponse proto.InternalMessageInfo
-
-func (m *QueryProvenHeightResponse) GetProvenHeight() uint64 {
-	if m != nil {
-		return m.ProvenHeight
-	}
-	return 0
-}
-
-type BlockWithExpiration struct {
-	Height     int64     `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
-	Expiration time.Time `protobuf:"bytes,2,opt,name=expiration,proto3,stdtime" json:"expiration"`
-}
-
-func (m *BlockWithExpiration) Reset()         { *m = BlockWithExpiration{} }
-func (m *BlockWithExpiration) String() string { return proto.CompactTextString(m) }
-func (*BlockWithExpiration) ProtoMessage()    {}
-func (*BlockWithExpiration) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{8}
-}
-func (m *BlockWithExpiration) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *BlockWithExpiration) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_BlockWithExpiration.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *BlockWithExpiration) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BlockWithExpiration.Merge(m, src)
-}
-func (m *BlockWithExpiration) XXX_Size() int {
-	return m.Size()
-}
-func (m *BlockWithExpiration) XXX_DiscardUnknown() {
-	xxx_messageInfo_BlockWithExpiration.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_BlockWithExpiration proto.InternalMessageInfo
-
-func (m *BlockWithExpiration) GetHeight() int64 {
-	if m != nil {
-		return m.Height
-	}
-	return 0
-}
-
-func (m *BlockWithExpiration) GetExpiration() time.Time {
-	if m != nil {
-		return m.Expiration
-	}
-	return time.Time{}
-}
-
-type QueryPendingBlocksRequest struct {
-}
-
-func (m *QueryPendingBlocksRequest) Reset()         { *m = QueryPendingBlocksRequest{} }
-func (m *QueryPendingBlocksRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryPendingBlocksRequest) ProtoMessage()    {}
-func (*QueryPendingBlocksRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{9}
-}
-func (m *QueryPendingBlocksRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryPendingBlocksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryPendingBlocksRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryPendingBlocksRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryPendingBlocksRequest.Merge(m, src)
-}
-func (m *QueryPendingBlocksRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryPendingBlocksRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryPendingBlocksRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryPendingBlocksRequest proto.InternalMessageInfo
-
-type QueryPendingBlocksResponse struct {
-	PendingBlocks []*BlockWithExpiration `protobuf:"bytes,1,rep,name=pending_blocks,json=pendingBlocks,proto3" json:"pending_blocks,omitempty"`
-}
-
-func (m *QueryPendingBlocksResponse) Reset()         { *m = QueryPendingBlocksResponse{} }
-func (m *QueryPendingBlocksResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryPendingBlocksResponse) ProtoMessage()    {}
-func (*QueryPendingBlocksResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{10}
-}
-func (m *QueryPendingBlocksResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryPendingBlocksResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryPendingBlocksResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryPendingBlocksResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryPendingBlocksResponse.Merge(m, src)
-}
-func (m *QueryPendingBlocksResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryPendingBlocksResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryPendingBlocksResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryPendingBlocksResponse proto.InternalMessageInfo
-
-func (m *QueryPendingBlocksResponse) GetPendingBlocks() []*BlockWithExpiration {
-	if m != nil {
-		return m.PendingBlocks
-	}
-	return nil
-}
-
-type QueryExpiredBlocksRequest struct {
-}
-
-func (m *QueryExpiredBlocksRequest) Reset()         { *m = QueryExpiredBlocksRequest{} }
-func (m *QueryExpiredBlocksRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryExpiredBlocksRequest) ProtoMessage()    {}
-func (*QueryExpiredBlocksRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{11}
-}
-func (m *QueryExpiredBlocksRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryExpiredBlocksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryExpiredBlocksRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryExpiredBlocksRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryExpiredBlocksRequest.Merge(m, src)
-}
-func (m *QueryExpiredBlocksRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryExpiredBlocksRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryExpiredBlocksRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryExpiredBlocksRequest proto.InternalMessageInfo
-
-type QueryExpiredBlocksResponse struct {
-	CurrentTime   time.Time              `protobuf:"bytes,1,opt,name=current_time,json=currentTime,proto3,stdtime" json:"current_time"`
-	ExpiredBlocks []*BlockWithExpiration `protobuf:"bytes,2,rep,name=expired_blocks,json=expiredBlocks,proto3" json:"expired_blocks,omitempty"`
-}
-
-func (m *QueryExpiredBlocksResponse) Reset()         { *m = QueryExpiredBlocksResponse{} }
-func (m *QueryExpiredBlocksResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryExpiredBlocksResponse) ProtoMessage()    {}
-func (*QueryExpiredBlocksResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_30ff5d91ce731c68, []int{12}
-}
-func (m *QueryExpiredBlocksResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryExpiredBlocksResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryExpiredBlocksResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryExpiredBlocksResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryExpiredBlocksResponse.Merge(m, src)
-}
-func (m *QueryExpiredBlocksResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryExpiredBlocksResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryExpiredBlocksResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryExpiredBlocksResponse proto.InternalMessageInfo
-
-func (m *QueryExpiredBlocksResponse) GetCurrentTime() time.Time {
-	if m != nil {
-		return m.CurrentTime
-	}
-	return time.Time{}
-}
-
-func (m *QueryExpiredBlocksResponse) GetExpiredBlocks() []*BlockWithExpiration {
-	if m != nil {
-		return m.ExpiredBlocks
-	}
-	return nil
-}
-
 func init() {
-	proto.RegisterType((*QuerySubmitBlobStatusRequest)(nil), "sdk.avail.v1beta1.QuerySubmitBlobStatusRequest")
-	proto.RegisterType((*QuerySubmitBlobStatusResponse)(nil), "sdk.avail.v1beta1.QuerySubmitBlobStatusResponse")
-	proto.RegisterType((*QueryValidatorsRequest)(nil), "sdk.avail.v1beta1.QueryValidatorsRequest")
-	proto.RegisterType((*QueryValidatorsResponse)(nil), "sdk.avail.v1beta1.QueryValidatorsResponse")
-	proto.RegisterType((*QueryAvailAddressRequest)(nil), "sdk.avail.v1beta1.QueryAvailAddressRequest")
-	proto.RegisterType((*QueryAvailAddressResponse)(nil), "sdk.avail.v1beta1.QueryAvailAddressResponse")
-	proto.RegisterType((*QueryProvenHeightRequest)(nil), "sdk.avail.v1beta1.QueryProvenHeightRequest")
-	proto.RegisterType((*QueryProvenHeightResponse)(nil), "sdk.avail.v1beta1.QueryProvenHeightResponse")
-	proto.RegisterType((*BlockWithExpiration)(nil), "sdk.avail.v1beta1.BlockWithExpiration")
-	proto.RegisterType((*QueryPendingBlocksRequest)(nil), "sdk.avail.v1beta1.QueryPendingBlocksRequest")
-	proto.RegisterType((*QueryPendingBlocksResponse)(nil), "sdk.avail.v1beta1.QueryPendingBlocksResponse")
-	proto.RegisterType((*QueryExpiredBlocksRequest)(nil), "sdk.avail.v1beta1.QueryExpiredBlocksRequest")
-	proto.RegisterType((*QueryExpiredBlocksResponse)(nil), "sdk.avail.v1beta1.QueryExpiredBlocksResponse")
+	proto.RegisterType((*QuerySubmittedBlobStatusRequest)(nil), "sdk.avail.v1beta1.QuerySubmittedBlobStatusRequest")
+	proto.RegisterType((*QuerySubmittedBlobStatusResponse)(nil), "sdk.avail.v1beta1.QuerySubmittedBlobStatusResponse")
 }
 
 func init() { proto.RegisterFile("sdk/avail/v1beta1/query.proto", fileDescriptor_30ff5d91ce731c68) }
 
 var fileDescriptor_30ff5d91ce731c68 = []byte{
-	// 803 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0x41, 0x6f, 0xeb, 0x44,
-	0x10, 0xc7, 0xb3, 0x6d, 0xdf, 0x83, 0xb7, 0x49, 0x50, 0xbb, 0x54, 0xc5, 0x98, 0x36, 0x49, 0x1d,
-	0x15, 0x52, 0x4a, 0x6d, 0x1a, 0x24, 0xce, 0x24, 0xa2, 0x2a, 0x17, 0x24, 0x70, 0x51, 0x91, 0x90,
-	0x50, 0xb4, 0x8e, 0x17, 0xc7, 0x8a, 0xe3, 0x75, 0xbd, 0xeb, 0xd0, 0x5e, 0x39, 0x72, 0xaa, 0xd4,
-	0x03, 0xe2, 0xca, 0x67, 0xe0, 0x23, 0x70, 0xe8, 0xb1, 0x12, 0x17, 0x4e, 0x80, 0x5a, 0x3e, 0x08,
-	0xf2, 0x7a, 0xed, 0xda, 0x89, 0x5d, 0xe5, 0xdd, 0xe2, 0xfc, 0x67, 0x66, 0x7f, 0x33, 0xbb, 0xf3,
-	0x87, 0x7b, 0xcc, 0x9e, 0x1a, 0x78, 0x8e, 0x5d, 0xcf, 0x98, 0x9f, 0x58, 0x84, 0xe3, 0x13, 0xe3,
-	0x32, 0x22, 0xe1, 0xb5, 0x1e, 0x84, 0x94, 0x53, 0xb4, 0xc5, 0xec, 0xa9, 0x2e, 0x64, 0x5d, 0xca,
-	0xea, 0xb6, 0x43, 0x1d, 0x2a, 0x54, 0x23, 0xfe, 0x95, 0x04, 0xaa, 0xbb, 0x0e, 0xa5, 0x8e, 0x47,
-	0x0c, 0x1c, 0xb8, 0x06, 0xf6, 0x7d, 0xca, 0x31, 0x77, 0xa9, 0xcf, 0xa4, 0xba, 0xbf, 0x7c, 0xca,
-	0x1c, 0x7b, 0xae, 0x8d, 0x39, 0x0d, 0x65, 0x48, 0x5b, 0x16, 0x10, 0x5f, 0x56, 0xf4, 0x83, 0xc1,
-	0xdd, 0x19, 0x61, 0x1c, 0xcf, 0x02, 0x19, 0xa0, 0x2e, 0xd7, 0xe0, 0x57, 0x89, 0xa6, 0xb5, 0xe0,
-	0xee, 0xd7, 0x31, 0xf5, 0x79, 0x64, 0xcd, 0x5c, 0x3e, 0xf4, 0xa8, 0x75, 0xce, 0x31, 0x8f, 0x98,
-	0x49, 0x2e, 0x23, 0xc2, 0xb8, 0xf6, 0x07, 0x80, 0x7b, 0x15, 0x01, 0x2c, 0xa0, 0x3e, 0x23, 0x48,
-	0x87, 0x2f, 0x42, 0xec, 0x3b, 0x44, 0x01, 0x1d, 0xd0, 0xab, 0xf7, 0x15, 0x7d, 0xa9, 0x71, 0xdd,
-	0x8c, 0x75, 0x33, 0x09, 0x43, 0x3b, 0xf0, 0x25, 0x13, 0x15, 0x94, 0xb5, 0x0e, 0xe8, 0xbd, 0x32,
-	0xe5, 0x17, 0xea, 0xc2, 0x66, 0x10, 0xd2, 0x39, 0xf1, 0x47, 0x13, 0xe2, 0x3a, 0x13, 0xae, 0xac,
-	0x77, 0x40, 0x6f, 0xc3, 0x6c, 0x24, 0x7f, 0x7e, 0x21, 0xfe, 0x43, 0x9f, 0x42, 0xc5, 0xc3, 0x8c,
-	0x8f, 0x2c, 0x8f, 0x5a, 0xa3, 0x39, 0xe5, 0xae, 0xef, 0x8c, 0x88, 0x6f, 0xb3, 0x11, 0xe6, 0xca,
-	0x86, 0x88, 0xdf, 0x8e, 0xf5, 0x18, 0xf3, 0x42, 0xa8, 0xa7, 0xbe, 0xcd, 0x06, 0x5c, 0x53, 0xe0,
-	0x8e, 0xe8, 0xe2, 0x22, 0x9d, 0x5d, 0xd6, 0xe0, 0xf7, 0xf0, 0x9d, 0x25, 0x45, 0x76, 0x36, 0x84,
-	0x30, 0x9b, 0x35, 0x53, 0x40, 0x67, 0xbd, 0x57, 0xef, 0xef, 0x96, 0xb4, 0x97, 0xa5, 0x0e, 0x37,
-	0xee, 0xfe, 0x6e, 0xd7, 0xcc, 0x5c, 0x96, 0x76, 0x06, 0x15, 0x51, 0x7e, 0x10, 0x67, 0x0c, 0x6c,
-	0x3b, 0x24, 0x2c, 0x3d, 0x1a, 0x1d, 0xc1, 0xad, 0x2c, 0x72, 0x84, 0x13, 0x4d, 0x4c, 0xf1, 0x95,
-	0xb9, 0x99, 0x09, 0x32, 0x47, 0xfb, 0x0c, 0xbe, 0x5b, 0x52, 0x48, 0x92, 0x76, 0x61, 0x53, 0x20,
-	0x2d, 0x54, 0x69, 0xe0, 0x5c, 0xb0, 0xa6, 0x4a, 0x94, 0xaf, 0x72, 0x03, 0x4d, 0xa7, 0x90, 0x56,
-	0x2f, 0x6a, 0x4f, 0xd5, 0x8b, 0x37, 0x03, 0x96, 0x6f, 0x46, 0x63, 0xf0, 0xed, 0xa1, 0x47, 0xc7,
-	0xd3, 0x6f, 0x5d, 0x3e, 0x39, 0xbd, 0x0a, 0xdc, 0x50, 0x3c, 0xe3, 0xf8, 0xb6, 0x73, 0x49, 0xeb,
-	0xa6, 0xfc, 0x42, 0x9f, 0x43, 0x48, 0xb2, 0x28, 0xf1, 0x12, 0xea, 0x7d, 0x55, 0x4f, 0x5e, 0xb2,
-	0x9e, 0xbe, 0x64, 0xfd, 0x9b, 0xf4, 0x25, 0x0f, 0xdf, 0x8c, 0x27, 0x7b, 0xf3, 0x4f, 0x1b, 0x98,
-	0xb9, 0x3c, 0xed, 0xbd, 0x14, 0x9b, 0xf8, 0xb6, 0xeb, 0x3b, 0x02, 0x20, 0xbb, 0xd9, 0x29, 0x54,
-	0xcb, 0x44, 0xd9, 0xd4, 0x97, 0xf0, 0xad, 0x20, 0x11, 0xe2, 0xc7, 0x34, 0x9e, 0xa6, 0x17, 0xfc,
-	0x7e, 0xc9, 0x05, 0x97, 0x34, 0x66, 0x36, 0x83, 0x7c, 0xd9, 0x8c, 0x44, 0x44, 0x10, 0xbb, 0x48,
-	0xf2, 0x3b, 0x90, 0x28, 0x0b, 0xaa, 0x44, 0x39, 0x83, 0x8d, 0x71, 0x14, 0x86, 0xc4, 0xe7, 0xa3,
-	0x78, 0x75, 0xe5, 0x22, 0xad, 0x36, 0x8d, 0xba, 0xcc, 0x8c, 0xb5, 0xb8, 0x27, 0x92, 0x9c, 0x90,
-	0xf6, 0xb4, 0xf6, 0x7a, 0x3d, 0x91, 0x3c, 0x5f, 0xff, 0xd7, 0x37, 0xe0, 0x0b, 0x81, 0x8d, 0x7e,
-	0x03, 0x70, 0x73, 0xd1, 0x00, 0x90, 0x51, 0x52, 0xf5, 0x39, 0x2f, 0x51, 0x3f, 0x5e, 0x3d, 0x21,
-	0x99, 0x8c, 0x76, 0xf4, 0xd3, 0x9f, 0xff, 0xdd, 0xae, 0x1d, 0xa0, 0x6e, 0x62, 0x5f, 0xf1, 0xd6,
-	0x67, 0x16, 0xc6, 0x16, 0x79, 0x7e, 0x06, 0x10, 0x3e, 0x6d, 0x31, 0x3a, 0xac, 0x3a, 0x6d, 0xc9,
-	0x03, 0xd4, 0x0f, 0x57, 0x09, 0x95, 0x48, 0x07, 0x02, 0xa9, 0x8d, 0xf6, 0x4a, 0x90, 0x9e, 0xf6,
-	0x1e, 0xdd, 0x02, 0xd8, 0xc8, 0xaf, 0x2a, 0x3a, 0xaa, 0x3a, 0xa3, 0xc4, 0x19, 0xd4, 0x8f, 0x56,
-	0x0b, 0x96, 0x48, 0x3d, 0x81, 0xa4, 0xa1, 0x4e, 0x09, 0x52, 0xc1, 0x16, 0x04, 0x55, 0x7e, 0xc5,
-	0xab, 0xa9, 0x4a, 0x4c, 0xa2, 0x9a, 0xaa, 0xcc, 0x35, 0x9e, 0xa5, 0x2a, 0xd8, 0x09, 0xfa, 0x05,
-	0xc0, 0x66, 0x61, 0x49, 0x51, 0xf5, 0x49, 0x25, 0x8b, 0xae, 0x1e, 0xaf, 0x18, 0x2d, 0xc1, 0x0e,
-	0x05, 0x58, 0x17, 0xed, 0x97, 0x81, 0x15, 0x2c, 0x41, 0x90, 0x15, 0x76, 0xb6, 0x9a, 0xac, 0x6c,
-	0xf1, 0xab, 0xc9, 0x4a, 0x8d, 0xe0, 0x59, 0xb2, 0xe2, 0x62, 0x0f, 0x07, 0x77, 0x0f, 0x2d, 0x70,
-	0xff, 0xd0, 0x02, 0xff, 0x3e, 0xb4, 0xc0, 0xcd, 0x63, 0xab, 0x76, 0xff, 0xd8, 0xaa, 0xfd, 0xf5,
-	0xd8, 0xaa, 0x7d, 0xf7, 0x81, 0xe3, 0xf2, 0x49, 0x64, 0xe9, 0x63, 0x3a, 0x33, 0xe6, 0x2e, 0xff,
-	0xd1, 0xe5, 0x49, 0xb5, 0x63, 0x1b, 0x1f, 0xcf, 0xa8, 0x1d, 0x79, 0xc4, 0xe0, 0xd7, 0x01, 0x61,
-	0xd6, 0x4b, 0x61, 0x2c, 0x9f, 0xfc, 0x1f, 0x00, 0x00, 0xff, 0xff, 0x52, 0xce, 0x27, 0x0b, 0xc9,
-	0x08, 0x00, 0x00,
+	// 413 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x91, 0x41, 0x6b, 0xd4, 0x40,
+	0x14, 0xc7, 0x77, 0x6a, 0x5b, 0x70, 0xd4, 0x83, 0x63, 0x91, 0x10, 0x34, 0x4d, 0xb7, 0x88, 0x0b,
+	0xd2, 0x0c, 0xdd, 0x82, 0xf7, 0x16, 0x04, 0xaf, 0xa6, 0xe0, 0xc1, 0x4b, 0x98, 0x71, 0xc6, 0xd9,
+	0xa1, 0xc9, 0xbc, 0x34, 0xf3, 0x12, 0xed, 0xd5, 0x4f, 0x20, 0xf8, 0x31, 0x3c, 0xfb, 0x19, 0xf4,
+	0x58, 0xf0, 0xe2, 0x51, 0x76, 0xfd, 0x20, 0x92, 0x49, 0xd0, 0xc3, 0xae, 0x88, 0xb7, 0xcc, 0xfb,
+	0xfd, 0xdf, 0x3f, 0xef, 0xff, 0x1e, 0x7d, 0xe8, 0xd5, 0x05, 0x17, 0x9d, 0xb0, 0x25, 0xef, 0x8e,
+	0xa5, 0x46, 0x71, 0xcc, 0x2f, 0x5b, 0xdd, 0x5c, 0x65, 0x75, 0x03, 0x08, 0xec, 0xae, 0x57, 0x17,
+	0x59, 0xc0, 0xd9, 0x88, 0xe3, 0x3d, 0x03, 0x06, 0x02, 0xe5, 0xfd, 0xd7, 0x20, 0x8c, 0x1f, 0x18,
+	0x00, 0x53, 0x6a, 0x2e, 0x6a, 0xcb, 0x85, 0x73, 0x80, 0x02, 0x2d, 0x38, 0x3f, 0xd2, 0x83, 0xf5,
+	0xbf, 0x74, 0xa2, 0xb4, 0x4a, 0x20, 0x34, 0xa3, 0x64, 0x7f, 0x34, 0x08, 0x2f, 0xd9, 0xbe, 0xe1,
+	0x68, 0x2b, 0xed, 0x51, 0x54, 0xf5, 0x28, 0x88, 0xd7, 0x3d, 0xf0, 0xdd, 0xc0, 0xa6, 0x07, 0x74,
+	0xff, 0x45, 0x3f, 0xf5, 0x79, 0x2b, 0x2b, 0x8b, 0xa8, 0xd5, 0x59, 0x09, 0xf2, 0x1c, 0x05, 0xb6,
+	0x3e, 0xd7, 0x97, 0xad, 0xf6, 0x38, 0xfd, 0x42, 0x68, 0xfa, 0x77, 0x8d, 0xaf, 0xc1, 0x79, 0xcd,
+	0x32, 0xba, 0xd3, 0x08, 0x67, 0x74, 0x44, 0x52, 0x32, 0xbb, 0x35, 0x8f, 0xb2, 0xb5, 0xf8, 0x59,
+	0xde, 0xf3, 0x7c, 0x90, 0xb1, 0xfb, 0x74, 0xd7, 0x07, 0x87, 0x68, 0x2b, 0x25, 0xb3, 0x9b, 0xf9,
+	0xf8, 0x62, 0x87, 0xf4, 0x4e, 0xdd, 0x40, 0xa7, 0x5d, 0xb1, 0xd0, 0xd6, 0x2c, 0x30, 0xba, 0x91,
+	0x92, 0xd9, 0x76, 0x7e, 0x7b, 0x28, 0x3e, 0x0f, 0x35, 0xf6, 0x94, 0x46, 0xa5, 0xf0, 0x58, 0xc8,
+	0x12, 0x64, 0xd1, 0x01, 0x5a, 0x67, 0x0a, 0xed, 0x94, 0x2f, 0x04, 0x46, 0xdb, 0x41, 0xbf, 0xd7,
+	0xf3, 0x7e, 0xcc, 0x97, 0x81, 0x3e, 0x73, 0xca, 0x9f, 0xe2, 0xfc, 0x33, 0xa1, 0x3b, 0x21, 0x09,
+	0xfb, 0x44, 0xe8, 0xbd, 0x0d, 0x71, 0xd8, 0x7c, 0xc3, 0xdc, 0xff, 0xd8, 0x4f, 0x7c, 0xf2, 0x5f,
+	0x3d, 0xc3, 0xbe, 0xa6, 0x4f, 0xde, 0x7f, 0xfb, 0xf9, 0x71, 0xeb, 0x11, 0x3b, 0x1c, 0x0e, 0xd3,
+	0x27, 0xf9, 0x7d, 0x1c, 0x1f, 0xfa, 0xfe, 0x34, 0x9d, 0x9d, 0x7e, 0x5d, 0x26, 0xe4, 0x7a, 0x99,
+	0x90, 0x1f, 0xcb, 0x84, 0x7c, 0x58, 0x25, 0x93, 0xeb, 0x55, 0x32, 0xf9, 0xbe, 0x4a, 0x26, 0xaf,
+	0x1e, 0x1b, 0x8b, 0x8b, 0x56, 0x66, 0xaf, 0xa1, 0xe2, 0x9d, 0xc5, 0xb7, 0x16, 0x07, 0xbf, 0x23,
+	0x25, 0x8e, 0x2a, 0x50, 0x6d, 0xa9, 0x39, 0x5e, 0xd5, 0xda, 0xcb, 0xdd, 0x70, 0xee, 0x93, 0x5f,
+	0x01, 0x00, 0x00, 0xff, 0xff, 0xc3, 0x61, 0x4c, 0xe1, 0xb6, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -699,17 +186,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
 	// submit Blob Status
-	SubmitBlobStatus(ctx context.Context, in *QuerySubmitBlobStatusRequest, opts ...grpc.CallOption) (*QuerySubmitBlobStatusResponse, error)
-	// Validators returns registered validators of the module.
-	Validators(ctx context.Context, in *QueryValidatorsRequest, opts ...grpc.CallOption) (*QueryValidatorsResponse, error)
-	// Todo: will be removed
-	AvailAddress(ctx context.Context, in *QueryAvailAddressRequest, opts ...grpc.CallOption) (*QueryAvailAddressResponse, error)
-	// proven height
-	ProvenHeight(ctx context.Context, in *QueryProvenHeightRequest, opts ...grpc.CallOption) (*QueryProvenHeightResponse, error)
-	// pending blocks
-	PendingBlocks(ctx context.Context, in *QueryPendingBlocksRequest, opts ...grpc.CallOption) (*QueryPendingBlocksResponse, error)
-	// expired blocks
-	ExpiredBlocks(ctx context.Context, in *QueryExpiredBlocksRequest, opts ...grpc.CallOption) (*QueryExpiredBlocksResponse, error)
+	SubmittedBlobStatus(ctx context.Context, in *QuerySubmittedBlobStatusRequest, opts ...grpc.CallOption) (*QuerySubmittedBlobStatusResponse, error)
 }
 
 type queryClient struct {
@@ -720,54 +197,9 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) SubmitBlobStatus(ctx context.Context, in *QuerySubmitBlobStatusRequest, opts ...grpc.CallOption) (*QuerySubmitBlobStatusResponse, error) {
-	out := new(QuerySubmitBlobStatusResponse)
-	err := c.cc.Invoke(ctx, "/sdk.avail.v1beta1.Query/SubmitBlobStatus", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Validators(ctx context.Context, in *QueryValidatorsRequest, opts ...grpc.CallOption) (*QueryValidatorsResponse, error) {
-	out := new(QueryValidatorsResponse)
-	err := c.cc.Invoke(ctx, "/sdk.avail.v1beta1.Query/Validators", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) AvailAddress(ctx context.Context, in *QueryAvailAddressRequest, opts ...grpc.CallOption) (*QueryAvailAddressResponse, error) {
-	out := new(QueryAvailAddressResponse)
-	err := c.cc.Invoke(ctx, "/sdk.avail.v1beta1.Query/AvailAddress", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) ProvenHeight(ctx context.Context, in *QueryProvenHeightRequest, opts ...grpc.CallOption) (*QueryProvenHeightResponse, error) {
-	out := new(QueryProvenHeightResponse)
-	err := c.cc.Invoke(ctx, "/sdk.avail.v1beta1.Query/ProvenHeight", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) PendingBlocks(ctx context.Context, in *QueryPendingBlocksRequest, opts ...grpc.CallOption) (*QueryPendingBlocksResponse, error) {
-	out := new(QueryPendingBlocksResponse)
-	err := c.cc.Invoke(ctx, "/sdk.avail.v1beta1.Query/PendingBlocks", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) ExpiredBlocks(ctx context.Context, in *QueryExpiredBlocksRequest, opts ...grpc.CallOption) (*QueryExpiredBlocksResponse, error) {
-	out := new(QueryExpiredBlocksResponse)
-	err := c.cc.Invoke(ctx, "/sdk.avail.v1beta1.Query/ExpiredBlocks", in, out, opts...)
+func (c *queryClient) SubmittedBlobStatus(ctx context.Context, in *QuerySubmittedBlobStatusRequest, opts ...grpc.CallOption) (*QuerySubmittedBlobStatusResponse, error) {
+	out := new(QuerySubmittedBlobStatusResponse)
+	err := c.cc.Invoke(ctx, "/sdk.avail.v1beta1.Query/SubmittedBlobStatus", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -777,150 +209,35 @@ func (c *queryClient) ExpiredBlocks(ctx context.Context, in *QueryExpiredBlocksR
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// submit Blob Status
-	SubmitBlobStatus(context.Context, *QuerySubmitBlobStatusRequest) (*QuerySubmitBlobStatusResponse, error)
-	// Validators returns registered validators of the module.
-	Validators(context.Context, *QueryValidatorsRequest) (*QueryValidatorsResponse, error)
-	// Todo: will be removed
-	AvailAddress(context.Context, *QueryAvailAddressRequest) (*QueryAvailAddressResponse, error)
-	// proven height
-	ProvenHeight(context.Context, *QueryProvenHeightRequest) (*QueryProvenHeightResponse, error)
-	// pending blocks
-	PendingBlocks(context.Context, *QueryPendingBlocksRequest) (*QueryPendingBlocksResponse, error)
-	// expired blocks
-	ExpiredBlocks(context.Context, *QueryExpiredBlocksRequest) (*QueryExpiredBlocksResponse, error)
+	SubmittedBlobStatus(context.Context, *QuerySubmittedBlobStatusRequest) (*QuerySubmittedBlobStatusResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
 type UnimplementedQueryServer struct {
 }
 
-func (*UnimplementedQueryServer) SubmitBlobStatus(ctx context.Context, req *QuerySubmitBlobStatusRequest) (*QuerySubmitBlobStatusResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SubmitBlobStatus not implemented")
-}
-func (*UnimplementedQueryServer) Validators(ctx context.Context, req *QueryValidatorsRequest) (*QueryValidatorsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Validators not implemented")
-}
-func (*UnimplementedQueryServer) AvailAddress(ctx context.Context, req *QueryAvailAddressRequest) (*QueryAvailAddressResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AvailAddress not implemented")
-}
-func (*UnimplementedQueryServer) ProvenHeight(ctx context.Context, req *QueryProvenHeightRequest) (*QueryProvenHeightResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProvenHeight not implemented")
-}
-func (*UnimplementedQueryServer) PendingBlocks(ctx context.Context, req *QueryPendingBlocksRequest) (*QueryPendingBlocksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PendingBlocks not implemented")
-}
-func (*UnimplementedQueryServer) ExpiredBlocks(ctx context.Context, req *QueryExpiredBlocksRequest) (*QueryExpiredBlocksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ExpiredBlocks not implemented")
+func (*UnimplementedQueryServer) SubmittedBlobStatus(ctx context.Context, req *QuerySubmittedBlobStatusRequest) (*QuerySubmittedBlobStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SubmittedBlobStatus not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
 }
 
-func _Query_SubmitBlobStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QuerySubmitBlobStatusRequest)
+func _Query_SubmittedBlobStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySubmittedBlobStatusRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).SubmitBlobStatus(ctx, in)
+		return srv.(QueryServer).SubmittedBlobStatus(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sdk.avail.v1beta1.Query/SubmitBlobStatus",
+		FullMethod: "/sdk.avail.v1beta1.Query/SubmittedBlobStatus",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).SubmitBlobStatus(ctx, req.(*QuerySubmitBlobStatusRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Validators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryValidatorsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Validators(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sdk.avail.v1beta1.Query/Validators",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Validators(ctx, req.(*QueryValidatorsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_AvailAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAvailAddressRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).AvailAddress(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sdk.avail.v1beta1.Query/AvailAddress",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).AvailAddress(ctx, req.(*QueryAvailAddressRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_ProvenHeight_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryProvenHeightRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).ProvenHeight(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sdk.avail.v1beta1.Query/ProvenHeight",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ProvenHeight(ctx, req.(*QueryProvenHeightRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_PendingBlocks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryPendingBlocksRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).PendingBlocks(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sdk.avail.v1beta1.Query/PendingBlocks",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).PendingBlocks(ctx, req.(*QueryPendingBlocksRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_ExpiredBlocks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryExpiredBlocksRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).ExpiredBlocks(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sdk.avail.v1beta1.Query/ExpiredBlocks",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ExpiredBlocks(ctx, req.(*QueryExpiredBlocksRequest))
+		return srv.(QueryServer).SubmittedBlobStatus(ctx, req.(*QuerySubmittedBlobStatusRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -930,35 +247,15 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SubmitBlobStatus",
-			Handler:    _Query_SubmitBlobStatus_Handler,
-		},
-		{
-			MethodName: "Validators",
-			Handler:    _Query_Validators_Handler,
-		},
-		{
-			MethodName: "AvailAddress",
-			Handler:    _Query_AvailAddress_Handler,
-		},
-		{
-			MethodName: "ProvenHeight",
-			Handler:    _Query_ProvenHeight_Handler,
-		},
-		{
-			MethodName: "PendingBlocks",
-			Handler:    _Query_PendingBlocks_Handler,
-		},
-		{
-			MethodName: "ExpiredBlocks",
-			Handler:    _Query_ExpiredBlocks_Handler,
+			MethodName: "SubmittedBlobStatus",
+			Handler:    _Query_SubmittedBlobStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "sdk/avail/v1beta1/query.proto",
 }
 
-func (m *QuerySubmitBlobStatusRequest) Marshal() (dAtA []byte, err error) {
+func (m *QuerySubmittedBlobStatusRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -968,12 +265,12 @@ func (m *QuerySubmitBlobStatusRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QuerySubmitBlobStatusRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QuerySubmittedBlobStatusRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QuerySubmitBlobStatusRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QuerySubmittedBlobStatusRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -981,7 +278,7 @@ func (m *QuerySubmitBlobStatusRequest) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *QuerySubmitBlobStatusResponse) Marshal() (dAtA []byte, err error) {
+func (m *QuerySubmittedBlobStatusResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -991,12 +288,12 @@ func (m *QuerySubmitBlobStatusResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QuerySubmitBlobStatusResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QuerySubmittedBlobStatusResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QuerySubmitBlobStatusResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QuerySubmittedBlobStatusResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1033,341 +330,6 @@ func (m *QuerySubmitBlobStatusResponse) MarshalToSizedBuffer(dAtA []byte) (int, 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryValidatorsRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryValidatorsRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryValidatorsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryValidatorsResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryValidatorsResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryValidatorsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Validators) > 0 {
-		for iNdEx := len(m.Validators) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Validators[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintQuery(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0xa
-		}
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryAvailAddressRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryAvailAddressRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryAvailAddressRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.ValidatorAddress) > 0 {
-		i -= len(m.ValidatorAddress)
-		copy(dAtA[i:], m.ValidatorAddress)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.ValidatorAddress)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryAvailAddressResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryAvailAddressResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryAvailAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.AvailAddress) > 0 {
-		i -= len(m.AvailAddress)
-		copy(dAtA[i:], m.AvailAddress)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.AvailAddress)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryProvenHeightRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryProvenHeightRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryProvenHeightRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryProvenHeightResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryProvenHeightResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryProvenHeightResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.ProvenHeight != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.ProvenHeight))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *BlockWithExpiration) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *BlockWithExpiration) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *BlockWithExpiration) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.Expiration, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.Expiration):])
-	if err2 != nil {
-		return 0, err2
-	}
-	i -= n2
-	i = encodeVarintQuery(dAtA, i, uint64(n2))
-	i--
-	dAtA[i] = 0x12
-	if m.Height != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Height))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryPendingBlocksRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryPendingBlocksRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryPendingBlocksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryPendingBlocksResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryPendingBlocksResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryPendingBlocksResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.PendingBlocks) > 0 {
-		for iNdEx := len(m.PendingBlocks) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.PendingBlocks[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintQuery(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0xa
-		}
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryExpiredBlocksRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryExpiredBlocksRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryExpiredBlocksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryExpiredBlocksResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryExpiredBlocksResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryExpiredBlocksResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.ExpiredBlocks) > 0 {
-		for iNdEx := len(m.ExpiredBlocks) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.ExpiredBlocks[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintQuery(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x12
-		}
-	}
-	n3, err3 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.CurrentTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.CurrentTime):])
-	if err3 != nil {
-		return 0, err3
-	}
-	i -= n3
-	i = encodeVarintQuery(dAtA, i, uint64(n3))
-	i--
-	dAtA[i] = 0xa
-	return len(dAtA) - i, nil
-}
-
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -1379,7 +341,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *QuerySubmitBlobStatusRequest) Size() (n int) {
+func (m *QuerySubmittedBlobStatusRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1388,7 +350,7 @@ func (m *QuerySubmitBlobStatusRequest) Size() (n int) {
 	return n
 }
 
-func (m *QuerySubmitBlobStatusResponse) Size() (n int) {
+func (m *QuerySubmittedBlobStatusResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1411,148 +373,13 @@ func (m *QuerySubmitBlobStatusResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryValidatorsRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *QueryValidatorsResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if len(m.Validators) > 0 {
-		for _, e := range m.Validators {
-			l = e.Size()
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *QueryAvailAddressRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.ValidatorAddress)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *QueryAvailAddressResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.AvailAddress)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *QueryProvenHeightRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *QueryProvenHeightResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ProvenHeight != 0 {
-		n += 1 + sovQuery(uint64(m.ProvenHeight))
-	}
-	return n
-}
-
-func (m *BlockWithExpiration) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Height != 0 {
-		n += 1 + sovQuery(uint64(m.Height))
-	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.Expiration)
-	n += 1 + l + sovQuery(uint64(l))
-	return n
-}
-
-func (m *QueryPendingBlocksRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *QueryPendingBlocksResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if len(m.PendingBlocks) > 0 {
-		for _, e := range m.PendingBlocks {
-			l = e.Size()
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *QueryExpiredBlocksRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *QueryExpiredBlocksResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.CurrentTime)
-	n += 1 + l + sovQuery(uint64(l))
-	if len(m.ExpiredBlocks) > 0 {
-		for _, e := range m.ExpiredBlocks {
-			l = e.Size()
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
-	return n
-}
-
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *QuerySubmitBlobStatusRequest) Unmarshal(dAtA []byte) error {
+func (m *QuerySubmittedBlobStatusRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1575,10 +402,10 @@ func (m *QuerySubmitBlobStatusRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QuerySubmitBlobStatusRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QuerySubmittedBlobStatusRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QuerySubmitBlobStatusRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QuerySubmittedBlobStatusRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1602,7 +429,7 @@ func (m *QuerySubmitBlobStatusRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QuerySubmitBlobStatusResponse) Unmarshal(dAtA []byte) error {
+func (m *QuerySubmittedBlobStatusResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1625,10 +452,10 @@ func (m *QuerySubmitBlobStatusResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QuerySubmitBlobStatusResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QuerySubmittedBlobStatusResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QuerySubmitBlobStatusResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QuerySubmittedBlobStatusResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1737,826 +564,6 @@ func (m *QuerySubmitBlobStatusResponse) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryValidatorsRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryValidatorsRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryValidatorsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryValidatorsResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryValidatorsResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryValidatorsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Validators", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Validators = append(m.Validators, Validator{})
-			if err := m.Validators[len(m.Validators)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryAvailAddressRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAvailAddressRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAvailAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ValidatorAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ValidatorAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryAvailAddressResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAvailAddressResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAvailAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AvailAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AvailAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryProvenHeightRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryProvenHeightRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryProvenHeightRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryProvenHeightResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryProvenHeightResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryProvenHeightResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ProvenHeight", wireType)
-			}
-			m.ProvenHeight = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ProvenHeight |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *BlockWithExpiration) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: BlockWithExpiration: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: BlockWithExpiration: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
-			}
-			m.Height = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Height |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Expiration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.Expiration, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryPendingBlocksRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryPendingBlocksRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryPendingBlocksRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryPendingBlocksResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryPendingBlocksResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryPendingBlocksResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PendingBlocks", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PendingBlocks = append(m.PendingBlocks, &BlockWithExpiration{})
-			if err := m.PendingBlocks[len(m.PendingBlocks)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryExpiredBlocksRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryExpiredBlocksRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryExpiredBlocksRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryExpiredBlocksResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryExpiredBlocksResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryExpiredBlocksResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CurrentTime", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.CurrentTime, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ExpiredBlocks", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ExpiredBlocks = append(m.ExpiredBlocks, &BlockWithExpiration{})
-			if err := m.ExpiredBlocks[len(m.ExpiredBlocks)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

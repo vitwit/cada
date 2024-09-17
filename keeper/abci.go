@@ -10,11 +10,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type StakeWeightedVotes struct {
-	Votes              map[string]int64
-	ExtendedCommitInfo abci.ExtendedCommitInfo
-}
-
 type ProofOfBlobProposalHandler struct {
 	keeper *Keeper
 
@@ -96,18 +91,17 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 			pendingRangeKey := Key(from, to)
 			votingPower := injectedVoteExtTx.Votes[pendingRangeKey]
 
+			state := FAILURE_STATE
+
 			if votingPower > 0 { // TODO: calculate voting power properly
-				k.setBlobStatusSuccess(ctx)
-			} else {
-				k.SetBlobStatusFailure(ctx)
+				state = READY_STATE
 			}
+
+			k.SetBlobStatus(ctx, state)
 		}
 	}
 
 	currentBlockHeight := ctx.BlockHeight()
-
-	// The following code is executed at block heights that are multiples of the voteInterval,
-	// i.e., voteInterval+1, 2*voteInterval+1, 3*voteInterval+1, etc.
 	if !k.IsValidBlockToPostTODA(uint64(currentBlockHeight)) {
 		return nil
 	}
@@ -128,7 +122,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 		blocksToSumit = append(blocksToSumit, int64(i))
 	}
 
-	// only proposar should should run the this
+	// only the proposer should be able to post the blocks
 	if bytes.Equal(req.ProposerAddress, k.proposerAddress) {
 		k.relayer.PostBlocks(ctx, blocksToSumit, k.cdc, req.ProposerAddress)
 	}
@@ -155,8 +149,6 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 	pendingRangeKey := Key(from, to)
 	votes := make(map[string]int64, 1)
 
-	var totalStake int64
-
 	for _, v := range ci.Votes {
 		// Process only votes with BlockIDFlagCommit, indicating the validator committed to the block.
 		// Skip votes with other flags (e.g., BlockIDFlagUnknown, BlockIDFlagNil).
@@ -173,9 +165,6 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 		if voteExt.Votes == nil {
 			continue
 		}
-
-		// TODO: remove if this is not used anywhere
-		totalStake += v.Validator.Power
 
 		for voteRange, isVoted := range voteExt.Votes {
 			if voteRange != pendingRangeKey || !isVoted {

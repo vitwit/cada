@@ -1,9 +1,6 @@
 package keeper
 
 import (
-	"errors"
-	"fmt"
-
 	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
@@ -38,12 +35,10 @@ type Keeper struct {
 
 	cdc codec.BinaryCodec
 
-	publishToAvailBlockInterval int
 	PublishToAvailBlockInterval uint64
 	MaxBlocksForBlob            uint
 	VotingInterval              uint64
-	injectedProofsLimit         int
-	app_id                      int
+	appID                       int
 
 	unprovenBlocks map[int64][]byte
 
@@ -76,8 +71,7 @@ func NewKeeper(
 
 		cdc: cdc,
 
-		publishToAvailBlockInterval: publishToAvailBlockInterval,
-		app_id:                      appId,
+		appID: appId,
 
 		unprovenBlocks:              make(map[int64][]byte),
 		MaxBlocksForBlob:            20, //Todo: call this from app.go, later change to params
@@ -93,58 +87,4 @@ func (k *Keeper) SetRelayer(r *relayer.Relayer) {
 func (k *Keeper) GetBlobStatus(ctx sdk.Context) uint32 {
 	store := ctx.KVStore(k.storeKey)
 	return GetStatusFromStore(store)
-}
-
-// Todo: remove this method later
-func (k *Keeper) SubmitBlob(ctx sdk.Context, req *types.MsgSubmitBlobRequest) (*types.MsgSubmitBlobResponse, error) {
-
-	return &types.MsgSubmitBlobResponse{}, nil
-}
-
-func (k *Keeper) UpdateBlobStatus(ctx sdk.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
-	// status should be changed to Voting or Ready, depending on the request
-	store := ctx.KVStore(k.storeKey)
-	provenHeight := k.GetProvenHeightFromStore(ctx)
-	endHeight := k.GetEndHeightFromStore(ctx)
-	status := GetStatusFromStore(store)
-
-	if req.BlocksRange.From != provenHeight+1 || req.BlocksRange.To != endHeight {
-		return nil, fmt.Errorf("invalid blocks range request: expected range [%d -> %d], got [%d -> %d]",
-			provenHeight+1, endHeight, req.BlocksRange.From, req.BlocksRange.To)
-	}
-
-	if status != PENDING_STATE {
-		return nil, errors.New("can update the status if it is not pending")
-	}
-
-	newStatus := IN_VOTING_STATE
-	if !req.IsSuccess {
-		newStatus = FAILURE_STATE
-	} else {
-		currentHeight := ctx.BlockHeight()
-		UpdateAvailHeight(ctx, store, req.AvailHeight)                            // updates avail height at which the blocks got submitted to DA
-		UpdateVotingEndHeight(ctx, store, uint64(currentHeight)+k.VotingInterval) // TODO: Now voting interval is 5, so check whether we can process votes at next block after tx exec.
-	}
-
-	UpdateBlobStatus(ctx, store, newStatus) // updates blob status after based on tx exec
-
-	return &types.MsgUpdateBlobStatusResponse{}, nil
-}
-
-func (k *Keeper) SubmitBlobStatus(ctx sdk.Context, _ *types.QuerySubmitBlobStatusRequest) (*types.QuerySubmitBlobStatusResponse, error) {
-	// Todo: implement query
-	store := ctx.KVStore(k.storeKey)
-	startHeight := k.GetStartHeightFromStore(ctx)
-	endHeight := k.GetEndHeightFromStore(ctx)
-	status := GetStatusFromStore(store)
-	statusString := ParseStatus(status)
-	provenHeight := k.GetProvenHeightFromStore(ctx)
-	votingEndHeight := k.GetVotingEndHeightFromStore(ctx)
-
-	return &types.QuerySubmitBlobStatusResponse{
-		Range:                &types.Range{From: startHeight, To: endHeight},
-		Status:               statusString,
-		ProvenHeight:         provenHeight,
-		LastBlobVotingEndsAt: votingEndHeight,
-	}, nil
 }
