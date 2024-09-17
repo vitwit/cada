@@ -2,7 +2,6 @@ syntax = "proto3";
 package sdk.avail.v1beta1;
 import "gogoproto/gogo.proto";
 import "sdk/avail/v1beta1/validator.proto";
-import "sdk/avail/v1beta1/query.proto";
 
 option go_package = "github.com/vitwit/avail-da-module/types";
 
@@ -12,6 +11,5 @@ message GenesisState {
 
     // the height of the last block that was proven to be posted to Avail.
     // increment only, never skipping heights.
-    int64 proven_height = 2;
-    repeated BlockWithExpiration pending_blocks = 3;
+    uint64 proven_height = 2;
  }

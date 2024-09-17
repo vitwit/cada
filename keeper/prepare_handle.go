@@ -11,9 +11,10 @@ import (
 const DelayAfterUpgrade = int64(10)
 
 func (k *Keeper) prepareInjectData(ctx sdk.Context, currentBlockTime time.Time, latestProvenHeight int64) types.InjectedData {
-	return types.InjectedData{
-		PendingBlocks: k.preparePostBlocks(ctx, currentBlockTime),
-	}
+	// return types.InjectedData{
+	// 	PendingBlocks: k.preparePostBlocks(ctx, currentBlockTime),
+	// }
+	return types.InjectedData{}
 }
 
 func (k *Keeper) addAvailblobDataToTxs(injectDataBz []byte, maxTxBytes int64, txs [][]byte) [][]byte {
@@ -36,11 +37,11 @@ func (k *Keeper) addAvailblobDataToTxs(injectDataBz []byte, maxTxBytes int64, tx
 }
 
 func (k *Keeper) preparePostBlocks(ctx sdk.Context, currentBlockTime time.Time) types.PendingBlocks {
-	provenHeight, err := k.GetProvenHeight(ctx)
-	if err != nil {
-		return types.PendingBlocks{}
-	}
-	newBlocks := k.relayer.ProposePostNextBlocks(ctx, provenHeight)
+	// provenHeight, err := k.GetProvenHeight(ctx)
+	// if err != nil {
+	// 	return types.PendingBlocks{}
+	// }
+	// newBlocks := k.relayer.ProposePostNextBlocks(ctx, provenHeight)
 
 	// If there are no new blocks to propose, check for expired blocks
 	// Additionally, if the block interval is 1, we need to also be able to re-publish an expired block
@@ -58,9 +59,10 @@ func (k *Keeper) preparePostBlocks(ctx sdk.Context, currentBlockTime time.Time) 
 	// 	}
 	// }
 
-	return types.PendingBlocks{
-		BlockHeights: newBlocks,
-	}
+	// return types.PendingBlocks{
+	// 	BlockHeights: newBlocks,
+	// }
+	return types.PendingBlocks{}
 }
 
 // shouldGetExpiredBlocks checks if this chain has recently upgraded.
@@ -80,9 +82,7 @@ func (k *Keeper) marshalMaxBytes(injectData *types.InjectedData, maxBytes int64,
 		return nil
 	}
 
-	proofLimit := k.injectedProofsLimit
 	for int64(len(injectDataBz)) > maxBytes {
-		proofLimit = proofLimit - 1
 
 		injectDataBz, err = k.cdc.Marshal(injectData)
 		if err != nil {

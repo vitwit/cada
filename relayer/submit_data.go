@@ -1,9 +1,7 @@
 package relayer
 
 import (
-	"crypto/rand"
 	"encoding/base64"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -14,23 +12,16 @@ import (
 	"github.com/centrifuge/go-substrate-rpc-client/v4/registry/state"
 	"github.com/centrifuge/go-substrate-rpc-client/v4/signature"
 	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) error {
-	if r.submittedBlocksCache[blocks[0]] {
-		return nil
-	}
-
-	r.submittedBlocksCache[blocks[0]] = true
-	delete(r.submittedBlocksCache, blocks[0]-int64(len(blocks)))
+func (r *Relayer) SubmitDataToAvailClient(Seed string, AppID int, data []byte, blocks []int64, lightClientUrl string) (BlockInfo, error) {
+	var blockInfo BlockInfo
 
 	handler := NewHTTPClientHandler()
 	datab := base64.StdEncoding.EncodeToString(data)
 
 	jsonData := []byte(fmt.Sprintf(`{"data":"%s"}`, datab))
-
-	// Define the URL
-	//url := "http://127.0.0.1:8000/v2/submit"
 
 	url := fmt.Sprintf("%s/v2/submit", lightClientUrl)
 
@@ -38,11 +29,8 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 	responseBody, err := handler.Post(url, jsonData)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
-		return err
+		return blockInfo, err
 	}
-
-	// Create an instance of the struct
-	var blockInfo BlockInfo
 
 	// Unmarshal the JSON data into the struct
 	err = json.Unmarshal(responseBody, &blockInfo)
@@ -55,7 +43,7 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 	}
 
 	if err == nil {
-		r.logger.Info("Posted block(s) to Avail DA",
+		r.logger.Info("Successfully posted block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
 			"appID", string(r.rpcClient.config.AppID),
@@ -65,27 +53,59 @@ func (r *Relayer) SubmitDataToClient(Seed string, AppID int, data []byte, blocks
 		)
 	}
 
-	return nil
+	return blockInfo, nil
 }
 
-func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) {
+func (r *Relayer) GetSubmittedData(lightClientUrl string, blockNumber int) (BlockData, error) {
 	handler := NewHTTPClientHandler()
-	// get submitted block data using light client api with avail block height
-	// time.Sleep(20 * time.Second) // wait upto data to be submitted data to be included in the avail blocks
 
-	url := fmt.Sprintf("%s/v2/blocks/%v/data?feilds=data", lightClientUrl)
-	url = fmt.Sprintf(url, blockNumber)
+	// Construct the URL with the block number
+	url := fmt.Sprintf("%s/v2/blocks/%v/data?fields=data", lightClientUrl, blockNumber)
 
+	// Perform the GET request, returning the body directly
 	body, err := handler.Get(url)
 	if err != nil {
-		return
+		return BlockData{}, fmt.Errorf("failed to fetch data from the avail: %w", err)
 	}
 
-	if body != nil {
-		r.logger.Info("submitted data to Avail verfied successfully at",
-			"block_height", blockNumber,
-		)
+	// Decode the response body into the BlockData struct
+	var blockData BlockData
+	err = json.Unmarshal(body, &blockData)
+	if err != nil {
+		return BlockData{}, fmt.Errorf("failed to decode block response: %w", err)
 	}
+
+	return blockData, nil
+}
+
+// IsDataAvailable is to query the avail light client and check if the data is made available at the given height
+func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to uint64, availHeight uint64, lightClientUrl string) (bool, error) {
+	availBlock, err := r.GetSubmittedData(lightClientUrl, int(availHeight))
+	if err != nil {
+		return false, err
+	}
+
+	var blocks []int64
+	for i := from; i <= to; i++ {
+		blocks = append(blocks, int64(i))
+	}
+
+	cosmosBlocksData := r.GetBlocksDataFromLocal(ctx, blocks)
+	base64CosmosBlockData := base64.StdEncoding.EncodeToString(cosmosBlocksData)
+
+	// TODO: any better / optimized way to check if data is really available?
+	return isDataIncludedInBlock(availBlock, base64CosmosBlockData), nil
+}
+
+// bruteforce comparision check
+func isDataIncludedInBlock(availBlock BlockData, base64cosmosData string) bool {
+	for _, data := range availBlock.Extrinsics {
+		if data.Data == base64cosmosData {
+			return true
+		}
+	}
+
+	return false
 }
 
 // Define the struct that matches the JSON structure
@@ -95,7 +115,7 @@ type GetBlock struct {
 }
 
 // submitData creates a transaction and makes a Avail data submission
-func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte, blocks []int64) error {
+func (r *Relayer) SubmitDataToAvailDA(ApiURL string, Seed string, AppID int, data []byte, blocks []int64) error {
 	api, err := gsrpc.NewSubstrateAPI(ApiURL)
 	if err != nil {
 		r.logger.Error("cannot create api:%w", err)
@@ -146,8 +166,6 @@ func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte
 		r.logger.Error("cannot create KeyPair:%w", err)
 		return err
 	}
-
-	// fmt.Println("keyring pair", keyringPair)
 
 	key, err := types.CreateStorageKey(meta, "System", "Account", keyringPair.PublicKey)
 	if err != nil {
@@ -300,7 +318,7 @@ func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte
 				}
 				fmt.Printf("Txn inside finalized block\n")
 				hash := status.AsFinalized
-				err = getData1(hash, api, string(data))
+				err = GetDataFromAvailDA(hash, api, string(data))
 				if err != nil {
 					r.logger.Error("cannot get data:%v", err)
 					return err
@@ -314,29 +332,12 @@ func (r *Relayer) SubmitData1(ApiURL string, Seed string, AppID int, data []byte
 	}
 }
 
-// RandToken generates a random hex value.
-func RandToken1(n int) (string, error) {
-	bytes := make([]byte, n)
-	if _, err := rand.Read(bytes); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(bytes), nil
-}
-
-func getData1(hash types.Hash, api *gsrpc.SubstrateAPI, data string) error {
-
+func GetDataFromAvailDA(hash types.Hash, api *gsrpc.SubstrateAPI, data string) error {
 	block, err := api.RPC.Chain.GetBlock(hash)
 	if err != nil {
 		return fmt.Errorf("cannot get block by hash:%w", err)
 	}
 
-	// Encode the struct to JSON
-	// jsonData, err := json.Marshal(block.Block.Header)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// fmt.Println("length of extrinsics: ", len(block.Block.Extrinsics))
 	for _, ext := range block.Block.Extrinsics {
 
 		// these values below are specific indexes only for data submission, differs with each extrinsic

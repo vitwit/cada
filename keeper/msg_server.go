@@ -2,7 +2,10 @@ package keeper
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/vitwit/avail-da-module/types"
 )
 
@@ -17,23 +20,35 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
-func (s msgServer) SetAvailAddress(ctx context.Context, msg *types.MsgSetAvailAddress) (*types.MsgSetAvailAddressResponse, error) {
-	valAddr, err := msg.Validate(s.k.stakingKeeper.ValidatorAddressCodec())
-	if err != nil {
-		return nil, err
+func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	// status should be changed to Voting or Ready, depending on the request
+	store := sdkCtx.KVStore(s.k.storeKey)
+	provenHeight := s.k.GetProvenHeightFromStore(sdkCtx)
+	endHeight := s.k.GetEndHeightFromStore(sdkCtx)
+	status := GetStatusFromStore(store)
+
+	if req.BlocksRange.From != provenHeight+1 || req.BlocksRange.To != endHeight {
+		return nil, fmt.Errorf("invalid blocks range request: expected range [%d -> %d], got [%d -> %d]",
+			provenHeight+1, endHeight, req.BlocksRange.From, req.BlocksRange.To)
 	}
 
-	// verify that the validator exists
-	if _, err := s.k.stakingKeeper.GetValidator(ctx, valAddr); err != nil {
-		return nil, err
+	if status != PENDING_STATE {
+		return nil, errors.New("can't update the status if it is not pending")
 	}
 
-	if err = s.k.SetValidatorAvailAddress(ctx, types.Validator{
-		ValidatorAddress: msg.ValidatorAddress,
-		AvailAddress:     msg.AvailAddress,
-	}); err != nil {
-		return nil, err
+	newStatus := IN_VOTING_STATE
+	if !req.IsSuccess {
+		newStatus = FAILURE_STATE
+	} else {
+		currentHeight := sdkCtx.BlockHeight()
+		UpdateAvailHeight(sdkCtx, store, req.AvailHeight) // updates avail height at which the blocks got submitted to DA
+		UpdateVotingEndHeight(sdkCtx, store, uint64(currentHeight)+s.k.VotingInterval)
 	}
 
-	return new(types.MsgSetAvailAddressResponse), nil
+	UpdateBlobStatus(sdkCtx, store, newStatus)
+
+	return &types.MsgUpdateBlobStatusResponse{}, nil
+
 }

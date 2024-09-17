@@ -50,11 +50,11 @@ func (k *Keeper) GetAllValidators(ctx context.Context) (types.Validators, error)
 	return validators, nil
 }
 
-func (k *Keeper) SetProvenHeight(ctx context.Context, height int64) error {
+func (k *Keeper) SetProvenHeight(ctx context.Context, height uint64) error {
 	return k.ProvenHeight.Set(ctx, height)
 }
 
-func (k *Keeper) GetProvenHeight(ctx context.Context) (int64, error) {
+func (k *Keeper) GetProvenHeight(ctx context.Context) (uint64, error) {
 	return k.ProvenHeight.Get(ctx)
 }
 
@@ -192,30 +192,4 @@ func (k Keeper) GetExpiredBlocks(ctx context.Context, currentBlockTime time.Time
 		expiredBlocks = append(expiredBlocks, pendingBlocks.BlockHeights...)
 	}
 	return expiredBlocks
-}
-
-func (k *Keeper) GetPendingBlocksWithExpiration(ctx context.Context) ([]*types.BlockWithExpiration, error) {
-	iterator, err := k.PendingBlocksToTimeouts.Iterate(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-	defer iterator.Close()
-
-	var pendingBlocks []*types.BlockWithExpiration
-	for ; iterator.Valid(); iterator.Next() {
-		pendingBlock, err := iterator.Key()
-		if err != nil {
-			return nil, err
-		}
-		expiration, err := iterator.Value()
-		if err != nil {
-			return nil, err
-		}
-		pendingBlocks = append(pendingBlocks, &types.BlockWithExpiration{
-			Height:     pendingBlock,
-			Expiration: time.Unix(0, expiration),
-		})
-	}
-
-	return pendingBlocks, nil
 }

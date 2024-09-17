@@ -146,7 +146,7 @@ import (
 const (
 	appName      = "avail-sdk"
 	NodeDir      = ".availsdk"
-	Bech32Prefix = "avail"
+	Bech32Prefix = "cosmos"
 	// TODO: Change me
 	AvailAppID = 1
 
@@ -709,10 +709,22 @@ func NewChainApp(
 	// must be done after relayer is created
 	app.AvailBlobKeeper.SetRelayer(app.Availblobrelayer)
 
+	voteExtensionHandler := availblobkeeper.NewVoteExtHandler(
+		logger,
+		app.AvailBlobKeeper,
+	)
+
 	dph := baseapp.NewDefaultProposalHandler(bApp.Mempool(), bApp)
-	availBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(app.AvailBlobKeeper, dph.PrepareProposalHandler(), dph.ProcessProposalHandler())
+	availBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(
+		app.AvailBlobKeeper,
+		dph.PrepareProposalHandler(),
+		dph.ProcessProposalHandler(),
+		*voteExtensionHandler,
+	)
 	bApp.SetPrepareProposal(availBlobProposalHandler.PrepareProposal)
 	bApp.SetProcessProposal(availBlobProposalHandler.ProcessProposal)
+	bApp.SetExtendVoteHandler(voteExtensionHandler.ExtendVoteHandler())
+	bApp.SetVerifyVoteExtensionHandler(voteExtensionHandler.VerifyVoteExtensionHandler())
 
 	// --- Module Options ---
 

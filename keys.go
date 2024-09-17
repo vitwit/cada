@@ -1,7 +1,10 @@
 package availblob
 
 import (
+	"encoding/binary"
+
 	"cosmossdk.io/collections"
+	"github.com/vitwit/avail-da-module/types"
 )
 
 var (
@@ -23,11 +26,23 @@ var (
 
 	// light client store key
 	ClientStoreKey = []byte("client_store/")
+
+	PendingBlobsKey = collections.NewPrefix(5)
+
+	BlobStatusKey = collections.NewPrefix(6)
+
+	PrevHeightKey = collections.NewPrefix(7)
+
+	NextHeightKey = collections.NewPrefix(8)
+
+	VotingEndHeightKey = collections.NewPrefix(9)
+
+	AvailHeightKey = collections.NewPrefix(10)
 )
 
 const (
 	// ModuleName is the name of the module
-	ModuleName = "availdamodule"
+	ModuleName = "cada"
 
 	// StoreKey to be used when creating the KVStore
 	StoreKey = ModuleName
@@ -37,7 +52,17 @@ const (
 
 	// QuerierRoute to be used for querier msgs
 	QuerierRoute = ModuleName
-
-	// TransientStoreKey defines the transient store key
-	TransientStoreKey = "transient_" + ModuleName
 )
+
+func PendingBlobsStoreKey(blocksRange types.Range) []byte {
+	fromBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(fromBytes, uint64(blocksRange.From))
+
+	toBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(toBytes, uint64(blocksRange.To))
+
+	key := PendingBlobsKey
+	key = append(key, fromBytes...)
+	key = append(key, toBytes...)
+	return key
+}
