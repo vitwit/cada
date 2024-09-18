@@ -32,7 +32,6 @@ const ConsensusVersion = 1
 
 // AppModuleBasic defines the basic application module used by the params module.
 type AppModuleBasic struct {
-	cdc    codec.Codec
 	keeper keeper.Keeper
 }
 

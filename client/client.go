@@ -1,21 +1,11 @@
 package client
 
-import (
-	"bytes"
-
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-)
-
 const (
 	KeyringBackendTest = "test"
 )
 
 // ChainClient is client to interact with SPN.
 type ChainClient struct {
-	factory            tx.Factory
-	clientCtx          client.Context
-	out                *bytes.Buffer
 	Address            string `json:"address"`
 	AddressPrefix      string `json:"account_address_prefix"`
 	RPC                string `json:"rpc"`

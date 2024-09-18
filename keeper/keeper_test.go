@@ -81,11 +81,11 @@ func (s *TestSuite) SetupTest() {
 
 	s.voteExtensionHandler = *keeper.NewVoteExtHandler(s.logger, &s.keeper)
 
-	prepareProposalHandler := func(_ sdk.Context, req *abci.RequestPrepareProposal) (*abci.ResponsePrepareProposal, error) {
+	prepareProposalHandler := func(_ sdk.Context, _ *abci.RequestPrepareProposal) (*abci.ResponsePrepareProposal, error) {
 		return &abci.ResponsePrepareProposal{}, nil
 	}
 
-	processProposalHandler := func(_ sdk.Context, req *abci.RequestProcessProposal) (*abci.ResponseProcessProposal, error) {
+	processProposalHandler := func(_ sdk.Context, _ *abci.RequestProcessProposal) (*abci.ResponseProcessProposal, error) {
 		return &abci.ResponseProcessProposal{}, nil
 	}
 
