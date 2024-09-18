@@ -8,10 +8,10 @@ replace (
 	cosmossdk.io/x/upgrade => cosmossdk.io/x/upgrade v0.1.1 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/cosmos/cosmos-sdk => github.com/vitwit/cosmos-sdk v0.50.6-0.20240905105834-9a5babf69986
 	github.com/cosmos/ibc-go/v8 => github.com/cosmos/ibc-go/v8 v8.2.1
-	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
-	github.com/prometheus/client_model => github.com/prometheus/client_model v0.6.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
+	//github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
+	// github.com/prometheus/client_model => github.com/prometheus/client_model v0.6.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	//	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v1.1.0
-	// github.com/prometheus/common => github.com/prometheus/common v0.47.0
+	//github.com/prometheus/common => github.com/prometheus/common v0.47.0
 	github.com/spf13/viper => github.com/spf13/viper v1.17.0 // v1.18+ breaks app overrides
 )
 
@@ -75,6 +75,10 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0-rc5 // indirect
 	github.com/opencontainers/runc v1.1.5 // indirect
+	github.com/prometheus/client_golang v1.19.0 // indirect
+	github.com/prometheus/client_model v0.6.1 // indirect
+	github.com/prometheus/common v0.52.2 // indirect
+	github.com/prometheus/procfs v0.13.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect
@@ -190,10 +194,6 @@ require (
 	github.com/pierrec/xxHash v0.1.5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
-	github.com/prometheus/client_golang v1.19.0 // indirect
-	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.52.2 // indirect
-	github.com/prometheus/procfs v0.13.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/rs/cors v1.8.3 // indirect
