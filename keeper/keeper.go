@@ -1,11 +1,15 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	storetypes2 "cosmossdk.io/store/types"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 	availblob1 "github.com/vitwit/avail-da-module"
@@ -29,10 +33,12 @@ type Keeper struct {
 
 	cdc codec.BinaryCodec
 
-	PublishToAvailBlockInterval uint64
-	MaxBlocksForBlob            uint
-	VotingInterval              uint64
-	appID                       int
+	// PublishToAvailBlockInterval uint64
+	// MaxBlocksForBlob    uint
+	// VotingInterval      uint64
+	appID int
+	// CosmosNodeRPC       string
+	// AvailLightClientURL string
 
 	unprovenBlocks map[int64][]byte
 
@@ -46,8 +52,18 @@ func NewKeeper(
 	uk *upgradekeeper.Keeper,
 	key storetypes2.StoreKey,
 	appID int,
+	appOpts servertypes.AppOptions,
+	logger log.Logger,
 ) *Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
+	// cfg := relayer.AvailConfigFromAppOpts(appOpts)
+
+	relayer, err := relayer.NewRelayer(logger, cdc, appOpts)
+	if err != nil {
+		fmt.Println("error while getting relayer config")
+		return nil
+	}
+	fmt.Println("relayer config.........", relayer)
 
 	return &Keeper{
 		upgradeKeeper: uk,
@@ -64,10 +80,13 @@ func NewKeeper(
 
 		appID: appID,
 
-		unprovenBlocks:              make(map[int64][]byte),
-		MaxBlocksForBlob:            20, // Todo: call this from app.go, later change to params
-		PublishToAvailBlockInterval: 5,  // Todo: call this from app.go, later change to params
-		VotingInterval:              5,
+		unprovenBlocks: make(map[int64][]byte),
+		// MaxBlocksForBlob:            uint(cfg.MaxBlobBlocks),
+		// PublishToAvailBlockInterval: cfg.BlobInterval,
+		// VotingInterval:              cfg.VoteInterval,
+		// CosmosNodeRPC:               cfg.CosmosNodeRPC,
+		// AvailLightClientURL:         cfg.LightClientURL,
+		relayer: relayer,
 	}
 }
 

@@ -692,6 +692,8 @@ func NewChainApp(
 		app.UpgradeKeeper,
 		keys[availblob1.StoreKey],
 		AvailAppID,
+		appOpts,
+		logger,
 	)
 
 	app.Availblobrelayer, err = availblobrelayer.NewRelayer(

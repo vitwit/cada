@@ -35,9 +35,12 @@ type Relayer struct {
 
 	availChainID string
 
-	availPublishBlockInterval int
-	availLastQueriedHeight    int64
-	availAppID                int
+	PublishBlockInterval   uint64
+	AvailLastQueriedHeight int64
+	availAppID             int
+	MaxBlobBlocks          uint64
+	VoteInterval           uint64
+	AvailLightClientURL    string
 }
 
 // NewRelayer creates a new Relayer instance
@@ -61,18 +64,21 @@ func NewRelayer(
 	return &Relayer{
 		logger: logger,
 
-		pollInterval: cfg.ProofQueryInterval,
+		// pollInterval: cfg.ProofQueryInterval,
 
 		provenHeights: make(chan int64, 10000),
 		commitHeights: make(chan int64, 10000),
 
-		rpcClient:                 client,
-		localProvider:             localProvider,
-		availChainID:              cfg.ChainID,
-		availLastQueriedHeight:    1, // Defaults to 1, but init genesis can set this based on client state's latest height
-		submittedBlocksCache:      make(map[int64]bool),
-		availAppID:                cfg.AppID,
-		availPublishBlockInterval: 5,
+		rpcClient:              client,
+		localProvider:          localProvider,
+		availChainID:           cfg.ChainID,
+		AvailLastQueriedHeight: 1, // Defaults to 1, but init genesis can set this based on client state's latest height
+		submittedBlocksCache:   make(map[int64]bool),
+		availAppID:             cfg.AppID,
+		PublishBlockInterval:   cfg.BlobInterval,
+		MaxBlobBlocks:          cfg.MaxBlobBlocks,
+		VoteInterval:           cfg.VoteInterval,
+		AvailLightClientURL:    cfg.LightClientURL,
 	}, nil
 }
 

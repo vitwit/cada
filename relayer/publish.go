@@ -18,12 +18,12 @@ func (r *Relayer) ProposePostNextBlocks(ctx sdk.Context, provenHeight int64) []i
 	}
 
 	// only publish new blocks on interval
-	if (height-1)%int64(r.availPublishBlockInterval) != 0 {
+	if (height-1)%int64(r.PublishBlockInterval) != 0 {
 		return nil
 	}
 
 	var blocks []int64
-	for block := height - int64(r.availPublishBlockInterval); block < height; block++ {
+	for block := height - int64(r.PublishBlockInterval); block < height; block++ {
 		// this could be false after a genesis restart
 		if block > provenHeight {
 			blocks = append(blocks, block)
