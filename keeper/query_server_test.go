@@ -6,7 +6,6 @@ import (
 )
 
 func (s *TestSuite) TestSubmitBlobStatus() {
-
 	testCases := []struct {
 		name string
 
@@ -24,7 +23,6 @@ func (s *TestSuite) TestSubmitBlobStatus() {
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-
 			err := store.UpdateBlobStatus(s.ctx, s.store, tc.status)
 			s.Require().NoError(err)
 

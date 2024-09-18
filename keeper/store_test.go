@@ -5,7 +5,6 @@ import (
 )
 
 func (s *TestSuite) TestCanUpdateStatusToPending() {
-
 	testCases := []struct {
 		name         string
 		updateStatus bool
@@ -34,13 +33,11 @@ func (s *TestSuite) TestCanUpdateStatusToPending() {
 				res := store.CanUpdateStatusToPending(s.store)
 				s.False(res)
 			}
-
 		})
 	}
 }
 
 func (s *TestSuite) TestGetStatusFromStore() {
-
 	testCases := []struct {
 		name         string
 		updateStatus bool

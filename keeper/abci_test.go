@@ -42,7 +42,6 @@ func (s *TestSuite) TestPrepareProposal() {
 }
 
 func (s *TestSuite) TestProcessProposal() {
-
 	testCases := []struct {
 		name       string
 		addmockTxs bool
@@ -87,7 +86,6 @@ func (s *TestSuite) getMockTx() []byte {
 }
 
 func (s *TestSuite) TestPreBlocker() {
-
 	testCases := []struct {
 		name          string
 		req           *abci.RequestFinalizeBlock
@@ -149,5 +147,4 @@ func (s *TestSuite) TestPreBlocker() {
 			s.Require().NoError(err)
 		})
 	}
-
 }

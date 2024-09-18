@@ -9,9 +9,7 @@ import (
 )
 
 func (s *RelayerTestSuite) TestHTTPClientHandler_Get() {
-
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
 		require.Equal(s.T(), "GET", r.Method)
 
 		fmt.Fprintln(w, `{"message": "GET request successful"}`)
@@ -33,7 +31,6 @@ func (s *RelayerTestSuite) TestHTTPClientHandler_GetError() {
 }
 
 func (s *RelayerTestSuite) TestPostRequest() {
-
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		s.Require().Equal(http.MethodPost, r.Method)
 		s.Require().Equal("/post", r.URL.Path)

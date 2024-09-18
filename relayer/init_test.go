@@ -57,5 +57,4 @@ func (s *RelayerTestSuite) SetupTest() {
 	s.httpHandler = *relayer.NewHTTPClientHandler()
 
 	s.relayer = &relayer.Relayer{}
-
 }

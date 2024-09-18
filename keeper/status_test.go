@@ -5,7 +5,6 @@ import (
 )
 
 func (s *TestSuite) TestSetBlobStatusPending() {
-
 	testCases := []struct {
 		name         string
 		startHeight  uint64
@@ -34,7 +33,6 @@ func (s *TestSuite) TestSetBlobStatusPending() {
 }
 
 func (s *TestSuite) TestSetBlobStatus() {
-
 	testCases := []struct {
 		name        string
 		startHeight uint64

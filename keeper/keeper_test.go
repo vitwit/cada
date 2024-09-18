@@ -91,5 +91,4 @@ func (s *TestSuite) SetupTest() {
 
 	s.proofofBlobProposerHandler = *keeper.NewProofOfBlobProposalHandler(&s.keeper,
 		prepareProposalHandler, processProposalHandler, s.voteExtensionHandler)
-
 }
