@@ -12,7 +12,6 @@ import (
 func (s *RelayerTestSuite) TestSubmitDataToAvailClient_Success() {
 	data := []byte("test data")
 	blocks := []int64{1, 2, 3}
-	//lightClientUrl := "http://localhost:8080"
 
 	blockInfo := relayer.BlockInfo{
 		BlockHash:   "hash123",
@@ -20,7 +19,6 @@ func (s *RelayerTestSuite) TestSubmitDataToAvailClient_Success() {
 		Hash:        "somehash",
 	}
 
-	// Create a mock HTTP server
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			s.T().Errorf("Expected POST method, got %s", r.Method)
@@ -52,10 +50,8 @@ func (s *RelayerTestSuite) TestSubmitDataToAvailClient_Success() {
 func (s *RelayerTestSuite) TestSubmitDataToAvailClient_HTTPError() {
 	data := []byte("test data")
 	blocks := []int64{1, 2, 3}
-	//lightClientUrl := "http://localhost:8080"
 
-	// Create a mock HTTP server that returns an error
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}))
 
@@ -70,10 +66,8 @@ func (s *RelayerTestSuite) TestSubmitDataToAvailClient_HTTPError() {
 func (s *RelayerTestSuite) TestSubmitDataToAvailClient_UnmarshalError() {
 	data := []byte("test data")
 	blocks := []int64{1, 2, 3}
-	//lightClientUrl := "http://localhost:8080"
 
-	// Create a mock HTTP server that returns invalid JSON
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte(`{invalid json}`))
 	}))
 

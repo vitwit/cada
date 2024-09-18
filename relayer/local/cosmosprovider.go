@@ -7,7 +7,7 @@ import (
 
 type CosmosProvider struct {
 	Cdc       codec.BinaryCodec
-	RpcClient RPCClient
+	RPCClient RPCClient
 }
 
 // NewProvider validates the CosmosProviderConfig, instantiates a ChainClient and then instantiates a CosmosProvider
@@ -19,7 +19,7 @@ func NewProvider(cdc codec.BinaryCodec, rpc string) (*CosmosProvider, error) {
 
 	cp := &CosmosProvider{
 		Cdc:       cdc,
-		RpcClient: rpcClient,
+		RPCClient: rpcClient,
 	}
 
 	return cp, nil

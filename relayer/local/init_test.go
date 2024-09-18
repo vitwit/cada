@@ -17,7 +17,7 @@ func (s *CosmosProviderTestSuite) SetupTest() {
 	s.mockRPCClient = new(MockRPCClient)
 	s.cosmosProvider = &local.CosmosProvider{
 		Cdc:       nil,
-		RpcClient: s.mockRPCClient,
+		RPCClient: s.mockRPCClient,
 	}
 }
 

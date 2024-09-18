@@ -61,7 +61,7 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
 
-func (am AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
+func (ab AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	types.RegisterInterfaces(registry)
 }
 

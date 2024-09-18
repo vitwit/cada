@@ -3,8 +3,6 @@ package keeper_test
 import (
 	"testing"
 
-	cadaApp "simapp/app"
-
 	addresstypes "cosmossdk.io/core/address"
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
@@ -15,7 +13,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -32,15 +29,12 @@ type TestSuite struct {
 
 	ctx                        sdk.Context
 	addrs                      []sdk.AccAddress
-	encodedAddrs               []string
 	queryClient                types.QueryClient
 	keeper                     keeper.Keeper
 	msgserver                  types.MsgServer
 	encCfg                     moduletestutil.TestEncodingConfig
 	addressCodec               addresstypes.Codec
 	baseApp                    *baseapp.BaseApp
-	appOpts                    servertypes.AppOptions
-	app                        *cadaApp.ChainApp
 	upgradeKeeper              upgradekeeper.Keeper
 	store                      storetypes.KVStore
 	queryServer                types.QueryServer
@@ -87,11 +81,11 @@ func (s *TestSuite) SetupTest() {
 
 	s.voteExtensionHandler = *keeper.NewVoteExtHandler(s.logger, &s.keeper)
 
-	prepareProposalHandler := func(ctx sdk.Context, req *abci.RequestPrepareProposal) (*abci.ResponsePrepareProposal, error) {
+	prepareProposalHandler := func(_ sdk.Context, req *abci.RequestPrepareProposal) (*abci.ResponsePrepareProposal, error) {
 		return &abci.ResponsePrepareProposal{}, nil
 	}
 
-	processProposalHandler := func(ctx sdk.Context, req *abci.RequestProcessProposal) (*abci.ResponseProcessProposal, error) {
+	processProposalHandler := func(_ sdk.Context, req *abci.RequestProcessProposal) (*abci.ResponseProcessProposal, error) {
 		return &abci.ResponseProcessProposal{}, nil
 	}
 
