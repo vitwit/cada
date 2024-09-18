@@ -106,7 +106,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 
 	provenHeight := k.GetProvenHeightFromStore(ctx)
 	fromHeight := provenHeight + 1
-	endHeight := min(fromHeight+uint64(k.relayer.MaxBlobBlocks), uint64(ctx.BlockHeight())) // exclusive i.e [fromHeight, endHeight)
+	endHeight := min(fromHeight+k.relayer.MaxBlobBlocks, uint64(ctx.BlockHeight())) // exclusive i.e [fromHeight, endHeight)
 	// Calculate pending range of blocks to post data
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
@@ -134,10 +134,7 @@ func (k *Keeper) IsValidBlockToPostTODA(height uint64) bool {
 		return false
 	}
 
-	fmt.Println("******* intervallllll.......", k.relayer.PublishBlockInterval, (height-1)%k.relayer.PublishBlockInterval)
-
 	if (height-1)%k.relayer.PublishBlockInterval != 0 { // TODO : check this condition, if the node height is 40 and start cada
-		fmt.Println("insideeeee........")
 		return false
 	}
 

@@ -63,7 +63,6 @@ func NewKeeper(
 		fmt.Println("error while getting relayer config")
 		return nil
 	}
-	fmt.Println("relayer config.........", relayer)
 
 	return &Keeper{
 		upgradeKeeper: uk,
