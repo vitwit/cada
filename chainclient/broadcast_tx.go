@@ -22,10 +22,11 @@ func GetBinPath() string {
 	}
 
 	availdHomePath := filepath.Join(homeDir, ".availsdk")
+	fmt.Println("availdHonmePath.......", availdHomePath)
 	return availdHomePath
 }
 
-func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec) error {
+func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, rpcAddr string) error {
 	// Define keyring and RPC client configuration
 
 	// homePath := "/home/vitwit/.availsdk"
@@ -33,11 +34,9 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	key := os.Getenv("KEY")
 	keyName := key
 
-	if keyName == "" {
+	if key == "" {
 		keyName = "alice"
 	}
-
-	rpcAddress := "http://localhost:26657"
 
 	// Create a keyring
 	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec))
@@ -55,7 +54,7 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	}
 
 	// Create an RPC client
-	rpcClient, err := cometrpc.NewWithTimeout(rpcAddress, "/websocket", 3)
+	rpcClient, err := cometrpc.NewWithTimeout(rpcAddr, "/websocket", 3)
 	if err != nil {
 		return fmt.Errorf("error creating RPC client: %w", err)
 	}

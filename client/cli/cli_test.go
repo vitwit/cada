@@ -1,0 +1,128 @@
+package cli_test
+
+import (
+	"fmt"
+	"testing"
+
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/suite"
+	"github.com/vitwit/avail-da-module/client/cli"
+	network "github.com/vitwit/avail-da-module/network"
+
+	app "simapp/app"
+
+	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
+)
+
+func TestIntegrationTestSuite(t *testing.T) {
+	suite.Run(t, new(IntegrationTestSuite))
+}
+
+type IntegrationTestSuite struct {
+	suite.Suite
+
+	cfg       network.Config
+	network   *network.Network
+	addresses []string
+}
+
+func (s *IntegrationTestSuite) SetupSuite() {
+	s.T().Log("setting up integration test suite")
+
+	var err error
+
+	// Setup network config
+	cfg := network.DefaultConfig(app.NewTestNetworkFixture)
+	cfg.NumValidators = 1
+	s.cfg = cfg
+
+	// Initialize the network
+	s.network, err = network.New(s.T(), s.T().TempDir(), cfg)
+	s.Require().NoError(err)
+
+	kb := s.network.Validators[0].ClientCtx.Keyring
+	path := sdk.GetConfig().GetFullBIP44Path()
+	info, err := kb.NewAccount("alice",
+		"all soap kiwi cushion federal skirt tip shock exist tragic verify lunar shine rely torch please view future lizard garbage humble medal leisure mimic",
+		"", path, hd.Secp256k1)
+	s.Require().NoError(err)
+
+	add, err := info.GetAddress()
+	s.Require().NoError(err)
+	s.addresses = append(s.addresses, add.String())
+
+	_, err = s.network.WaitForHeight(1)
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) TearDownSuite() {
+	s.T().Log("tearing down integration suite")
+	s.network.Cleanup()
+}
+
+func (s *IntegrationTestSuite) TestNewUpdateBlobStatusCmd() {
+	val := s.network.Validators[0]
+
+	testCases := []struct {
+		name      string
+		args      []string
+		expectErr bool
+	}{
+		{
+			"update blob status - success",
+			[]string{
+				"1",
+				"10",
+				"success",
+				"120",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addresses[0]),
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+			},
+			false,
+		},
+		{
+			"update blob status - failure",
+			[]string{
+				"1",
+				"10",
+				"failure",
+				"120",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addresses[0]),
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+			},
+			false,
+		},
+		{
+			"update blob status - invalid status",
+			[]string{
+				"1",
+				"10",
+				"invalid",
+				"120",
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, s.addresses[0]),
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+			},
+			false,
+		},
+	}
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			cmd := cli.NewUpdateBlobStatusCmd()
+			res, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
+			if tc.expectErr {
+				if err != nil {
+					s.Require().Error(err)
+				}
+			}
+
+			s.Require().NoError(nil)
+			s.Require().NotNil(res)
+		})
+	}
+}
