@@ -80,7 +80,7 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 
 	bb := r.GetBlocksDataFromLocal(ctx, blocks)
 
-	blockInfo, err := r.SubmitDataToAvailClient(bb, blocks, r.AvailConfig.LightClientURL)
+	blockInfo, err := r.SubmitDataToAvailClient(bb, blocks)
 	if err != nil {
 		r.logger.Error("Error while submitting block(s) to Avail DA",
 			"height_start", blocks[0],

@@ -15,11 +15,11 @@ import (
 // - HttpClient: An HTTP client handler used for making requests to the Avail light client.
 // - LightClientURL: The URL of the Avail light client that this module communicates with.
 type LightClient struct {
-	HTTPClient     *http_client.HTTPClientHandler
+	HTTPClient     *http_client.Handler
 	LightClientURL string
 }
 
-func NewLightClient(lightClientURL string, httpClient *http_client.HTTPClientHandler) *LightClient {
+func NewLightClient(lightClientURL string, httpClient *http_client.Handler) *LightClient {
 	return &LightClient{
 		HTTPClient:     httpClient,
 		LightClientURL: lightClientURL,

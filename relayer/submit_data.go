@@ -7,7 +7,7 @@ import (
 	"github.com/vitwit/avail-da-module/relayer/avail"
 )
 
-func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64, lightClientURL string) (avail.BlockMetaData, error) {
+func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64) (avail.BlockMetaData, error) {
 
 	blockInfo, err := r.availDAClient.Submit(data)
 
