@@ -28,6 +28,8 @@ jobs:
             **/**.go
             go.mod
             go.sum
+            **/go.mod
+            **/go.sum
       - name: run all tests and generate coverage
         run: go test -v -mod=readonly -timeout 30m -coverprofile=coverage.txt -tags='norace' -covermode=atomic `go list ./... | grep -v simapp`
         if: steps.get_diff.outputs.changed == 'true'
