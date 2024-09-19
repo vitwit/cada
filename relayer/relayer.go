@@ -76,6 +76,7 @@ func NewRelayer(
 	}, nil
 }
 
+// SetClientContext sets the provided client context for the Relayer.
 func (r *Relayer) SetClientContext(clientCtx client.Context) {
 	r.clientCtx = clientCtx
 }

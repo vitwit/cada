@@ -71,10 +71,12 @@ func NewKeeper(
 	}
 }
 
+// SetRelayer sets the relayer instance for the Keeper.
 func (k *Keeper) SetRelayer(r *relayer.Relayer) {
 	k.relayer = r
 }
 
+// GetBlobStatus retrieves the current status of the blob from the store.
 func (k *Keeper) GetBlobStatus(ctx sdk.Context) uint32 {
 	store := ctx.KVStore(k.storeKey)
 	return GetStatusFromStore(store)

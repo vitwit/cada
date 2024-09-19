@@ -34,6 +34,8 @@ type VoteExtension struct {
 	Votes map[string]bool
 }
 
+// ExtendVoteHandler handles the extension of votes by providing a vote extension for the given block.
+// This function is used to extend the voting information with the necessary vote extensions based on the current blockchain state.
 func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 	return func(ctx sdk.Context, _ *abci.RequestExtendVote) (*abci.ResponseExtendVote, error) {
 		from := h.Keeper.GetStartHeightFromStore(ctx)
@@ -93,6 +95,8 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 	}
 }
 
+// VerifyVoteExtensionHandler handles the verification of vote extensions by validating the provided vote extension data.
+// This function is used to verify the correctness and validity of the vote extensions submitted during the voting process.
 func (h *VoteExtHandler) VerifyVoteExtensionHandler() sdk.VerifyVoteExtensionHandler {
 	return func(_ sdk.Context, _ *abci.RequestVerifyVoteExtension) (*abci.ResponseVerifyVoteExtension, error) {
 		// TODO: write proper validation for the votes

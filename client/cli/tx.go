@@ -14,7 +14,7 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
-// NewTxCmd
+// NewTxCmd creates and returns a Cobra command for transaction subcommands related to the availblob module.
 func NewTxCmd(_ *keeper.Keeper) *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        availblob.ModuleName,
@@ -29,7 +29,7 @@ func NewTxCmd(_ *keeper.Keeper) *cobra.Command {
 	return txCmd
 }
 
-// update status
+// NewUpdateBlobStatusCmd creates and returns a Cobra command to update the status of a blob within a specified range of blocks.
 func NewUpdateBlobStatusCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "update-blob [from_block] [to_block] [status] [avail_height]",
@@ -80,6 +80,7 @@ func NewUpdateBlobStatusCmd() *cobra.Command {
 	return cmd
 }
 
+// ParseStatus converts a string status to a boolean value indicating success or failure.
 func ParseStatus(status string) (bool, error) {
 	status = strings.ToUpper(status)
 	if status == "SUCCESS" {

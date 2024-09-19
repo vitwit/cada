@@ -18,6 +18,7 @@ type queryServer struct {
 	k *Keeper
 }
 
+// SubmittedBlobStatus handles a request to query and return the current status of a blob.
 func (qs queryServer) SubmittedBlobStatus(ctx context.Context, _ *types.QuerySubmittedBlobStatusRequest) (*types.QuerySubmittedBlobStatusResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 

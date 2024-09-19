@@ -11,7 +11,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// GetBlockAtHeight queries the block at a given height
+// GetBlockAtHeight retrieves the block information at a specific height from the chain
+// using the RPC client.
 func (cc *CosmosProvider) GetBlockAtHeight(ctx context.Context, height int64) (*coretypes.ResultBlock, error) {
 	block, err := cc.rpcClient.Block(ctx, &height)
 	if err != nil {

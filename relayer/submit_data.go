@@ -16,6 +16,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// SubmitDataToAvailClient submits data to the Avail client using an HTTP POST request.
 func (r *Relayer) SubmitDataToAvailClient(_ string, _ int, data []byte, blocks []int64, lightClientURL string) (BlockInfo, error) {
 	var blockInfo BlockInfo
 
@@ -57,6 +58,9 @@ func (r *Relayer) SubmitDataToAvailClient(_ string, _ int, data []byte, blocks [
 	return blockInfo, nil
 }
 
+// GetSubmittedData retrieves the data submitted to the Avail client for a specific block.
+// It constructs a URL based on the given light client URL and block number, performs an HTTP GET request to fetch
+// the data, and decodes the response into a BlockData struct.
 func (r *Relayer) GetSubmittedData(lightClientURL string, blockNumber int) (BlockData, error) {
 	handler := NewHTTPClientHandler()
 
@@ -98,7 +102,7 @@ func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to, availHeight uint64,
 	return isDataIncludedInBlock(availBlock, base64CosmosBlockData), nil
 }
 
-// bruteforce comparison check
+// isDataIncludedInBlock checks whether the provided Cosmos block data is included in the given Avail block.
 func isDataIncludedInBlock(availBlock BlockData, base64cosmosData string) bool {
 	for _, data := range availBlock.Extrinsics {
 		if data.Data == base64cosmosData {
@@ -109,13 +113,15 @@ func isDataIncludedInBlock(availBlock BlockData, base64cosmosData string) bool {
 	return false
 }
 
-// Define the struct that matches the JSON structure
+// GetBlock represents the data structure for a block with its associated transactions.
 type GetBlock struct {
 	BlockNumber      int      `json:"block_number"`
 	DataTransactions []string `json:"data_transactions"`
 }
 
-// submitData creates a transaction and makes a Avail data submission
+// SubmitDataToAvailDA submits data to the Avail light client using a provided API URL and seed.
+// The function connects to a Substrate API, creates an extrinsic with the provided data and appID, signs it using
+// the seed, and submits it to the chain. It then monitors the transaction status and checks for finalization.
 func (r *Relayer) SubmitDataToAvailDA(apiURL, seed string, availAppID int, data []byte, blocks []int64) error {
 	api, err := gsrpc.NewSubstrateAPI(apiURL)
 	if err != nil {
@@ -328,6 +334,8 @@ func (r *Relayer) SubmitDataToAvailDA(apiURL, seed string, availAppID int, data 
 	}
 }
 
+// GetDataFromAvailDA retrieves and verifies submitted data from the Avail Data Availability (DA) chain
+// by searching for the given data in the extrinsics of a block identified by the provided block hash.
 func GetDataFromAvailDA(hash types.Hash, api *gsrpc.SubstrateAPI, data string) error {
 	block, err := api.RPC.Chain.GetBlock(hash)
 	if err != nil {
