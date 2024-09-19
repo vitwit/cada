@@ -137,7 +137,7 @@ func (s *TestSuite) TestPreBlocker() {
 			err := store.UpdateBlobStatus(s.ctx, s.store, tc.blobStatus)
 			s.Require().NoError(err)
 
-			err = store.UpdateVotingEndHeight(s.ctx, s.store, tc.voteEndHeight)
+			err = store.UpdateVotingEndHeight(s.ctx, s.store, tc.voteEndHeight, true)
 			s.Require().NoError(err)
 
 			err = store.UpdateProvenHeight(s.ctx, s.store, tc.provenHeight)

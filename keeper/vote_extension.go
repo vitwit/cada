@@ -45,7 +45,7 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 
 		blobStatus := h.Keeper.GetBlobStatus(ctx)
 		currentHeight := ctx.BlockHeight()
-		voteEndHeight := h.Keeper.GetVotingEndHeightFromStore(ctx)
+		voteEndHeight := h.Keeper.GetVotingEndHeightFromStore(ctx, false)
 		Votes := make(map[string]bool, 1)
 
 		abciResponseVoteExt := &abci.ResponseExtendVote{}
