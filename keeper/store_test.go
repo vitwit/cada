@@ -106,9 +106,9 @@ func (s *TestSuite) TestUpdateAvailHeight() {
 }
 
 func (s *TestSuite) TestUpdateVotingEndHeight() {
-	err := store.UpdateVotingEndHeight(s.ctx, s.store, uint64(20))
+	err := store.UpdateVotingEndHeight(s.ctx, s.store, uint64(20), true)
 	s.Require().NoError(err)
 
-	height := s.keeper.GetVotingEndHeightFromStore(s.ctx)
+	height := s.keeper.GetVotingEndHeightFromStore(s.ctx, true)
 	s.Require().Equal(height, uint64(20))
 }
