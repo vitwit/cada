@@ -1,8 +1,6 @@
 package relayer
 
 import (
-	"encoding/base64"
-	"fmt"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,10 +9,7 @@ import (
 
 func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64, lightClientURL string) (avail.BlockMetaData, error) {
 
-	datab := base64.StdEncoding.EncodeToString(data)
-	jsonData := []byte(fmt.Sprintf(`{"data":"%s"}`, datab))
-
-	blockInfo, err := r.availDAClient.Submit(jsonData)
+	blockInfo, err := r.availDAClient.Submit(data)
 
 	if err != nil {
 		r.logger.Error("Error while posting block(s) to Avail DA",
