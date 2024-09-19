@@ -147,11 +147,6 @@ const (
 	appName      = "avail-sdk"
 	NodeDir      = ".availsdk"
 	Bech32Prefix = "cosmos"
-	// TODO: Change me
-	AvailAppID = 1
-
-	// publish blocks to avail every n rollchain blocks.
-	publishToAvailBlockInterval = 5 // smaller size == faster testing
 )
 
 // These constants are derived from the above variables.
@@ -686,22 +681,25 @@ func NewChainApp(
 		AddRoute(icahosttypes.SubModuleName, icaHostStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
+	app.Availblobrelayer, err = availblobrelayer.NewRelayer(
+		logger,
+		appCodec,
+		appOpts,
+		NodeDir,
+	)
+	if err != nil {
+		panic(err)
+	}
+
 	app.AvailBlobKeeper = availblobkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[availblob1.StoreKey]),
 		app.UpgradeKeeper,
 		keys[availblob1.StoreKey],
-		AvailAppID,
-	)
-
-	app.Availblobrelayer, err = availblobrelayer.NewRelayer(
-		logger,
-		appCodec,
 		appOpts,
+		logger,
+		app.Availblobrelayer,
 	)
-	if err != nil {
-		panic(err)
-	}
 
 	// must be done after relayer is created
 	app.AvailBlobKeeper.SetRelayer(app.Availblobrelayer)
