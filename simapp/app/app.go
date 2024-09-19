@@ -141,6 +141,9 @@ import (
 	availblobkeeper "github.com/vitwit/avail-da-module/keeper"
 	availblobmodule "github.com/vitwit/avail-da-module/module"
 	availblobrelayer "github.com/vitwit/avail-da-module/relayer"
+	"github.com/vitwit/avail-da-module/relayer/avail"
+	httpclient "github.com/vitwit/avail-da-module/relayer/http"
+	availblobmoduletypes "github.com/vitwit/avail-da-module/types"
 )
 
 const (
@@ -681,11 +684,18 @@ func NewChainApp(
 		AddRoute(icahosttypes.SubModuleName, icaHostStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
+	httpClient := httpclient.NewHandler()
+
+	// Avail-DA client
+	cfg := availblobmoduletypes.AvailConfigFromAppOpts(appOpts)
+	availDAClient := avail.NewLightClient(cfg.LightClientURL, httpClient)
+
 	app.Availblobrelayer, err = availblobrelayer.NewRelayer(
 		logger,
 		appCodec,
-		appOpts,
+		cfg,
 		NodeDir,
+		availDAClient,
 	)
 	if err != nil {
 		panic(err)
