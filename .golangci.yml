@@ -13,7 +13,7 @@ linters:
     # - copyloopvar
     - goconst
     - gocritic
-    - gci
+    # - gci
     - gofumpt
     # - gosec
     - gosimple
