@@ -14,7 +14,7 @@ type Handler struct {
 }
 
 // NewHTTPClientHandler creates a new HTTPClientHandler with default settings
-func NewHTTPClientHandler() *Handler {
+func NewHandler() *Handler {
 	return &Handler{
 		client: &http.Client{
 			Timeout: 100 * time.Second,

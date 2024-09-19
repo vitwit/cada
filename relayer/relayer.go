@@ -6,9 +6,7 @@ import (
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/vitwit/avail-da-module/relayer/avail"
-	http_client "github.com/vitwit/avail-da-module/relayer/http"
 	"github.com/vitwit/avail-da-module/relayer/local"
 	"github.com/vitwit/avail-da-module/types"
 )
@@ -45,21 +43,15 @@ type Relayer struct {
 func NewRelayer(
 	logger log.Logger,
 	cdc codec.BinaryCodec,
-	appOpts servertypes.AppOptions,
+	cfg types.AvailConfiguration,
 	nodeDir string,
+	daClient avail.DA,
 ) (*Relayer, error) {
-	cfg := types.AvailConfigFromAppOpts(appOpts)
-
 	// local sdk-based chain provider
 	localProvider, err := local.NewProvider(cdc, cfg.CosmosNodeRPC)
 	if err != nil {
 		return nil, err
 	}
-
-	httpClient := http_client.NewHTTPClientHandler()
-
-	// Avail-DA client
-	availDAClient := avail.NewLightClient(cfg.LightClientURL, httpClient)
 
 	return &Relayer{
 		logger: logger,
@@ -72,7 +64,7 @@ func NewRelayer(
 		submittedBlocksCache: make(map[int64]bool),
 		NodeDir:              nodeDir,
 		AvailConfig:          cfg,
-		availDAClient:        availDAClient,
+		availDAClient:        daClient,
 	}, nil
 }
 
