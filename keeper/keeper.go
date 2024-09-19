@@ -3,9 +3,11 @@ package keeper
 import (
 	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	storetypes2 "cosmossdk.io/store/types"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 	availblob1 "github.com/vitwit/avail-da-module"
@@ -29,11 +31,6 @@ type Keeper struct {
 
 	cdc codec.BinaryCodec
 
-	PublishToAvailBlockInterval uint64
-	MaxBlocksForBlob            uint
-	VotingInterval              uint64
-	appID                       int
-
 	unprovenBlocks map[int64][]byte
 
 	proposerAddress []byte
@@ -45,7 +42,9 @@ func NewKeeper(
 	storeService storetypes.KVStoreService,
 	uk *upgradekeeper.Keeper,
 	key storetypes2.StoreKey,
-	appID int,
+	_ servertypes.AppOptions,
+	_ log.Logger,
+	relayer *relayer.Relayer,
 ) *Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
 
@@ -60,14 +59,9 @@ func NewKeeper(
 
 		storeKey: key,
 
-		cdc: cdc,
-
-		appID: appID,
-
-		unprovenBlocks:              make(map[int64][]byte),
-		MaxBlocksForBlob:            20, // Todo: call this from app.go, later change to params
-		PublishToAvailBlockInterval: 5,  // Todo: call this from app.go, later change to params
-		VotingInterval:              5,
+		cdc:            cdc,
+		unprovenBlocks: make(map[int64][]byte),
+		relayer:        relayer,
 	}
 }
 

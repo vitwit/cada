@@ -16,34 +16,27 @@ import (
 )
 
 // GetBinPath returns the path to the Avail SDK home directory within the user's home directory.
-func GetBinPath() string {
+func GetBinPath(daemon string) string {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	availdHomePath := filepath.Join(homeDir, ".availsdk")
+	availdHomePath := filepath.Join(homeDir, daemon)
 	return availdHomePath
 }
 
 // ExecuteTX handles the creation and submission of a transaction to update blob status on the chain.
 // It uses keyring and RPC client configurations to interact with the network.
-func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec) error {
+func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, config types.AvailConfiguration, nodeDir string) error {
 	// Define keyring and RPC client configuration
-
-	// homePath := "/home/vitwit/.availsdk"
-	homePath := GetBinPath()
-	key := os.Getenv("KEY")
-	keyName := key
-
-	if keyName == "" {
-		keyName = "alice"
-	}
-
-	rpcAddress := "http://localhost:26657"
+	// homePath := "/home/vitwit/.simapp"
+	homePath := GetBinPath(nodeDir)
+	keyName := config.ValidatorKey
+	rpcAddress := config.CosmosNodeRPC
 
 	// Create a keyring
-	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec))
+	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec)) // TODO : update keyring backend type
 	if err != nil {
 		return fmt.Errorf("error creating keyring: %w", err)
 	}
@@ -76,8 +69,6 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	if err != nil {
 		return fmt.Errorf("error retrieving account: %w", err)
 	}
-
-	fmt.Println("account details......", account.GetAccountNumber(), account.GetSequence())
 
 	// Set the correct account number and sequence
 	factory := NewFactory(clientCtx).

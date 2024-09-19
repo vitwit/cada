@@ -40,7 +40,7 @@ func (r *Relayer) SubmitDataToAvailClient(_ string, _ int, data []byte, blocks [
 		r.logger.Error("Error while posting block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", strconv.Itoa(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.AvailConfig.AppID),
 		)
 	}
 
@@ -48,7 +48,7 @@ func (r *Relayer) SubmitDataToAvailClient(_ string, _ int, data []byte, blocks [
 		r.logger.Info("Successfully posted block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", strconv.Itoa(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.AvailConfig.AppID),
 			"block_hash", blockInfo.BlockHash,
 			"block_number", blockInfo.BlockNumber,
 			"hash", blockInfo.Hash,
@@ -220,7 +220,7 @@ func (r *Relayer) SubmitDataToAvailDA(apiURL, seed string, availAppID int, data 
 		r.logger.Info("Posted block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", strconv.Itoa(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.AvailConfig.AppID),
 		)
 	}
 
