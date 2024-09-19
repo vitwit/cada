@@ -12,7 +12,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-
 	"github.com/vitwit/avail-da-module/types"
 )
 
@@ -26,10 +25,10 @@ func GetBinPath(daemon string) string {
 	return availdHomePath
 }
 
-func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, config types.AvailConfiguration) error {
+func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, config types.AvailConfiguration, NodeDir string) error {
 	// Define keyring and RPC client configuration
 	// homePath := "/home/vitwit/.simapp"
-	homePath := GetBinPath(config.DaemonHome)
+	homePath := GetBinPath(NodeDir)
 	keyName := config.ValidatorKey
 	rpcAddress := config.CosmosNodeRPC
 

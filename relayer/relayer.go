@@ -35,6 +35,7 @@ type Relayer struct {
 
 	availChainID string
 	AvailConfig  types.AvailConfiguration
+	NodeDir      string
 }
 
 // NewRelayer creates a new Relayer instance
@@ -42,6 +43,7 @@ func NewRelayer(
 	logger log.Logger,
 	cdc codec.BinaryCodec,
 	appOpts servertypes.AppOptions,
+	nodeDir string,
 ) (*Relayer, error) {
 	cfg := types.AvailConfigFromAppOpts(appOpts)
 
@@ -60,6 +62,7 @@ func NewRelayer(
 		localProvider:        localProvider,
 		availChainID:         cfg.ChainID,
 		submittedBlocksCache: make(map[int64]bool),
+		NodeDir:              nodeDir,
 		AvailConfig:          cfg,
 	}, nil
 }

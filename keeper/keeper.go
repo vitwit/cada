@@ -42,7 +42,6 @@ func NewKeeper(
 	storeService storetypes.KVStoreService,
 	uk *upgradekeeper.Keeper,
 	key storetypes2.StoreKey,
-	appID int,
 	appOpts servertypes.AppOptions,
 	logger log.Logger,
 	relayer *relayer.Relayer,

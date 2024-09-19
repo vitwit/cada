@@ -28,7 +28,7 @@ type AvailConfiguration struct {
 
 	VoteInterval uint64 `json:"vote-interval"`
 	ValidatorKey string `json:"validator-key"`
-	DaemonHome   string `json:"daemon-home"`
+	// CosmosNodeDir   string `json:"cosmos-node-dir"`
 }
 
 const (
@@ -43,7 +43,7 @@ const (
 	FlagPublishBlobInterval = "avail.publish-blob-interval"
 	FlagVoteInterval        = "avail.vote-interval"
 	FlagValidatorKey        = "avail.validator-key"
-	FlagDaemonHome          = "avail.daemon-home"
+	FlagCosmosNodeDir       = "avail.cosmos-node-dir"
 
 	DefaultConfigTemplate = `
 
@@ -76,9 +76,6 @@ const (
 
 	# It is the keyname of the cosmos validator account to sign the transactions
 	validator-key = "alice"
-
-	# It is the name of the daemon home (ex: .simapp)
-	daemon-home = ".availsdk"
 	`
 )
 
@@ -92,7 +89,7 @@ var DefaultAvailConfig = AvailConfiguration{
 	VoteInterval:        5,
 	LightClientURL:      "http://127.0.0.1:8000",
 	ValidatorKey:        "alice",
-	DaemonHome:          ".availsdk",
+	// CosmosNodeDir:          ".availsdk",
 }
 
 func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {
@@ -106,6 +103,6 @@ func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {
 		PublishBlobInterval: cast.ToUint64(appOpts.Get(FlagPublishBlobInterval)),
 		VoteInterval:        cast.ToUint64(appOpts.Get(FlagVoteInterval)),
 		ValidatorKey:        cast.ToString(appOpts.Get(FlagValidatorKey)),
-		DaemonHome:          cast.ToString(appOpts.Get(FlagDaemonHome)),
+		// CosmosNodeDir:          cast.ToString(appOpts.Get(FlagCosmosNodeDir)),
 	}
 }
