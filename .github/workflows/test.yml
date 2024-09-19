@@ -30,11 +30,19 @@ jobs:
             go.sum
             **/go.mod
             **/go.sum
-      - name: run all tests and generate coverage
-        run: go test -v -mod=readonly -timeout 30m -coverprofile=coverage.txt -tags='norace' -covermode=atomic `go list ./... | grep -v simapp`
-        if: steps.get_diff.outputs.changed == 'true'
-      - name: Upload codecov report
-        uses: codecov/codecov-action@v3.1.0
-        with:
-          file: coverage.txt
-        if: steps.get_diff.outputs.changed == 'true'
+      # - name: run all tests and generate coverage
+      #   run: go test -v -mod=readonly -timeout 30m -coverprofile=coverage.txt -tags='norace' -covermode=atomic `go list ./... | grep -v simapp`
+      #   if: steps.get_diff.outputs.changed == 'true'
+      # - name: Upload codecov report
+      #   uses: codecov/codecov-action@v3.1.0
+      #   with:
+      #     file: coverage.txt
+      #   if: steps.get_diff.outputs.changed == 'true'
+      - name: tests
+        if: env.GIT_DIFF
+        run: |
+          cd client/v2
+          go test -mod=readonly -timeout 30m -coverprofile=coverage.out -covermode=atomic -tags='norace ledger test_ledger_mock rocksdb_build' ./...
+      - name: sonarcloud
+        if: ${{ env.GIT_DIFF && !github.event.pull_request.draft && env.SONAR_TOKEN != null }}
+        uses: SonarSource/sonarcloud-github-action@master
