@@ -42,8 +42,8 @@ func NewKeeper(
 	storeService storetypes.KVStoreService,
 	uk *upgradekeeper.Keeper,
 	key storetypes2.StoreKey,
-	appOpts servertypes.AppOptions,
-	logger log.Logger,
+	_ servertypes.AppOptions,
+	_ log.Logger,
 	relayer *relayer.Relayer,
 ) *Keeper {
 	sb := collections.NewSchemaBuilder(storeService)

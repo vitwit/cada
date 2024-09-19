@@ -25,10 +25,10 @@ func GetBinPath(daemon string) string {
 	return availdHomePath
 }
 
-func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, config types.AvailConfiguration, NodeDir string) error {
+func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, config types.AvailConfiguration, nodeDir string) error {
 	// Define keyring and RPC client configuration
 	// homePath := "/home/vitwit/.simapp"
-	homePath := GetBinPath(NodeDir)
+	homePath := GetBinPath(nodeDir)
 	keyName := config.ValidatorKey
 	rpcAddress := config.CosmosNodeRPC
 
