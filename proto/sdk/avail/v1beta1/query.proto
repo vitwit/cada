@@ -18,7 +18,7 @@ message QuerySubmittedBlobStatusResponse {
   Range range = 1;
   string status = 2;
   uint64 proven_height = 3;
-  uint64 last_blob_voting_ends_at = 4;
+  uint64 voting_ends_at = 4;
 }
 
 // Query defines the gRPC querier service.
