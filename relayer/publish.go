@@ -18,12 +18,12 @@ func (r *Relayer) ProposePostNextBlocks(ctx sdk.Context, provenHeight int64) []i
 	}
 
 	// only publish new blocks on interval
-	if (height-1)%int64(r.availPublishBlockInterval) != 0 {
+	if (height-1)%int64(r.AvailConfig.PublishBlobInterval) != 0 {
 		return nil
 	}
 
 	var blocks []int64
-	for block := height - int64(r.availPublishBlockInterval); block < height; block++ {
+	for block := height - int64(r.AvailConfig.PublishBlobInterval); block < height; block++ {
 		// this could be false after a genesis restart
 		if block > provenHeight {
 			blocks = append(blocks, block)
@@ -80,12 +80,12 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 
 	bb := r.GetBlocksDataFromLocal(ctx, blocks)
 
-	blockInfo, err := r.SubmitDataToAvailClient(r.rpcClient.config.Seed, r.rpcClient.config.AppID, bb, blocks, r.rpcClient.config.LightClientURL)
+	blockInfo, err := r.SubmitDataToAvailClient(bb, blocks)
 	if err != nil {
 		r.logger.Error("Error while submitting block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
-			"appID", strconv.Itoa(r.rpcClient.config.AppID),
+			"appID", strconv.Itoa(r.AvailConfig.AppID), err,
 		)
 
 		// execute tx about failure submission
@@ -97,7 +97,7 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 			},
 			// AvailHeight: uint64(blockInfo.BlockNumber),
 			IsSuccess: false,
-		}, cdc)
+		}, cdc, r.AvailConfig, r.NodeDir)
 		if err != nil {
 			fmt.Println("error while submitting tx...", err)
 		}
@@ -116,8 +116,8 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 			IsSuccess:   true,
 		}
 
-		// TODO : execute tx about successful submission
-		err = dacli.ExecuteTX(ctx, msg, cdc)
+		// execute tx about successful submission
+		err = dacli.ExecuteTX(ctx, msg, cdc, r.AvailConfig, r.NodeDir)
 		if err != nil {
 			fmt.Println("error while submitting tx...", err)
 		}

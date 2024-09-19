@@ -45,7 +45,7 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 
 		blobStatus := h.Keeper.GetBlobStatus(ctx)
 		currentHeight := ctx.BlockHeight()
-		voteEndHeight := h.Keeper.GetVotingEndHeightFromStore(ctx)
+		voteEndHeight := h.Keeper.GetVotingEndHeightFromStore(ctx, false)
 		Votes := make(map[string]bool, 1)
 
 		abciResponseVoteExt := &abci.ResponseExtendVote{}
@@ -64,7 +64,7 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 			return abciResponseVoteExt, nil
 		}
 
-		ok, err := h.Keeper.relayer.IsDataAvailable(ctx, from, end, availHeight, "http://localhost:8000") // TODO: read light client url from config
+		ok, err := h.Keeper.relayer.IsDataAvailable(ctx, from, end, availHeight)
 		if ok {
 			h.logger.Info("submitted data to Avail verified successfully at",
 				"block_height", availHeight,

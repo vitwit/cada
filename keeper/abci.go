@@ -33,7 +33,7 @@ func NewProofOfBlobProposalHandler(
 }
 
 func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.RequestPrepareProposal) (*abci.ResponsePrepareProposal, error) {
-	h.keeper.proposerAddress = req.ProposerAddress
+	h.keeper.ProposerAddress = req.ProposerAddress
 	proposalTxs := req.Txs
 
 	votes, err := h.aggregateVotes(ctx, req.LocalLastCommit)
@@ -74,7 +74,7 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(_ sdk.Context, req *abci.Re
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
-	votingEndHeight := k.GetVotingEndHeightFromStore(ctx)
+	votingEndHeight := k.GetVotingEndHeightFromStore(ctx, false)
 	blobStatus := k.GetBlobStatus(ctx)
 	currentHeight := ctx.BlockHeight()
 
@@ -95,6 +95,8 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 				state = ReadyState
 			}
 
+			store := ctx.KVStore(k.storeKey)
+			UpdateVotingEndHeight(ctx, store, 0, false)
 			k.SetBlobStatus(ctx, state)
 		}
 	}
@@ -104,10 +106,10 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 		return nil
 	}
 
+	// Calculate pending range of blocks to post data
 	provenHeight := k.GetProvenHeightFromStore(ctx)
 	fromHeight := provenHeight + 1
-	endHeight := min(fromHeight+uint64(k.MaxBlocksForBlob), uint64(ctx.BlockHeight())) // exclusive i.e [fromHeight, endHeight)
-	// Calculate pending range of blocks to post data
+	endHeight := min(fromHeight+k.relayer.AvailConfig.MaxBlobBlocks, uint64(ctx.BlockHeight())) // exclusive i.e [fromHeight, endHeight)
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	ok := k.SetBlobStatusPending(sdkCtx, fromHeight, endHeight-1)
@@ -121,8 +123,8 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 		blocksToSumit = append(blocksToSumit, int64(i))
 	}
 
-	// only the proposer should be able to post the blocks
-	if bytes.Equal(req.ProposerAddress, k.proposerAddress) {
+	// only proposar should should run the this
+	if bytes.Equal(req.ProposerAddress, k.ProposerAddress) {
 		k.relayer.PostBlocks(ctx, blocksToSumit, k.cdc, req.ProposerAddress)
 	}
 
@@ -134,7 +136,7 @@ func (k *Keeper) IsValidBlockToPostTODA(height uint64) bool {
 		return false
 	}
 
-	if (height-1)%k.PublishToAvailBlockInterval != 0 {
+	if (height-1)%k.relayer.AvailConfig.PublishBlobInterval != 0 {
 		return false
 	}
 

@@ -5,8 +5,9 @@ import (
 
 	"cosmossdk.io/log"
 
+	"simapp/app"
+
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
-	"github.com/vitwit/avail-da-module/simapp/app"
 )
 
 func main() {
