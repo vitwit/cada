@@ -8,9 +8,7 @@ import (
 )
 
 func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64) (avail.BlockMetaData, error) {
-
 	blockInfo, err := r.availDAClient.Submit(data)
-
 	if err != nil {
 		r.logger.Error("Error while posting block(s) to Avail DA",
 			"height_start", blocks[0],
@@ -35,7 +33,6 @@ func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64) (avail.Bl
 
 // IsDataAvailable is to query the avail light client and check if the data is made available at the given height
 func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to, availHeight uint64) (bool, error) {
-
 	var blocks []int64
 	for i := from; i <= to; i++ {
 		blocks = append(blocks, int64(i))

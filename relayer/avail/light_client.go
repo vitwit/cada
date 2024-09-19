@@ -25,6 +25,7 @@ func NewLightClient(lightClientURL string, httpClient *http_client.Handler) *Lig
 		LightClientURL: lightClientURL,
 	}
 }
+
 func (lc *LightClient) IsDataAvailable(data []byte, availBlockHeight int) (bool, error) {
 	availBlock, err := lc.GetBlock(availBlockHeight)
 	if err != nil {
