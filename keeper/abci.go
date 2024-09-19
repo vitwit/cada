@@ -74,7 +74,7 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(_ sdk.Context, req *abci.Re
 }
 
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
-	votingEndHeight := k.GetVotingEndHeightFromStore(ctx)
+	votingEndHeight := k.GetVotingEndHeightFromStore(ctx, false)
 	blobStatus := k.GetBlobStatus(ctx)
 	currentHeight := ctx.BlockHeight()
 
@@ -95,6 +95,8 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 				state = ReadyState
 			}
 
+			store := ctx.KVStore(k.storeKey)
+			UpdateVotingEndHeight(ctx, store, 0, false)
 			k.SetBlobStatus(ctx, state)
 		}
 	}

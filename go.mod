@@ -17,7 +17,6 @@ require (
 	cosmossdk.io/log v1.3.1
 	cosmossdk.io/store v1.1.0
 	cosmossdk.io/x/upgrade v0.1.4
-	github.com/99designs/keyring v1.2.1
 	github.com/centrifuge/go-substrate-rpc-client/v4 v4.0.12
 	github.com/cometbft/cometbft v0.38.10
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
@@ -31,6 +30,7 @@ require (
 )
 
 require (
+	github.com/99designs/keyring v1.2.1 // indirect
 	github.com/btcsuite/btcd/btcutil v1.1.5 // indirect
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.1.0 // indirect
 	github.com/golang/mock v1.6.0 // indirect
