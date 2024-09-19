@@ -18,13 +18,14 @@ import (
 	cada "github.com/vitwit/avail-da-module"
 	module "github.com/vitwit/avail-da-module/module"
 	relayer "github.com/vitwit/avail-da-module/relayer"
+	httpclient "github.com/vitwit/avail-da-module/relayer/http"
 )
 
 type RelayerTestSuite struct {
 	suite.Suite
 
 	ctx          sdk.Context
-	httpHandler  relayer.HTTPClientHandler
+	httpHandler  *httpclient.Handler
 	addrs        []sdk.AccAddress
 	encCfg       moduletestutil.TestEncodingConfig
 	addressCodec addresstypes.Codec
@@ -54,7 +55,7 @@ func (s *RelayerTestSuite) SetupTest() {
 	s.baseApp.SetInterfaceRegistry(s.encCfg.InterfaceRegistry)
 	s.addrs = simtestutil.CreateIncrementalAccounts(7)
 
-	s.httpHandler = *relayer.NewHTTPClientHandler()
+	s.httpHandler = httpclient.NewHandler()
 
 	s.relayer = &relayer.Relayer{}
 }
