@@ -228,9 +228,10 @@ func NewTestNetworkFixture() network.TestFixture {
 
 	appCtr := func(val network.ValidatorI) servertypes.Application {
 		appOptions := simtestutil.AppOptionsMap{
-			flags.FlagHome:                val.GetCtx().Config.RootDir,
-			relayercfg.FlagCosmosNodeRPC:  val.GetRPC(),
-			relayercfg.FlagLightClientURL: "http://127.0.0.1:8000",
+			flags.FlagHome:                     val.GetCtx().Config.RootDir,
+			relayercfg.FlagCosmosNodeRPC:       val.GetRPC(),
+			relayercfg.FlagLightClientURL:      "http://127.0.0.1:8000",
+			relayercfg.FlagPublishBlobInterval: "5",
 		}
 		return NewChainApp(
 			val.GetCtx().Logger, dbm.NewMemDB(), nil, true,
