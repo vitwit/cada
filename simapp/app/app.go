@@ -686,16 +686,6 @@ func NewChainApp(
 		AddRoute(icahosttypes.SubModuleName, icaHostStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	app.AvailBlobKeeper = availblobkeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(keys[availblob1.StoreKey]),
-		app.UpgradeKeeper,
-		keys[availblob1.StoreKey],
-		AvailAppID,
-		appOpts,
-		logger,
-	)
-
 	app.Availblobrelayer, err = availblobrelayer.NewRelayer(
 		logger,
 		appCodec,
@@ -704,6 +694,17 @@ func NewChainApp(
 	if err != nil {
 		panic(err)
 	}
+
+	app.AvailBlobKeeper = availblobkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[availblob1.StoreKey]),
+		app.UpgradeKeeper,
+		keys[availblob1.StoreKey],
+		AvailAppID,
+		appOpts,
+		logger,
+		app.Availblobrelayer,
+	)
 
 	// must be done after relayer is created
 	app.AvailBlobKeeper.SetRelayer(app.Availblobrelayer)

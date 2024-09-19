@@ -29,18 +29,11 @@ type Relayer struct {
 
 	submittedBlocksCache map[int64]bool
 
-	rpcClient     *AvailClient
 	localProvider *local.CosmosProvider
 	clientCtx     client.Context
 
 	availChainID string
-
-	PublishBlockInterval   uint64
-	AvailLastQueriedHeight int64
-	availAppID             int
-	MaxBlobBlocks          uint64
-	VoteInterval           uint64
-	AvailLightClientURL    string
+	AvailConfig  AvailConfiguration
 }
 
 // NewRelayer creates a new Relayer instance
@@ -50,10 +43,6 @@ func NewRelayer(
 	appOpts servertypes.AppOptions,
 ) (*Relayer, error) {
 	cfg := AvailConfigFromAppOpts(appOpts)
-	client, err := NewAvailClient(cfg)
-	if err != nil {
-		return nil, err
-	}
 
 	// local sdk-based chain provider
 	localProvider, err := local.NewProvider(cdc, cfg.CosmosNodeRPC)
@@ -64,21 +53,13 @@ func NewRelayer(
 	return &Relayer{
 		logger: logger,
 
-		// pollInterval: cfg.ProofQueryInterval,
-
 		provenHeights: make(chan int64, 10000),
 		commitHeights: make(chan int64, 10000),
 
-		rpcClient:              client,
-		localProvider:          localProvider,
-		availChainID:           cfg.ChainID,
-		AvailLastQueriedHeight: 1, // Defaults to 1, but init genesis can set this based on client state's latest height
-		submittedBlocksCache:   make(map[int64]bool),
-		availAppID:             cfg.AppID,
-		PublishBlockInterval:   cfg.BlobInterval,
-		MaxBlobBlocks:          cfg.MaxBlobBlocks,
-		VoteInterval:           cfg.VoteInterval,
-		AvailLightClientURL:    cfg.LightClientURL,
+		localProvider:        localProvider,
+		availChainID:         cfg.ChainID,
+		submittedBlocksCache: make(map[int64]bool),
+		AvailConfig:          cfg,
 	}, nil
 }
 

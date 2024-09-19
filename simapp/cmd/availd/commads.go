@@ -63,7 +63,7 @@ func initAppConfig() (string, interface{}) {
 	type CustomAppConfig struct {
 		serverconfig.Config
 
-		Avail *relayer.AvailConfig `mapstructure:"avail"`
+		Avail *relayer.AvailConfiguration `mapstructure:"avail"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default

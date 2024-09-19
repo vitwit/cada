@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/log"
@@ -33,13 +31,6 @@ type Keeper struct {
 
 	cdc codec.BinaryCodec
 
-	// PublishToAvailBlockInterval uint64
-	// MaxBlocksForBlob    uint
-	// VotingInterval      uint64
-	appID int
-	// CosmosNodeRPC       string
-	// AvailLightClientURL string
-
 	unprovenBlocks map[int64][]byte
 
 	proposerAddress []byte
@@ -54,15 +45,9 @@ func NewKeeper(
 	appID int,
 	appOpts servertypes.AppOptions,
 	logger log.Logger,
+	relayer *relayer.Relayer,
 ) *Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
-	// cfg := relayer.AvailConfigFromAppOpts(appOpts)
-
-	relayer, err := relayer.NewRelayer(logger, cdc, appOpts)
-	if err != nil {
-		fmt.Println("error while getting relayer config")
-		return nil
-	}
 
 	return &Keeper{
 		upgradeKeeper: uk,
@@ -75,17 +60,9 @@ func NewKeeper(
 
 		storeKey: key,
 
-		cdc: cdc,
-
-		appID: appID,
-
+		cdc:            cdc,
 		unprovenBlocks: make(map[int64][]byte),
-		// MaxBlocksForBlob:            uint(cfg.MaxBlobBlocks),
-		// PublishToAvailBlockInterval: cfg.BlobInterval,
-		// VotingInterval:              cfg.VoteInterval,
-		// CosmosNodeRPC:               cfg.CosmosNodeRPC,
-		// AvailLightClientURL:         cfg.LightClientURL,
-		relayer: relayer,
+		relayer:        relayer,
 	}
 }
 
