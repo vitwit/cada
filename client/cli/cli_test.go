@@ -28,6 +28,8 @@ type IntegrationTestSuite struct {
 	addresses []string
 }
 
+const aliceMnemonic = "all soap kiwi cushion federal skirt tip shock exist tragic verify lunar shine rely torch please view future lizard garbage humble medal leisure mimic"
+
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 
@@ -44,9 +46,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	kb := s.network.Validators[0].ClientCtx.Keyring
 	path := sdk.GetConfig().GetFullBIP44Path()
-	info, err := kb.NewAccount("alice",
-		"all soap kiwi cushion federal skirt tip shock exist tragic verify lunar shine rely torch please view future lizard garbage humble medal leisure mimic",
-		"", path, hd.Secp256k1)
+	info, err := kb.NewAccount("alice", aliceMnemonic, "", path, hd.Secp256k1)
 	s.Require().NoError(err)
 
 	add, err := info.GetAddress()
