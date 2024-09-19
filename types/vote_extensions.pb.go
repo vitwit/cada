@@ -22,10 +22,12 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// AvailVoteExtension
+// AvailVoteExtension defines the info which includes in vote extensions
 type AvailVoteExtension struct {
-	AvailHeight int64  `protobuf:"varint,1,opt,name=avail_height,json=availHeight,proto3" json:"avail_height,omitempty"`
-	Range       *Range `protobuf:"bytes,2,opt,name=range,proto3" json:"range,omitempty"`
+	// avail_height specifies the height in the Avail chain at which the data has been posted.
+	AvailHeight int64 `protobuf:"varint,1,opt,name=avail_height,json=availHeight,proto3" json:"avail_height,omitempty"`
+	// range defines the range of blocks that have been posted to the Avail Data Availability (DA) layer.
+	Range *Range `protobuf:"bytes,2,opt,name=range,proto3" json:"range,omitempty"`
 }
 
 func (m *AvailVoteExtension) Reset()         { *m = AvailVoteExtension{} }

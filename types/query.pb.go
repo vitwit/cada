@@ -30,7 +30,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// query request
+// QuerySubmitBlobStatusRequest is the request type for the SubmitBlobStatus RPC method.
 type QuerySubmittedBlobStatusRequest struct {
 }
 
@@ -67,11 +67,19 @@ func (m *QuerySubmittedBlobStatusRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QuerySubmittedBlobStatusRequest proto.InternalMessageInfo
 
-// query response
+// QuerySubmitBlobStatusResponse is the response type for the SubmitBlobStatus RPC method.
 type QuerySubmittedBlobStatusResponse struct {
-	Range        *Range `protobuf:"bytes,1,opt,name=range,proto3" json:"range,omitempty"`
-	Status       string `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	// range specifies the range of blocks that are being submitted.
+	// It contains information about the starting and ending block heights.
+	Range *Range `protobuf:"bytes,1,opt,name=range,proto3" json:"range,omitempty"`
+	// status indicates the current status of the blob submission.
+	// Possible values might include statuses like "pending", "in_voting", "success", or "failure".
+	Status string `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	// proven_height represents the height up to which data has been successfully proven.
+	// This height indicates the extent of posted data to avail light client.
 	ProvenHeight uint64 `protobuf:"varint,3,opt,name=proven_height,json=provenHeight,proto3" json:"proven_height,omitempty"`
+	// voting_ends_at denotes the block height at which the last voting on the blob ended.
+	// This provides information on when the last voting period for the blob concluded.
 	VotingEndsAt uint64 `protobuf:"varint,4,opt,name=voting_ends_at,json=votingEndsAt,proto3" json:"voting_ends_at,omitempty"`
 }
 
@@ -185,7 +193,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// submit Blob Status
+	// SubmitBlobStatus queries the current status of blob submissions.
 	SubmittedBlobStatus(ctx context.Context, in *QuerySubmittedBlobStatusRequest, opts ...grpc.CallOption) (*QuerySubmittedBlobStatusResponse, error)
 }
 
@@ -208,7 +216,7 @@ func (c *queryClient) SubmittedBlobStatus(ctx context.Context, in *QuerySubmitte
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// submit Blob Status
+	// SubmitBlobStatus queries the current status of blob submissions.
 	SubmittedBlobStatus(context.Context, *QuerySubmittedBlobStatusRequest) (*QuerySubmittedBlobStatusResponse, error)
 }
 
