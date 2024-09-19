@@ -49,8 +49,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	kb := s.network.Validators[0].ClientCtx.Keyring
 	path := sdk.GetConfig().GetFullBIP44Path()
-	info, err := kb.NewAccount("alice",alice_mnemonic
-		"", path, hd.Secp256k1)
+	info, err := kb.NewAccount("alice", alice_mnemonic, "", path, hd.Secp256k1)
 	s.Require().NoError(err)
 
 	add, err := info.GetAddress()
