@@ -19,9 +19,6 @@ This document specifies the cada module of the Cosmos SDK.
 
 CADA is a module designed to connect Cosmos sovereign chains with the Avail network, making it easier for any Cosmos chain or rollapp to use Avail as their Data Availability (DA) layer. With CADA, developers can improve the scalability and security of their decentralized applications within the Cosmos ecosystem. It enables better data handling and availability, allowing Cosmos-based chains to tap into the strengths of Avail and build a more connected and resilient blockchain network.
 
-
-
-
 ## Architecture
 
 ![blocks-data-submission](https://github.com/user-attachments/assets/4e17b98f-ca8c-4b4c-a79e-8c60f123cb2c)
@@ -63,6 +60,5 @@ CADA is a module designed to connect Cosmos sovereign chains with the Avail netw
 
     ```
 - In case of failure at any stage, the whole flow will be repeated.
-
 
 ---
