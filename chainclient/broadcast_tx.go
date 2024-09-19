@@ -34,6 +34,10 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	key := os.Getenv("KEY")
 	keyName := key
 
+	if key == "" {
+		keyName = "alice"
+	}
+
 	// Create a keyring
 	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec))
 	if err != nil {
