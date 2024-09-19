@@ -47,7 +47,9 @@ func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlo
 	} else {
 		currentHeight := sdkCtx.BlockHeight()
 		UpdateAvailHeight(sdkCtx, store, req.AvailHeight) // updates avail height at which the blocks got submitted to DA
-		UpdateVotingEndHeight(sdkCtx, store, uint64(currentHeight)+s.k.VotingInterval)
+		lastVotingEndHeight := s.k.GetVotingEndHeightFromStore(sdkCtx, false)
+		UpdateVotingEndHeight(sdkCtx, store, uint64(currentHeight)+s.k.VotingInterval, false)
+		UpdateVotingEndHeight(sdkCtx, store, lastVotingEndHeight, true)
 	}
 
 	UpdateBlobStatus(sdkCtx, store, newStatus)

@@ -27,9 +27,9 @@ message QuerySubmittedBlobStatusResponse {
   // This height indicates the extent of posted data to avail light client.
   uint64 proven_height = 3;
 
-   // last_blob_voting_ends_at denotes the block height at which the last voting on the blob ended.
+  // voting_ends_at denotes the block height at which the last voting on the blob ended.
   // This provides information on when the last voting period for the blob concluded.
-  uint64 last_blob_voting_ends_at = 4;
+  uint64 voting_ends_at = 4;
 }
 
 // Query defines the gRPC querier service.

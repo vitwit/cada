@@ -37,7 +37,9 @@ var (
 
 	VotingEndHeightKey = collections.NewPrefix(9)
 
-	AvailHeightKey = collections.NewPrefix(10)
+	LastVotingEndHeightKey = collections.NewPrefix(10)
+
+	AvailHeightKey = collections.NewPrefix(11)
 )
 
 const (

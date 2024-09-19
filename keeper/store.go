@@ -88,8 +88,12 @@ func UpdateAvailHeight(_ sdk.Context, store storetypes2.KVStore, availHeight uin
 }
 
 // UpdateVotingEndHeight updates the voting end height in the KV store.
-func UpdateVotingEndHeight(_ sdk.Context, store storetypes2.KVStore, votingEndHeight uint64) error {
-	return updateHeight(store, availblob1.VotingEndHeightKey, votingEndHeight)
+func UpdateVotingEndHeight(_ sdk.Context, store storetypes2.KVStore, votingEndHeight uint64, isLastVoting bool) error {
+	key := availblob1.VotingEndHeightKey
+	if isLastVoting {
+		key = availblob1.LastVotingEndHeightKey
+	}
+	return updateHeight(store, key, votingEndHeight)
 }
 
 // updateHeight encodes and stores a height value in the KV store.
@@ -113,8 +117,12 @@ func (k *Keeper) GetAvailHeightFromStore(ctx sdk.Context) uint64 {
 }
 
 // GetVotingEndHeightFromStore retrieves the ending vote height from store
-func (k *Keeper) GetVotingEndHeightFromStore(ctx sdk.Context) uint64 {
-	return k.getHeight(ctx, availblob1.VotingEndHeightKey)
+func (k *Keeper) GetVotingEndHeightFromStore(ctx sdk.Context, isLastVoting bool) uint64 {
+	key := availblob1.VotingEndHeightKey
+	if isLastVoting {
+		key = availblob1.LastVotingEndHeightKey
+	}
+	return k.getHeight(ctx, key)
 }
 
 // GetStartHeightFromStore retrieves the start height from store
