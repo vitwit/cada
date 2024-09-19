@@ -8,8 +8,8 @@ Let blobInterval = 10,
 - At height `11`, blocks from `1` to `10` are posted.
 - At height `21`, blocks from `11` to `20` are posted.
 
-Refer to the module specification available here for more detailed information.
+Refer to the module specification available [here](./specs/README.md) for more detailed information.
 
-Note: Use the latest maintained [Go]{https://go.dev/dl/} version to work with this module.
+Note: Use the latest maintained [Go](https://go.dev/dl/) version to work with this module.
 
-Ensure that the Avail light client URL is correctly configured for the module to function as expected. For instructions on running Avail locally, refer to this documentation.
+Ensure that the Avail light client URL is correctly configured for the module to function as expected. For instructions on running Avail locally, refer to [this documentation](https://github.com/rollkit/avail-da?tab=readme-ov-file#avail-da).
