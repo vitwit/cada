@@ -1,45 +1,6 @@
-# name: Tests
-
-# on: 
-#   pull_request:
-#   push:
-#     branches:
-#       - main
-
-# concurrency:
-#   group: ci-${{ github.ref }}-tests
-#   cancel-in-progress: true
-
-# jobs:
-#   tests:
-#     name: Tests and code coverage
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Install GO
-#         uses: actions/setup-go@v3
-#         with:
-#           go-version: "1.22"
-#       - name: Checkout code
-#         uses: actions/checkout@v3
-#       - id: get_diff
-#         uses: technote-space/get-diff-action@v6.1.2
-#         with:
-#           PATTERNS: |
-#             **/**.go
-#             go.mod
-#             go.sum
-#       - name: run all tests and generate coverage
-#         run: go test -v -mod=readonly -timeout 30m -coverprofile=coverage.txt -tags='norace' -covermode=atomic `go list ./... | grep -v simapp`
-#         if: steps.get_diff.outputs.changed == 'true'
-#       - name: Upload codecov report
-#         uses: codecov/codecov-action@v3.1.0
-#         with:
-#           file: coverage.txt
-#         if: steps.get_diff.outputs.changed == 'true'
-
 name: Tests
 
-on:
+on: 
   pull_request:
   push:
     branches:
@@ -60,8 +21,6 @@ jobs:
           go-version: "1.22"
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Go mod tidy
-        run: go mod tidy
       - id: get_diff
         uses: technote-space/get-diff-action@v6.1.2
         with:
@@ -69,13 +28,9 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - name: Print diff output
-        run: echo "Changed files: ${{ steps.get_diff.outputs.changed }}"
-      - name: Run all tests and generate coverage
+      - name: run all tests and generate coverage
         run: go test -v -mod=readonly -timeout 30m -coverprofile=coverage.txt -tags='norace' -covermode=atomic `go list ./... | grep -v simapp`
         if: steps.get_diff.outputs.changed == 'true'
-      - name: Display coverage report
-        run: cat coverage.txt
       - name: Upload codecov report
         uses: codecov/codecov-action@v3.1.0
         with:
