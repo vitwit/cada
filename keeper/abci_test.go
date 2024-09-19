@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -133,7 +135,10 @@ func (s *TestSuite) TestPreBlocker() {
 		s.Run(tc.name, func() {
 			s.ctx = s.ctx.WithBlockHeight(tc.currentHeight)
 			s.keeper.ProposerAddress = s.addrs[1]
-			s.keeper.MaxBlocksForBlob = 5
+
+			fmt.Printf("s.relayer.AvailConfig: %v\n", s.relayer.AvailConfig)
+			//s.relayer.AvailConfig.MaxBlobBlocks = 5
+
 			err := store.UpdateBlobStatus(s.ctx, s.store, tc.blobStatus)
 			s.Require().NoError(err)
 

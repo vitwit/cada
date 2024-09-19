@@ -15,31 +15,25 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
-func GetBinPath() string {
+func GetBinPath(daemon string) string {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	availdHomePath := filepath.Join(homeDir, ".availsdk")
-	fmt.Println("availdHonmePath.......", availdHomePath)
+	availdHomePath := filepath.Join(homeDir, daemon)
 	return availdHomePath
 }
 
-func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, rpcAddr string) error {
+func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, config types.AvailConfiguration, nodeDir string) error {
 	// Define keyring and RPC client configuration
-
-	// homePath := "/home/vitwit/.availsdk"
-	homePath := GetBinPath()
-	key := os.Getenv("KEY")
-	keyName := key
-
-	if key == "" {
-		keyName = "alice"
-	}
+	// homePath := "/home/vitwit/.simapp"
+	homePath := GetBinPath(nodeDir)
+	keyName := config.ValidatorKey
+	rpcAddress := config.CosmosNodeRPC
 
 	// Create a keyring
-	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec))
+	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec)) // TODO : update keyring backend type
 	if err != nil {
 		return fmt.Errorf("error creating keyring: %w", err)
 	}
@@ -54,7 +48,7 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	}
 
 	// Create an RPC client
-	rpcClient, err := cometrpc.NewWithTimeout(rpcAddr, "/websocket", 3)
+	rpcClient, err := cometrpc.NewWithTimeout(rpcAddress, "/websocket", 3)
 	if err != nil {
 		return fmt.Errorf("error creating RPC client: %w", err)
 	}
@@ -72,8 +66,6 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	if err != nil {
 		return fmt.Errorf("error retrieving account: %w", err)
 	}
-
-	fmt.Println("account details......", account.GetAccountNumber(), account.GetSequence())
 
 	// Set the correct account number and sequence
 	factory := NewFactory(clientCtx).
