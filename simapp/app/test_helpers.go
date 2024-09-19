@@ -27,7 +27,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
 	network "github.com/vitwit/avail-da-module/network"
-	relayercfg "github.com/vitwit/avail-da-module/relayer"
+	relayercfg "github.com/vitwit/avail-da-module/types"
 )
 
 // SetupOptions defines arguments that are passed into `Simapp` constructor.

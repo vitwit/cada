@@ -42,7 +42,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	availblobcli "github.com/vitwit/avail-da-module/client/cli"
-	"github.com/vitwit/avail-da-module/relayer"
+	availtypes "github.com/vitwit/avail-da-module/types"
 )
 
 // initCometBFTConfig helps to override default CometBFT Config values.
@@ -65,7 +65,7 @@ func initAppConfig() (string, interface{}) {
 	type CustomAppConfig struct {
 		serverconfig.Config
 
-		Avail *relayer.AvailConfig `mapstructure:"avail"`
+		Avail *availtypes.AvailConfiguration `mapstructure:"avail"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
@@ -83,15 +83,15 @@ func initAppConfig() (string, interface{}) {
 	//   own app.toml to override, or use this default value.
 	//
 	// In simapp, we set the min gas prices to 0.
-	srvCfg.MinGasPrices = "0avail"
+	srvCfg.MinGasPrices = "0stake"
 	// srvCfg.BaseConfig.IAVLDisableFastNode = true // disable fastnode by default
 
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
-		Avail:  &relayer.DefaultAvailConfig,
+		Avail:  &availtypes.DefaultAvailConfig,
 	}
 
-	customAppTemplate := serverconfig.DefaultConfigTemplate + relayer.DefaultConfigTemplate
+	customAppTemplate := serverconfig.DefaultConfigTemplate + availtypes.DefaultConfigTemplate
 
 	return customAppTemplate, customAppConfig
 }

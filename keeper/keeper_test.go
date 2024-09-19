@@ -13,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/runtime"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,6 +22,7 @@ import (
 	cada "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/keeper"
 	module "github.com/vitwit/avail-da-module/module"
+	relayer "github.com/vitwit/avail-da-module/relayer"
 	"github.com/vitwit/avail-da-module/types"
 )
 
@@ -41,6 +43,8 @@ type TestSuite struct {
 	voteExtensionHandler       keeper.VoteExtHandler
 	logger                     log.Logger
 	proofofBlobProposerHandler keeper.ProofOfBlobProposalHandler
+	appOptions                 servertypes.AppOptions
+	relayer                    relayer.Relayer
 }
 
 func TestKeeperTestSuite(t *testing.T) {
@@ -66,7 +70,7 @@ func (s *TestSuite) SetupTest() {
 	s.baseApp.SetInterfaceRegistry(s.encCfg.InterfaceRegistry)
 	s.addrs = simtestutil.CreateIncrementalAccounts(7)
 
-	s.keeper = *keeper.NewKeeper(s.encCfg.Codec, storeService, &s.upgradeKeeper, key, 1)
+	s.keeper = *keeper.NewKeeper(s.encCfg.Codec, storeService, &s.upgradeKeeper, key, s.appOptions, s.logger, &s.relayer)
 
 	s.store = s.ctx.KVStore(key)
 
@@ -80,6 +84,8 @@ func (s *TestSuite) SetupTest() {
 	s.msgserver = keeper.NewMsgServerImpl(&s.keeper)
 
 	s.voteExtensionHandler = *keeper.NewVoteExtHandler(s.logger, &s.keeper)
+
+	s.relayer.AvailConfig.PublishBlobInterval = 5
 
 	prepareProposalHandler := func(_ sdk.Context, _ *abci.RequestPrepareProposal) (*abci.ResponsePrepareProposal, error) {
 		return &abci.ResponsePrepareProposal{}, nil

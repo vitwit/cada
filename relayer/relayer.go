@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/vitwit/avail-da-module/relayer/local"
+	"github.com/vitwit/avail-da-module/types"
 )
 
 const (
@@ -29,15 +30,12 @@ type Relayer struct {
 
 	submittedBlocksCache map[int64]bool
 
-	rpcClient     *AvailClient
 	localProvider *local.CosmosProvider
 	clientCtx     client.Context
 
 	availChainID string
-
-	availPublishBlockInterval int
-	availLastQueriedHeight    int64
-	availAppID                int
+	AvailConfig  types.AvailConfiguration
+	NodeDir      string
 }
 
 // NewRelayer creates a new Relayer instance
@@ -45,12 +43,9 @@ func NewRelayer(
 	logger log.Logger,
 	cdc codec.BinaryCodec,
 	appOpts servertypes.AppOptions,
+	nodeDir string,
 ) (*Relayer, error) {
-	cfg := AvailConfigFromAppOpts(appOpts)
-	client, err := NewAvailClient(cfg)
-	if err != nil {
-		return nil, err
-	}
+	cfg := types.AvailConfigFromAppOpts(appOpts)
 
 	// local sdk-based chain provider
 	localProvider, err := local.NewProvider(cdc, cfg.CosmosNodeRPC)
@@ -61,18 +56,14 @@ func NewRelayer(
 	return &Relayer{
 		logger: logger,
 
-		pollInterval: cfg.ProofQueryInterval,
-
 		provenHeights: make(chan int64, 10000),
 		commitHeights: make(chan int64, 10000),
 
-		rpcClient:                 client,
-		localProvider:             localProvider,
-		availChainID:              cfg.ChainID,
-		availLastQueriedHeight:    1, // Defaults to 1, but init genesis can set this based on client state's latest height
-		submittedBlocksCache:      make(map[int64]bool),
-		availAppID:                cfg.AppID,
-		availPublishBlockInterval: 5,
+		localProvider:        localProvider,
+		availChainID:         cfg.ChainID,
+		submittedBlocksCache: make(map[int64]bool),
+		NodeDir:              nodeDir,
+		AvailConfig:          cfg,
 	}, nil
 }
 
