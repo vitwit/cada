@@ -33,7 +33,7 @@ func NewProofOfBlobProposalHandler(
 }
 
 func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.RequestPrepareProposal) (*abci.ResponsePrepareProposal, error) {
-	h.keeper.proposerAddress = req.ProposerAddress
+	h.keeper.ProposerAddress = req.ProposerAddress
 	proposalTxs := req.Txs
 
 	votes, err := h.aggregateVotes(ctx, req.LocalLastCommit)
@@ -123,8 +123,8 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 		blocksToSumit = append(blocksToSumit, int64(i))
 	}
 
-	// only the proposer should be able to post the blocks
-	if bytes.Equal(req.ProposerAddress, k.proposerAddress) {
+	// only proposar should should run the this
+	if bytes.Equal(req.ProposerAddress, k.ProposerAddress) {
 		k.relayer.PostBlocks(ctx, blocksToSumit, k.cdc, req.ProposerAddress)
 	}
 
