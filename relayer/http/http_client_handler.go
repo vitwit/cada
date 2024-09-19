@@ -1,4 +1,4 @@
-package relayer
+package http_client
 
 import (
 	"bytes"
@@ -57,17 +57,4 @@ func (h *HTTPClientHandler) Post(url string, jsonData []byte) ([]byte, error) {
 		return nil, fmt.Errorf("error reading response body: %v", err)
 	}
 	return body, nil
-}
-
-// RequestData struct for the POST request payload
-type RequestData struct {
-	Data      []byte `json:"data,omitempty"`
-	Extrinsic string `json:"extrinsic,omitempty"`
-}
-
-type BlockInfo struct {
-	BlockNumber int    `json:"block_number"`
-	BlockHash   string `json:"block_hash"`
-	Hash        string `json:"hash"`
-	Index       int    `json:"index"`
 }

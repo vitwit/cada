@@ -7,6 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	"github.com/vitwit/avail-da-module/relayer/avail"
+	http_client "github.com/vitwit/avail-da-module/relayer/http"
 	"github.com/vitwit/avail-da-module/relayer/local"
 	"github.com/vitwit/avail-da-module/types"
 )
@@ -31,6 +33,7 @@ type Relayer struct {
 	submittedBlocksCache map[int64]bool
 
 	localProvider *local.CosmosProvider
+	availDAClient avail.AvailDA
 	clientCtx     client.Context
 
 	availChainID string
@@ -53,6 +56,11 @@ func NewRelayer(
 		return nil, err
 	}
 
+	httpClient := http_client.NewHTTPClientHandler()
+
+	// Avail-DA client
+	availDAClient := avail.NewAvailLightClient(cfg.LightClientURL, httpClient)
+
 	return &Relayer{
 		logger: logger,
 
@@ -64,6 +72,7 @@ func NewRelayer(
 		submittedBlocksCache: make(map[int64]bool),
 		NodeDir:              nodeDir,
 		AvailConfig:          cfg,
+		availDAClient:        availDAClient,
 	}, nil
 }
 
