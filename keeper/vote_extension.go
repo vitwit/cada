@@ -66,7 +66,7 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 			return abciResponseVoteExt, nil
 		}
 
-		ok, err := h.Keeper.relayer.IsDataAvailable(ctx, from, end, availHeight, h.Keeper.relayer.AvailConfig.LightClientURL) // TODO: read light client url from config
+		ok, err := h.Keeper.relayer.IsDataAvailable(ctx, from, end, availHeight)
 		if ok {
 			h.logger.Info("submitted data to Avail verified successfully at",
 				"block_height", availHeight,
