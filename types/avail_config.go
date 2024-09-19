@@ -1,9 +1,35 @@
-package relayer
+package types
 
 import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/spf13/cast"
 )
+
+// AvailConfig defines the configuration for the in-process Avail relayer.
+type AvailConfiguration struct {
+	// avail light node url
+	LightClientURL string `mapstructure:"light-client-url"`
+
+	// avail chain ID
+	ChainID string `mapstructure:"chain-id"`
+
+	// Overrides built-in app-id used
+	AppID int `mapstructure:"app-id"`
+
+	// avail config
+	Seed string `json:"seed"`
+
+	// RPC of the cosmos node to fetch the block data
+	CosmosNodeRPC string `json:"cosmos-node-rpc"`
+
+	MaxBlobBlocks uint64 `json:"max-blob-blocks"`
+
+	PublishBlobInterval uint64 `json:"publish-blob-interval"`
+
+	VoteInterval uint64 `json:"vote-interval"`
+	ValidatorKey string `json:"validator-key"`
+	DaemonHome   string `json:"daemon-home"`
+}
 
 const (
 	FlagChainID             = "avail.chain-id"
@@ -16,6 +42,8 @@ const (
 	FlagMaxBlobBlocks       = "avail.max-blob-blocks"
 	FlagPublishBlobInterval = "avail.publish-blob-interval"
 	FlagVoteInterval        = "avail.vote-interval"
+	FlagValidatorKey        = "avail.validator-key"
+	FlagDaemonHome          = "avail.daemon-home"
 
 	DefaultConfigTemplate = `
 
@@ -45,6 +73,12 @@ const (
 	# It is the period before validators verify whether data is truly included in
 	# Avail and confirm it with the network using vote extension
 	vote-interval = 5
+
+	# It is the keyname of the cosmos validator account to sign the transactions
+	validator-key = "alice"
+
+	# It is the name of the daemon home (ex: .simapp)
+	daemon-home = ".availsdk"
 	`
 )
 
@@ -57,30 +91,8 @@ var DefaultAvailConfig = AvailConfiguration{
 	PublishBlobInterval: 10,
 	VoteInterval:        5,
 	LightClientURL:      "http://127.0.0.1:8000",
-}
-
-// AvailConfig defines the configuration for the in-process Avail relayer.
-type AvailConfiguration struct {
-	// avail light node url
-	LightClientURL string `mapstructure:"light-client-url"`
-
-	// avail chain ID
-	ChainID string `mapstructure:"chain-id"`
-
-	// Overrides built-in app-id used
-	AppID int `mapstructure:"app-id"`
-
-	// avail config
-	Seed string `json:"seed"`
-
-	// RPC of the cosmos node to fetch the block data
-	CosmosNodeRPC string `json:"cosmos-node-rpc"`
-
-	MaxBlobBlocks uint64 `json:"max-blob-blocks"`
-
-	PublishBlobInterval uint64 `json:"publish-blob-interval"`
-
-	VoteInterval uint64 `json:"vote-interval"`
+	ValidatorKey:        "alice",
+	DaemonHome:          ".availsdk",
 }
 
 func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {
@@ -93,5 +105,7 @@ func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {
 		MaxBlobBlocks:       cast.ToUint64(appOpts.Get(FlagMaxBlobBlocks)),
 		PublishBlobInterval: cast.ToUint64(appOpts.Get(FlagPublishBlobInterval)),
 		VoteInterval:        cast.ToUint64(appOpts.Get(FlagVoteInterval)),
+		ValidatorKey:        cast.ToString(appOpts.Get(FlagValidatorKey)),
+		DaemonHome:          cast.ToString(appOpts.Get(FlagDaemonHome)),
 	}
 }

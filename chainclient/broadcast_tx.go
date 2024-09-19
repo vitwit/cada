@@ -12,35 +12,29 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
 	"github.com/vitwit/avail-da-module/types"
 )
 
-func GetBinPath() string {
+func GetBinPath(daemon string) string {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	availdHomePath := filepath.Join(homeDir, ".availsdk")
+	availdHomePath := filepath.Join(homeDir, daemon)
 	return availdHomePath
 }
 
-func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec) error {
+func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, config types.AvailConfiguration) error {
 	// Define keyring and RPC client configuration
-
-	// homePath := "/home/vitwit/.availsdk"
-	homePath := GetBinPath()
-	key := os.Getenv("KEY")
-	keyName := key
-
-	if keyName == "" {
-		keyName = "alice"
-	}
-
-	rpcAddress := "http://localhost:26657"
+	// homePath := "/home/vitwit/.simapp"
+	homePath := GetBinPath(config.DaemonHome)
+	keyName := config.ValidatorKey
+	rpcAddress := config.CosmosNodeRPC
 
 	// Create a keyring
-	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec))
+	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec)) // TODO : update keyring backend type
 	if err != nil {
 		return fmt.Errorf("error creating keyring: %w", err)
 	}
@@ -73,8 +67,6 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	if err != nil {
 		return fmt.Errorf("error retrieving account: %w", err)
 	}
-
-	fmt.Println("account details......", account.GetAccountNumber(), account.GetSequence())
 
 	// Set the correct account number and sequence
 	factory := NewFactory(clientCtx).

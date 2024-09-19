@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/vitwit/avail-da-module/relayer/local"
+	"github.com/vitwit/avail-da-module/types"
 )
 
 const (
@@ -33,7 +34,7 @@ type Relayer struct {
 	clientCtx     client.Context
 
 	availChainID string
-	AvailConfig  AvailConfiguration
+	AvailConfig  types.AvailConfiguration
 }
 
 // NewRelayer creates a new Relayer instance
@@ -42,7 +43,7 @@ func NewRelayer(
 	cdc codec.BinaryCodec,
 	appOpts servertypes.AppOptions,
 ) (*Relayer, error) {
-	cfg := AvailConfigFromAppOpts(appOpts)
+	cfg := types.AvailConfigFromAppOpts(appOpts)
 
 	// local sdk-based chain provider
 	localProvider, err := local.NewProvider(cdc, cfg.CosmosNodeRPC)

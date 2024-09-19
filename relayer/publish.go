@@ -97,7 +97,7 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 			},
 			// AvailHeight: uint64(blockInfo.BlockNumber),
 			IsSuccess: false,
-		}, cdc)
+		}, cdc, r.AvailConfig)
 		if err != nil {
 			fmt.Println("error while submitting tx...", err)
 		}
@@ -116,8 +116,8 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 			IsSuccess:   true,
 		}
 
-		// TODO : execute tx about successful submission
-		err = dacli.ExecuteTX(ctx, msg, cdc)
+		// execute tx about successful submission
+		err = dacli.ExecuteTX(ctx, msg, cdc, r.AvailConfig)
 		if err != nil {
 			fmt.Println("error while submitting tx...", err)
 		}
