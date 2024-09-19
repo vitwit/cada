@@ -34,7 +34,7 @@ func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64) (avail.Bl
 }
 
 // IsDataAvailable is to query the avail light client and check if the data is made available at the given height
-func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to, availHeight uint64, lightClientURL string) (bool, error) {
+func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to, availHeight uint64) (bool, error) {
 
 	var blocks []int64
 	for i := from; i <= to; i++ {
