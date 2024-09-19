@@ -4,6 +4,8 @@ order: 7
 
 # Vote Extensions
 
+Vote extensions are used to propagate arbitrary data across the network without needing to implement transactions that modify the state. Validators utilize vote extensions to verify data availability of a specific range of blocks and update the state of the Cada module accordingly.
+
 This specification details the functionality and purpose of the `ExtendVoteHandler` and `VerifyVoteExtensionHandler` methods within the VoteExtHandler struct. These methods are part of a voting extension process where validators extend their votes based on the availability of data in the Avail DA network.
 
 ### ExtendVoteHandler
