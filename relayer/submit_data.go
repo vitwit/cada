@@ -9,7 +9,7 @@ import (
 	"github.com/vitwit/avail-da-module/relayer/avail"
 )
 
-func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64, lightClientURL string) (avail.AvailBlockMetaData, error) {
+func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64, lightClientURL string) (avail.BlockMetaData, error) {
 
 	datab := base64.StdEncoding.EncodeToString(data)
 	jsonData := []byte(fmt.Sprintf(`{"data":"%s"}`, datab))

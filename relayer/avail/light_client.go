@@ -14,18 +14,18 @@ import (
 // Fields:
 // - HttpClient: An HTTP client handler used for making requests to the Avail light client.
 // - LightClientURL: The URL of the Avail light client that this module communicates with.
-type AvailLightClient struct {
-	HttpClient     *http_client.HTTPClientHandler
+type LightClient struct {
+	HTTPClient     *http_client.HTTPClientHandler
 	LightClientURL string
 }
 
-func NewAvailLightClient(lightClientURL string, httpClient *http_client.HTTPClientHandler) *AvailLightClient {
-	return &AvailLightClient{
-		HttpClient:     httpClient,
+func NewLightClient(lightClientURL string, httpClient *http_client.HTTPClientHandler) *LightClient {
+	return &LightClient{
+		HTTPClient:     httpClient,
 		LightClientURL: lightClientURL,
 	}
 }
-func (lc *AvailLightClient) IsDataAvailable(data []byte, availBlockHeight int) (bool, error) {
+func (lc *LightClient) IsDataAvailable(data []byte, availBlockHeight int) (bool, error) {
 	availBlock, err := lc.GetBlock(availBlockHeight)
 	if err != nil {
 		return false, err
@@ -37,35 +37,35 @@ func (lc *AvailLightClient) IsDataAvailable(data []byte, availBlockHeight int) (
 	return isDataIncludedInBlock(availBlock, base64CosmosBlockData), nil
 }
 
-func (lc *AvailLightClient) GetBlock(availBlockHeight int) (AvailBlock, error) {
+func (lc *LightClient) GetBlock(availBlockHeight int) (Block, error) {
 	// Construct the URL with the block number
 	url := fmt.Sprintf("%s/v2/blocks/%v/data?fields=data", lc.LightClientURL, availBlockHeight)
 
 	// Perform the GET request, returning the body directly
-	body, err := lc.HttpClient.Get(url)
+	body, err := lc.HTTPClient.Get(url)
 	if err != nil {
-		return AvailBlock{}, fmt.Errorf("failed to fetch data from the avail: %w", err)
+		return Block{}, fmt.Errorf("failed to fetch data from the avail: %w", err)
 	}
 
 	// Decode the response body into the AvailBlock struct
-	var block AvailBlock
+	var block Block
 	err = json.Unmarshal(body, &block)
 	if err != nil {
-		return AvailBlock{}, fmt.Errorf("failed to decode block response: %w", err)
+		return Block{}, fmt.Errorf("failed to decode block response: %w", err)
 	}
 
 	return block, nil
 }
 
-func (lc *AvailLightClient) Submit(data []byte) (AvailBlockMetaData, error) {
-	var blockInfo AvailBlockMetaData
+func (lc *LightClient) Submit(data []byte) (BlockMetaData, error) {
+	var blockInfo BlockMetaData
 
 	datab := base64.StdEncoding.EncodeToString(data)
 	jsonData := []byte(fmt.Sprintf(`{"data":"%s"}`, datab))
 	url := fmt.Sprintf("%s/v2/submit", lc.LightClientURL)
 
 	// Make the POST request
-	responseBody, err := lc.HttpClient.Post(url, jsonData)
+	responseBody, err := lc.HTTPClient.Post(url, jsonData)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		return blockInfo, err
@@ -74,14 +74,14 @@ func (lc *AvailLightClient) Submit(data []byte) (AvailBlockMetaData, error) {
 	// Unmarshal the JSON data into the struct
 	err = json.Unmarshal(responseBody, &blockInfo)
 	if err != nil {
-		return AvailBlockMetaData{}, err
+		return BlockMetaData{}, err
 	}
 
 	return blockInfo, nil
 }
 
 // bruteforce comparison check
-func isDataIncludedInBlock(availBlock AvailBlock, base64cosmosData string) bool {
+func isDataIncludedInBlock(availBlock Block, base64cosmosData string) bool {
 	for _, data := range availBlock.Extrinsics {
 		if data.Data == base64cosmosData {
 			return true

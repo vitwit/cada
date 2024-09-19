@@ -33,7 +33,7 @@ type Relayer struct {
 	submittedBlocksCache map[int64]bool
 
 	localProvider *local.CosmosProvider
-	availDAClient avail.AvailDA
+	availDAClient avail.DA
 	clientCtx     client.Context
 
 	availChainID string
@@ -59,7 +59,7 @@ func NewRelayer(
 	httpClient := http_client.NewHTTPClientHandler()
 
 	// Avail-DA client
-	availDAClient := avail.NewAvailLightClient(cfg.LightClientURL, httpClient)
+	availDAClient := avail.NewLightClient(cfg.LightClientURL, httpClient)
 
 	return &Relayer{
 		logger: logger,
