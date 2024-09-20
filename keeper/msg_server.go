@@ -52,6 +52,7 @@ func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlo
 		UpdateVotingEndHeight(sdkCtx, store, lastVotingEndHeight, true)
 	}
 
+	// update status of the blob range
 	UpdateBlobStatus(sdkCtx, store, newStatus)
 
 	return &types.MsgUpdateBlobStatusResponse{}, nil

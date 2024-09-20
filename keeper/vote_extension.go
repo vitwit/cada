@@ -15,7 +15,6 @@ type VoteExtHandler struct {
 	Keeper *Keeper
 }
 
-// TODO: add required parameters like avail light client url, etc..
 func NewVoteExtHandler(
 	logger log.Logger,
 	keeper *Keeper,
@@ -57,7 +56,6 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 				Votes: Votes,
 			}
 
-			// TODO: use better marshaling instead of json (eg: proto marshaling)
 			votesBytes, err := json.Marshal(voteExt)
 			if err != nil {
 				return nil, fmt.Errorf("failed to marshal vote extension: %w", err)
@@ -83,7 +81,6 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 			Votes: Votes,
 		}
 
-		// TODO: use proto marshaling instead
 		votesBytes, err := json.Marshal(voteExt)
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal vote extension: %w", err)
@@ -99,7 +96,7 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 // This function is used to verify the correctness and validity of the vote extensions submitted during the voting process.
 func (h *VoteExtHandler) VerifyVoteExtensionHandler() sdk.VerifyVoteExtensionHandler {
 	return func(_ sdk.Context, _ *abci.RequestVerifyVoteExtension) (*abci.ResponseVerifyVoteExtension, error) {
-		// TODO: write proper validation for the votes
+		// TODO: add proper validation for the votes if any
 		return &abci.ResponseVerifyVoteExtension{Status: abci.ResponseVerifyVoteExtension_ACCEPT}, nil
 	}
 }

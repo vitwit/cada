@@ -19,27 +19,27 @@ var (
 	ProvenHeightKey = collections.NewPrefix(2)
 
 	// PendingBlocksToTimeouts maps pending blocks to their timeout
-	PendingBlocksToTimeouts = collections.NewPrefix(3)
+	// PendingBlocksToTimeouts = collections.NewPrefix(3)
 
 	// TimeoutsToPendingBlocks maps timeouts to a set of pending blocks
-	TimeoutsToPendingBlocks = collections.NewPrefix(4)
+	// TimeoutsToPendingBlocks = collections.NewPrefix(4)
 
 	// light client store key
-	ClientStoreKey = []byte("client_store/")
+	// ClientStoreKey = []byte("client_store/")
 
-	PendingBlobsKey = collections.NewPrefix(5)
+	PendingBlobsKey = collections.NewPrefix(3)
 
-	BlobStatusKey = collections.NewPrefix(6)
+	BlobStatusKey = collections.NewPrefix(4)
 
-	PrevHeightKey = collections.NewPrefix(7)
+	PrevHeightKey = collections.NewPrefix(5)
 
-	NextHeightKey = collections.NewPrefix(8)
+	NextHeightKey = collections.NewPrefix(6)
 
-	VotingEndHeightKey = collections.NewPrefix(9)
+	VotingEndHeightKey = collections.NewPrefix(7)
 
-	LastVotingEndHeightKey = collections.NewPrefix(10)
+	LastVotingEndHeightKey = collections.NewPrefix(8)
 
-	AvailHeightKey = collections.NewPrefix(11)
+	AvailHeightKey = collections.NewPrefix(9)
 )
 
 const (

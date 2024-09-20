@@ -10,7 +10,7 @@ import (
 func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, startHeight, endHeight uint64) bool {
 	store := ctx.KVStore(k.storeKey)
 
-	if !CanUpdateStatusToPending(store) { // TOodo: we should check for expiration too
+	if !CanUpdateStatusToPending(store) { // Todo: we should check for expiration too (what if the status was pending for too long)
 		return false
 	}
 

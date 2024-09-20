@@ -13,14 +13,6 @@ func (k *Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) error {
 		}
 	}
 
-	// Set proven height to genesis height, we do not init any pending block on a genesis init/restart
-	// if err := k.SetProvenHeight(ctx, ctx.HeaderInfo().Height); err != nil {
-	// 	return err
-	// }
-
-	k.relayer.NotifyProvenHeight(ctx.HeaderInfo().Height)
-
-	// TODO: client state
 	k.SetAvailGenesisState(ctx, data)
 
 	return nil
@@ -33,18 +25,14 @@ func (k *Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 		panic(err)
 	}
 
-	provenHeight, err := k.GetProvenHeight(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	if err != nil {
-		panic(err)
-	}
+	// provenHeight, err := k.GetProvenHeight(ctx)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	return &types.GenesisState{
-		Validators:   vals.Validators,
-		ProvenHeight: provenHeight,
+		Validators: vals.Validators,
+		// ProvenHeight: provenHeight,
 	}
 }
 
