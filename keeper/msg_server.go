@@ -32,26 +32,40 @@ func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlo
 	endHeight := s.k.GetEndHeightFromStore(sdkCtx)
 	status := GetStatusFromStore(store)
 
+	// Validate the block range
 	if req.BlocksRange.From != provenHeight+1 || req.BlocksRange.To != endHeight {
 		return nil, fmt.Errorf("invalid blocks range request: expected range [%d -> %d], got [%d -> %d]",
 			provenHeight+1, endHeight, req.BlocksRange.From, req.BlocksRange.To)
 	}
 
+	// Ensure that the blob is in the PendingState before updating
 	if status != PendingState {
 		return nil, errors.New("can't update the status if it is not pending")
 	}
 
 	newStatus := InVotingState
 	if !req.IsSuccess {
+		// Mark as failure if the request indicates failure
 		newStatus = FailureState
 	} else {
+		// If success, update the voting-related heights
 		currentHeight := sdkCtx.BlockHeight()
-		UpdateAvailHeight(sdkCtx, store, req.AvailHeight) // updates avail height at which the blocks got submitted to DA
+
+		// Update the avail height at which blocks were submitted to DA
+		UpdateAvailHeight(sdkCtx, store, req.AvailHeight)
+
+		// Retrieve the last voting end height
 		lastVotingEndHeight := s.k.GetVotingEndHeightFromStore(sdkCtx, false)
-		UpdateVotingEndHeight(sdkCtx, store, uint64(currentHeight)+s.k.relayer.AvailConfig.VoteInterval, false)
+
+		// Set the new voting end height, with the configured interval
+		newVotingEndHeight := uint64(currentHeight) + s.k.relayer.AvailConfig.VoteInterval
+		UpdateVotingEndHeight(sdkCtx, store, newVotingEndHeight, false)
+
+		// Update the previous voting end height to mark the end of the last round
 		UpdateVotingEndHeight(sdkCtx, store, lastVotingEndHeight, true)
 	}
 
+	// Finally, update the blob status in the store
 	UpdateBlobStatus(sdkCtx, store, newStatus)
 
 	return &types.MsgUpdateBlobStatusResponse{}, nil
