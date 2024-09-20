@@ -72,16 +72,43 @@
 #         run: make proto-check-breaking
 #         if: steps.get_diff.outputs.changed == 'true'
 
+# name: Protobuf
+# # Protobuf runs buf (https://buf.build/) lint and check-breakage
+# # This workflow runs on every pull request
+
+# on:
+#   pull_request:
+
+# concurrency:
+#   group: ci-${{ github.ref }}-protobuf
+#   cancel-in-progress: true
+
+# jobs:
+#   lint:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 5
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: lint
+#         run: make proto-lint
+
+#   breakage:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: check-breakage
+#         run: make proto-check-breaking
+
 name: Protobuf
 # Protobuf runs buf (https://buf.build/) lint and check-breakage
-# This workflow runs on every pull request
-
+# This workflow is only run when a .proto file has been changed
 on:
   pull_request:
+    paths:
+      - "proto/**"
 
-concurrency:
-  group: ci-${{ github.ref }}-protobuf
-  cancel-in-progress: true
+permissions:
+  contents: read
 
 jobs:
   lint:
@@ -89,12 +116,17 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
-      - name: lint
-        run: make proto-lint
+      - uses: bufbuild/buf-setup-action@v1.21.0
+      - uses: bufbuild/buf-lint-action@v1
+        with:
+          input: "proto"
 
-  breakage:
+  break-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: check-breakage
-        run: make proto-check-breaking
+      - uses: bufbuild/buf-setup-action@v1.21.0
+      - uses: bufbuild/buf-breaking-action@v1
+        with:
+          input: "proto"
+          against: "https://github.com/${{ github.repository }}.git#branch=${{ github.event.pull_request.base.ref }},ref=HEAD~1,subdir=proto"
