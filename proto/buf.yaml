@@ -1,11 +1,12 @@
 # This module represents buf.build/cosmos/cosmos-sdk
 version: v1
-name: buf.build/arka-labs/arka-network
+name: buf.build/vitwit/cada
 deps:
    # Latest release was in Dec 2021, https://buf.build/cosmos/cosmos-proto/commits/main
   - buf.build/cosmos/cosmos-proto:1935555c206d4afb9e94615dfd0fad31
   # Latest release was in Oct 2022, https://buf.build/cosmos/gogo-proto/commits/main
   - buf.build/cosmos/gogo-proto:34d970b699f84aa382f3c29773a60836
+  # - buf.build/cosmos/gogo-proto
   - buf.build/cosmos/cosmos-sdk:v0.50.0
   - buf.build/googleapis/googleapis
 breaking:
