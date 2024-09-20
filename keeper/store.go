@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+	"fmt"
 
 	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
@@ -16,7 +17,11 @@ const (
 	FailureState  uint32 = 3
 )
 
-func ParseStatus(status uint32) string {
+func ParseStatus(status uint32, startHeight, endHeight uint64) string {
+	if startHeight == 0 && endHeight == 0 {
+		return ""
+	}
+
 	switch status {
 	case ReadyState:
 		return "SUCCESS"
@@ -29,6 +34,14 @@ func ParseStatus(status uint32) string {
 	default:
 		return "UNKNOWN"
 	}
+}
+
+// ParseVotingEndHeight converts a given voting end height from uint64 to a string format.
+func ParseVotingEndHeight(height uint64) string {
+	if height == 0 {
+		return ""
+	}
+	return fmt.Sprintln(height)
 }
 
 // CanUpdateStatusToPending checks if the blob status can be updated to "pending".

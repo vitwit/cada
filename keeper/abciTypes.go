@@ -5,7 +5,7 @@ import abci "github.com/cometbft/cometbft/abci/types"
 // StakeWeightedVotes stores the stake-weighted votes from validators and the commit info
 // for a consensus round.
 type StakeWeightedVotes struct {
-	// A map where the key is the validator's address , and the value is the
+	// A map where the key is the range of pending blocks(e.g. "1 10"), and the value is the
 	// validator's voting power.
 	Votes map[string]int64
 

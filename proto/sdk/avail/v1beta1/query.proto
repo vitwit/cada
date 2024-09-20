@@ -1,10 +1,7 @@
 syntax = "proto3";
 package sdk.avail.v1beta1;
 
-import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "sdk/avail/v1beta1/validator.proto";
-import "google/protobuf/timestamp.proto";
 import "sdk/avail/v1beta1/tx.proto";
 
 option go_package =  "github.com/vitwit/avail-da-module/types";
@@ -29,7 +26,7 @@ message QuerySubmittedBlobStatusResponse {
 
   // voting_ends_at denotes the block height at which the last voting on the blob ended.
   // This provides information on when the last voting period for the blob concluded.
-  uint64 voting_ends_at = 4;
+  string voting_ends_at = 4;
 }
 
 // Query defines the gRPC querier service.

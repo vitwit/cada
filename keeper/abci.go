@@ -164,11 +164,6 @@ func (k *Keeper) IsValidBlockToPostTODA(height uint64) bool {
 	return true
 }
 
-// aggregateVotes aggregates the stake-weighted votes for a specific range of blocks
-// from the vote extensions provided in the `ExtendedCommitInfo`. It processes the
-// votes of validators and collects the total voting power for the range.
-// Iterates through the votes in the `ExtendedCommitInfo` and processes only those votes
-// where the validator voted for the block (`BlockIDFlagCommit`).
 // For each vote, it decodes the `VoteExtension`, which contains the vote information for
 // specific block ranges.
 // If the vote extension contains a vote for the pending range, it sums the voting power
