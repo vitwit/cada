@@ -1,7 +1,6 @@
 syntax = "proto3";
 package sdk.avail.v1beta1;
 
-import "cosmos_proto/cosmos.proto";
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 
