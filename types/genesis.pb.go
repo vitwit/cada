@@ -23,7 +23,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// GenesisState defines the auth module's genesis state.
+// GenesisState defines the avail da module's genesis state.
 type GenesisState struct {
 	Validators []Validator `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators"`
 	// the height of the last block that was proven to be posted to Avail.

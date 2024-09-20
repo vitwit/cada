@@ -22,7 +22,7 @@ func NewHandler() *Handler {
 	}
 }
 
-// Get method
+// Get sends an HTTP GET request to the specified URL and returns the response body as a byte slice.
 func (h *Handler) Get(url string) ([]byte, error) {
 	resp, err := h.client.Get(url)
 	if err != nil {
@@ -37,7 +37,8 @@ func (h *Handler) Get(url string) ([]byte, error) {
 	return body, nil
 }
 
-// Post method
+// Post sends an HTTP POST request to the specified URL with the provided JSON data
+// and returns the response body as a byte slice.
 func (h *Handler) Post(url string, jsonData []byte) ([]byte, error) {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {

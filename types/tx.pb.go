@@ -29,14 +29,18 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// status of submitblob
+// BlobStatus defines the statuses for a blob submission
 type BlobStatus int32
 
 const (
+	// Indicates that the blob status is unspecified or not set.
 	BLOB_STATUS_UNSPECIFIED BlobStatus = 0
-	BLOB_STATUS_FAILURE     BlobStatus = 1
-	BLOB_STATUS_SUCCESS     BlobStatus = 2
-	BLOB_STATUS_PENDING     BlobStatus = 3
+	// Indicates that the blob submission failed.
+	BLOB_STATUS_FAILURE BlobStatus = 1
+	// Indicates that the blob submission was successful.
+	BLOB_STATUS_SUCCESS BlobStatus = 2
+	// Indicates that the blob submission is still pending and has not yet been processed.
+	BLOB_STATUS_PENDING BlobStatus = 3
 )
 
 var BlobStatus_name = map[int32]string{
@@ -61,10 +65,12 @@ func (BlobStatus) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_7f88203cb33986bc, []int{0}
 }
 
-// blocks range from to to
+// Range defines the range of blocks for which the blob is being submitted.
 type Range struct {
+	// The starting block height in the range. Indicates the beginning of the block range.
 	From uint64 `protobuf:"varint,1,opt,name=from,proto3" json:"from,omitempty"`
-	To   uint64 `protobuf:"varint,2,opt,name=to,proto3" json:"to,omitempty"`
+	// The ending block height in the range. Indicates the end of the block range.
+	To uint64 `protobuf:"varint,2,opt,name=to,proto3" json:"to,omitempty"`
 }
 
 func (m *Range) Reset()         { *m = Range{} }
@@ -114,12 +120,16 @@ func (m *Range) GetTo() uint64 {
 	return 0
 }
 
-// message update blob state response
+// MsgUpdateBlobStatusRequest define a message to update the status of a previously submitted blob.
 type MsgUpdateBlobStatusRequest struct {
+	// Address of the validator updating the blob status.
 	ValidatorAddress string `protobuf:"bytes,1,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
-	BlocksRange      *Range `protobuf:"bytes,2,opt,name=blocks_range,json=blocksRange,proto3" json:"blocks_range,omitempty"`
-	AvailHeight      uint64 `protobuf:"varint,3,opt,name=avail_height,json=availHeight,proto3" json:"avail_height,omitempty"`
-	IsSuccess        bool   `protobuf:"varint,4,opt,name=is_success,json=isSuccess,proto3" json:"is_success,omitempty"`
+	// range of blocks for which the blob status is being updated.
+	BlocksRange *Range `protobuf:"bytes,2,opt,name=blocks_range,json=blocksRange,proto3" json:"blocks_range,omitempty"`
+	// The height at which the blob is stored in the Avail system. This indicates where the blob data is available.
+	AvailHeight uint64 `protobuf:"varint,3,opt,name=avail_height,json=availHeight,proto3" json:"avail_height,omitempty"`
+	// The status of the blob submission.
+	IsSuccess bool `protobuf:"varint,4,opt,name=is_success,json=isSuccess,proto3" json:"is_success,omitempty"`
 }
 
 func (m *MsgUpdateBlobStatusRequest) Reset()         { *m = MsgUpdateBlobStatusRequest{} }
@@ -183,7 +193,7 @@ func (m *MsgUpdateBlobStatusRequest) GetIsSuccess() bool {
 	return false
 }
 
-// message update blob state response
+// MsgUpdateBlobStatusResponse is the response type for the Msg/UpdateBlobStatus RPC method.
 type MsgUpdateBlobStatusResponse struct {
 }
 
@@ -275,7 +285,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// UpdateBlobStatus
+	// UpdateBlobStatus updates the status of a blob submission.
 	UpdateBlobStatus(ctx context.Context, in *MsgUpdateBlobStatusRequest, opts ...grpc.CallOption) (*MsgUpdateBlobStatusResponse, error)
 }
 
@@ -298,7 +308,7 @@ func (c *msgClient) UpdateBlobStatus(ctx context.Context, in *MsgUpdateBlobStatu
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// UpdateBlobStatus
+	// UpdateBlobStatus updates the status of a blob submission.
 	UpdateBlobStatus(context.Context, *MsgUpdateBlobStatusRequest) (*MsgUpdateBlobStatusResponse, error)
 }
 

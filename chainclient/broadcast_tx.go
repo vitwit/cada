@@ -15,6 +15,7 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
+// GetBinPath returns the path to the Avail SDK home directory within the user's home directory.
 func GetBinPath(daemon string) string {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -25,6 +26,8 @@ func GetBinPath(daemon string) string {
 	return availdHomePath
 }
 
+// ExecuteTX handles the creation and submission of a transaction to update blob status on the chain.
+// It uses keyring and RPC client configurations to interact with the network.
 func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, config types.AvailConfiguration, nodeDir string) error {
 	// Define keyring and RPC client configuration
 	// homePath := "/home/vitwit/.simapp"

@@ -12,13 +12,17 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// RPCClient defines a set of methods for interacting with a blockchain node via RPC.
+// It includes methods for retrieving block information, querying node status, and
+// performing ABCI queries.
 type RPCClient interface {
 	Block(ctx context.Context, height *int64) (*coretypes.ResultBlock, error)
 	Status(ctx context.Context) (*coretypes.ResultStatus, error)
 	ABCIQuery(ctx context.Context, path string, data bytes.HexBytes) (*coretypes.ResultABCIQuery, error)
 }
 
-// GetBlockAtHeight queries the block at a given height
+// GetBlockAtHeight retrieves the block information at a specific height from the chain
+// using the RPC client.
 func (cc *CosmosProvider) GetBlockAtHeight(ctx context.Context, height int64) (*coretypes.ResultBlock, error) {
 	block, err := cc.RPCClient.Block(ctx, &height)
 	if err != nil {

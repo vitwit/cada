@@ -6,40 +6,58 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/vitwit/avail-da-module/types";
 
-// Msg service for the zk-giv service
+// Msg defines the Msg service for avail da module
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  // UpdateBlobStatus
+  // UpdateBlobStatus updates the status of a blob submission.
   rpc UpdateBlobStatus(MsgUpdateBlobStatusRequest) returns (MsgUpdateBlobStatusResponse);
 }
 
-// blocks range from to to
+// Range defines the range of blocks for which the blob is being submitted.
 message Range {
+  // The starting block height in the range. Indicates the beginning of the block range.
   uint64 from = 1;
+
+  // The ending block height in the range. Indicates the end of the block range.
   uint64 to = 2;
 }
 
-// message update blob state response
+// MsgUpdateBlobStatusRequest define a message to update the status of a previously submitted blob.
 message MsgUpdateBlobStatusRequest {
   option (cosmos.msg.v1.signer) = "validator_address";
 
+  // Address of the validator updating the blob status.
   string validator_address = 1;
+
+  // range of blocks for which the blob status is being updated.
   Range blocks_range = 2;
+
+  // The height at which the blob is stored in the Avail system. This indicates where the blob data is available.
   uint64 avail_height = 3; 
+
+  // The status of the blob submission.
   bool is_success = 4;
 }
 
-// status of submitblob
+// BlobStatus defines the statuses for a blob submission
 enum BlobStatus {
   option (gogoproto.goproto_enum_prefix) = false;
+
+  // Indicates that the blob status is unspecified or not set.
   BLOB_STATUS_UNSPECIFIED = 0;
+
+  // Indicates that the blob submission failed.
   BLOB_STATUS_FAILURE = 1;
+
+  // Indicates that the blob submission was successful.
   BLOB_STATUS_SUCCESS = 2;
+
+  // Indicates that the blob submission is still pending and has not yet been processed.
   BLOB_STATUS_PENDING = 3;
   
 }
 
-// message update blob state response
+// MsgUpdateBlobStatusResponse is the response type for the Msg/UpdateBlobStatus RPC method.
 message MsgUpdateBlobStatusResponse {
 }

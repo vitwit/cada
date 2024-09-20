@@ -56,6 +56,10 @@ const (
 	QuerierRoute = ModuleName
 )
 
+// PendingBlobsStoreKey generates a store key for pending blobs based on the given block range.
+// The key is constructed by appending the byte-encoded 'From' and 'To' values from the `blocksRange`
+// to a base key (`PendingBlobsKey`). This unique key is used to store and retrieve pending blob data
+// in a key-value store.
 func PendingBlobsStoreKey(blocksRange types.Range) []byte {
 	fromBytes := make([]byte, 8)
 	binary.BigEndian.PutUint64(fromBytes, blocksRange.From)

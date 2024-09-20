@@ -7,6 +7,7 @@ import (
 	"github.com/vitwit/avail-da-module/relayer/avail"
 )
 
+// SubmitDataToAvailClient submits data to the Avail client using an HTTP POST request.
 func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64) (avail.BlockMetaData, error) {
 	blockInfo, err := r.availDAClient.Submit(data)
 	if err != nil {
@@ -43,7 +44,7 @@ func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to, availHeight uint64)
 	return r.availDAClient.IsDataAvailable(cosmosBlocksData, int(availHeight))
 }
 
-// Define the struct that matches the JSON structure
+// GetBlock represents the data structure for a block with its associated transactions.
 type GetBlock struct {
 	BlockNumber      int      `json:"block_number"`
 	DataTransactions []string `json:"data_transactions"`
