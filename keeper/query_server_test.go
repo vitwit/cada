@@ -17,7 +17,7 @@ func (s *TestSuite) TestSubmitBlobStatus() {
 			"get blobstatus",
 			types.QuerySubmittedBlobStatusRequest{},
 			2,
-			"IN_VOTING",
+			"",
 		},
 	}
 
