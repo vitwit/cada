@@ -17,8 +17,8 @@ const (
 	FailureState  uint32 = 3
 )
 
-func ParseStatus(status uint32, start, end uint64) string {
-	if start == 0 && end == 0 {
+func ParseStatus(status uint32, startHeight, endHeight uint64) string {
+	if startHeight == 0 && endHeight == 0 {
 		return ""
 	}
 
