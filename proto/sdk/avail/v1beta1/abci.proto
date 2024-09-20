@@ -5,15 +5,20 @@ import "gogoproto/gogo.proto";
 
 option go_package =  "github.com/vitwit/avail-da-module/types";
 
+// InjectedData represents a message containing data that has been injected.
 message InjectedData {
+
+    // PendingBlocks contains information about blocks that are pending.
     PendingBlocks pending_blocks = 1 [ (gogoproto.nullable) = false ];
 }
 
+// The PendingBlocks message includes a list of block heights that are currently pending.
 message PendingBlocks {
     repeated int64 block_heights = 1;
 }
 
-message UnprovenBlock {
+// UnprovenBlock represents a message containing data about a block that has not yet been proven.
+message UnprovenBlock {   // TODO: depreacate this not using anymore
     int64 height = 1;
     bytes block = 2;
 }

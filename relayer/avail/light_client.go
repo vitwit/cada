@@ -58,6 +58,7 @@ func (lc *LightClient) GetBlock(availBlockHeight int) (Block, error) {
 	return block, nil
 }
 
+// Submit sends a block of data to the light client for processing.
 func (lc *LightClient) Submit(data []byte) (BlockMetaData, error) {
 	var blockInfo BlockMetaData
 

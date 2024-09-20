@@ -23,7 +23,9 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// InjectedData represents a message containing data that has been injected.
 type InjectedData struct {
+	// PendingBlocks contains information about blocks that are pending.
 	PendingBlocks PendingBlocks `protobuf:"bytes,1,opt,name=pending_blocks,json=pendingBlocks,proto3" json:"pending_blocks"`
 }
 
@@ -67,6 +69,7 @@ func (m *InjectedData) GetPendingBlocks() PendingBlocks {
 	return PendingBlocks{}
 }
 
+// The PendingBlocks message includes a list of block heights that are currently pending.
 type PendingBlocks struct {
 	BlockHeights []int64 `protobuf:"varint,1,rep,packed,name=block_heights,json=blockHeights,proto3" json:"block_heights,omitempty"`
 }
@@ -111,6 +114,7 @@ func (m *PendingBlocks) GetBlockHeights() []int64 {
 	return nil
 }
 
+// UnprovenBlock represents a message containing data about a block that has not yet been proven.
 type UnprovenBlock struct {
 	Height int64  `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
 	Block  []byte `protobuf:"bytes,2,opt,name=block,proto3" json:"block,omitempty"`

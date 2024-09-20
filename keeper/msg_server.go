@@ -20,6 +20,9 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
+// UpdateBlobStatus updates the status of the blob.
+// This method verifies the blocks range and updates the status to either Voting or Failure,
+// depending on the request's success flag.
 func (s msgServer) UpdateBlobStatus(ctx context.Context, req *types.MsgUpdateBlobStatusRequest) (*types.MsgUpdateBlobStatusResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
