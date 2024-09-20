@@ -46,8 +46,10 @@ proto-gen:
 proto-format:
 	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
 
+## TODO: fix proto-lint using protoImage
+## @$(protoImage) buf lint --error-format=json
 proto-lint:
-	@$(protoImage) buf lint
+	buf lint proto/
 
 .PHONY: proto-all proto-gen proto-format proto-lint
 
