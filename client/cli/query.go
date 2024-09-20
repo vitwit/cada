@@ -27,8 +27,8 @@ func GetQueryCmd() *cobra.Command {
 func GetLatestBlobStatusInfo() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-da-status",
-		Short: "Show what range of blocks are being submitted and their status",
-		Long: `Show what range of blocks are being submitted and their status,
+		Short: "Shows what range of blocks are being submitted and their status",
+		Long: `Shows what range of blocks are being submitted and their status,
 		`,
 		Example: "simd query cada get-da-status",
 		Args:    cobra.ExactArgs(0),
