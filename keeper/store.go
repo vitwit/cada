@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+	"fmt"
 
 	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
@@ -16,7 +17,11 @@ const (
 	FailureState  uint32 = 3
 )
 
-func ParseStatus(status uint32) string {
+func ParseStatus(status uint32, start, end uint64) string {
+	if start == 0 && end == 0 {
+		return ""
+	}
+
 	switch status {
 	case ReadyState:
 		return "SUCCESS"
@@ -29,6 +34,13 @@ func ParseStatus(status uint32) string {
 	default:
 		return "UNKNOWN"
 	}
+}
+
+func ParseVotingEndHeight(height uint64) string {
+	if height == 0 {
+		return ""
+	}
+	return fmt.Sprintln(height)
 }
 
 func CanUpdateStatusToPending(store storetypes2.KVStore) bool {

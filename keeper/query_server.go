@@ -25,14 +25,15 @@ func (qs queryServer) SubmittedBlobStatus(ctx context.Context, _ *types.QuerySub
 	startHeight := qs.k.GetStartHeightFromStore(sdkCtx)
 	endHeight := qs.k.GetEndHeightFromStore(sdkCtx)
 	status := GetStatusFromStore(store)
-	blobStatus := ParseStatus(status)
+	blobStatus := ParseStatus(status, startHeight, endHeight)
 	provenHeight := qs.k.GetProvenHeightFromStore(sdkCtx)
 	votingEndHeight := qs.k.GetVotingEndHeightFromStore(sdkCtx, false)
+	votingEndsAt := ParseVotingEndHeight(votingEndHeight)
 
 	return &types.QuerySubmittedBlobStatusResponse{
 		Range:        &types.Range{From: startHeight, To: endHeight},
 		Status:       blobStatus,
 		ProvenHeight: provenHeight,
-		VotingEndsAt: votingEndHeight,
+		VotingEndsAt: votingEndsAt,
 	}, nil
 }
