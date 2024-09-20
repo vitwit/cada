@@ -10,28 +10,28 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
-func (r *Relayer) ProposePostNextBlocks(ctx sdk.Context, provenHeight int64) []int64 {
-	height := ctx.BlockHeight()
+// func (r *Relayer) ProposePostNextBlocks(ctx sdk.Context, provenHeight int64) []int64 {
+// 	height := ctx.BlockHeight()
 
-	if height <= 1 {
-		return nil
-	}
+// 	if height <= 1 {
+// 		return nil
+// 	}
 
-	// only publish new blocks on interval
-	if (height-1)%int64(r.AvailConfig.PublishBlobInterval) != 0 {
-		return nil
-	}
+// 	// only publish new blocks on interval
+// 	if (height-1)%int64(r.AvailConfig.PublishBlobInterval) != 0 {
+// 		return nil
+// 	}
 
-	var blocks []int64
-	for block := height - int64(r.AvailConfig.PublishBlobInterval); block < height; block++ {
-		// this could be false after a genesis restart
-		if block > provenHeight {
-			blocks = append(blocks, block)
-		}
-	}
+// 	var blocks []int64
+// 	for block := height - int64(r.AvailConfig.PublishBlobInterval); block < height; block++ {
+// 		// this could be false after a genesis restart
+// 		if block > provenHeight {
+// 			blocks = append(blocks, block)
+// 		}
+// 	}
 
-	return blocks
-}
+// 	return blocks
+// }
 
 // PostBlocks is called in the PreBlocker. The proposer will publish the blocks at this point
 // once their block has been accepted. The method launches the posting process in a separate

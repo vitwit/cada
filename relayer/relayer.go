@@ -11,10 +11,10 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
-const (
-	DefaultMaxFlushSize = int(20)
-	MaxMaxFlushSize     = int(100)
-)
+// const (
+// 	DefaultMaxFlushSize = int(20)
+// 	MaxMaxFlushSize     = int(100)
+// )
 
 // Relayer is responsible for posting new blocks to Avail
 type Relayer struct {

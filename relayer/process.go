@@ -20,21 +20,20 @@ func (r *Relayer) Start() error {
 		case height := <-r.provenHeights:
 			r.updateHeight(height)
 		case <-timer.C:
-			// TODO: client update
 		}
 	}
 }
 
 // NotifyCommitHeight is called by the app to notify the relayer of the latest commit height
-func (r *Relayer) NotifyCommitHeight(height int64) {
-	r.commitHeights <- height
-}
+// func (r *Relayer) NotifyCommitHeight(height int64) {
+// 	r.commitHeights <- height
+// }
 
 // NotifyProvenHeight is called by the app to notify the relayer of the latest proven height
 // i.e. the height of the highest incremental block that was proven to be posted to Avail.
-func (r *Relayer) NotifyProvenHeight(height int64) {
-	r.provenHeights <- height
-}
+// func (r *Relayer) NotifyProvenHeight(height int64) {
+// 	r.provenHeights <- height
+// }
 
 // updateHeight is called when the provenHeight has changed
 func (r *Relayer) updateHeight(height int64) {

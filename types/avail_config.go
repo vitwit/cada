@@ -89,7 +89,7 @@ var DefaultAvailConfig = AvailConfiguration{
 	VoteInterval:        5,
 	LightClientURL:      "http://127.0.0.1:8000",
 	ValidatorKey:        "alice",
-	// CosmosNodeDir:          ".availsdk",
+	// CosmosNodeDir:          ".simapp",
 }
 
 func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {

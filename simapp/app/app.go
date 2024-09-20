@@ -1018,7 +1018,7 @@ func (app *ChainApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.Respon
 	}
 
 	//app.Availblobrelayer.NotifyCommitHeight(req.Height)
-	app.Availblobrelayer.NotifyCommitHeight(req.Height)
+	// app.Availblobrelayer.NotifyCommitHeight(req.Height)
 
 	return res, nil
 }
@@ -1224,9 +1224,9 @@ func (app *ChainApp) RegisterTendermintService(clientCtx client.Context) {
 func (app *ChainApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
 	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
 
-	app.Availblobrelayer.SetClientContext(clientCtx)
+	// app.Availblobrelayer.SetClientContext(clientCtx)
 
-	go app.Availblobrelayer.Start()
+	// go app.Availblobrelayer.Start()
 }
 
 // GetMaccPerms returns a copy of the module account permissions
