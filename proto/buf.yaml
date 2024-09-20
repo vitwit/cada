@@ -28,4 +28,3 @@ lint:
   ignore:
     - tendermint
   allow_comment_ignores: true
-  
