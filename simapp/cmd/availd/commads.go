@@ -24,6 +24,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/debug"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/pruning"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/client/snapshot"
@@ -40,6 +41,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
+	availblobcli "github.com/vitwit/avail-da-module/client/cli"
 	availtypes "github.com/vitwit/avail-da-module/types"
 )
 
@@ -115,12 +117,16 @@ func initRootCmd(
 
 	AddCommands(rootCmd, app.DefaultNodeHome, newApp, appExport, addModuleInitFlags)
 
+	keysCmd := keys.Commands()
+	keysCmd.AddCommand(availblobcli.NewKeysCmd())
+
 	// add keybase, RPC, query, genesis, and tx child commands
 	rootCmd.AddCommand(
 		server.StatusCommand(),
 		genesisCommand(txConfig, basicManager),
 		queryCommand(),
 		txCommand(),
+		keysCmd,
 		resetCommand(),
 	)
 }
