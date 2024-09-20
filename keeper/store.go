@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
-	"fmt"
+	"strconv"
 
 	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
@@ -41,7 +41,7 @@ func ParseVotingEndHeight(height uint64) string {
 	if height == 0 {
 		return ""
 	}
-	return fmt.Sprintln(height)
+	return strconv.FormatUint(height, 10)
 }
 
 // CanUpdateStatusToPending checks if the blob status can be updated to "pending".
