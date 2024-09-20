@@ -89,8 +89,13 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
-      - name: lint
-        run: make proto-lint
+      - uses: bufbuild/buf-setup-action@v1.21.0
+      - uses: bufbuild/buf-lint-action@v1
+        with:
+          input: "proto"
+
+      # - name: lint
+      #   run: make proto-lint
 
   breakage:
     runs-on: ubuntu-latest
