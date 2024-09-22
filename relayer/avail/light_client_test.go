@@ -22,7 +22,7 @@ func TestLightClient_IsDataAvailable(t *testing.T) {
 	expectedBlockHeight := 100
 	expectedBase64Data := base64.StdEncoding.EncodeToString([]byte("cosmos-block-data"))
 
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		block := avail.Block{
 			Block: 100,
 			Extrinsics: []avail.Extrinsics{
@@ -47,7 +47,7 @@ func TestLightClient_GetBlock(t *testing.T) {
 		{Data: base64.StdEncoding.EncodeToString([]byte("cosmos-block-data"))},
 	}
 
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		block := avail.Block{
 			Block:      int64(expectedBlockHeight),
 			Extrinsics: expectedExtrinsics,
@@ -73,7 +73,7 @@ func TestLightClient_Submit(t *testing.T) {
 		Index:       1,
 	}
 
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(expectedBlockMetaData)
 	}))
