@@ -11,7 +11,7 @@ import (
 )
 
 func TestHTTPClientHandler_Get(t *testing.T) {
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		fmt.Fprintln(w, "Hello, world")
 	}))
 	defer mockServer.Close()
