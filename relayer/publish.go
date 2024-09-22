@@ -49,21 +49,21 @@ func (r *Relayer) GetBlocksDataFromLocal(ctx sdk.Context, blocks []int64) []byte
 	var bb []byte
 
 	for _, height := range blocks {
-		res, err := r.localProvider.GetBlockAtHeight(ctx, height)
+		res, err := r.LocalProvider.GetBlockAtHeight(ctx, height)
 		if err != nil {
-			r.logger.Error("Error getting block", "height:", height, "error", err)
+			r.Logger.Error("Error getting block", "height:", height, "error", err)
 			return []byte{}
 		}
 
 		blockProto, err := res.Block.ToProto()
 		if err != nil {
-			r.logger.Error("Error protoing block", "error", err)
+			r.Logger.Error("Error protoing block", "error", err)
 			return []byte{}
 		}
 
 		blockBz, err := blockProto.Marshal()
 		if err != nil {
-			r.logger.Error("Error marshaling block", "error", err)
+			r.Logger.Error("Error marshaling block", "error", err)
 			return []byte{}
 		}
 
@@ -85,7 +85,7 @@ func (r *Relayer) postBlocks(ctx sdk.Context, blocks []int64, cdc codec.BinaryCo
 
 	blockInfo, err := r.SubmitDataToAvailClient(bb, blocks)
 	if err != nil {
-		r.logger.Error("Error while submitting block(s) to Avail DA",
+		r.Logger.Error("Error while submitting block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
 			"appID", strconv.Itoa(r.AvailConfig.AppID), err,
