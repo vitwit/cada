@@ -27,11 +27,9 @@ for more details about spawn you can refer to this doc https://github.com/rollch
 
 ### app.go wiring
 
-In your main application file, typically named `app.go`  incorporate the following to wire up the avail-da module
+In your application's simapp folder, integrate the following imports into the app.go file:
 
 1. Imports
-
-Within the imported packages, add the `avail-da-module` dependencies.
 
 ```sh
 
@@ -39,240 +37,251 @@ import (
 
     // ......
 
-   "github.com/vitwit/avail-da-module"
-   availblobkeeper "github.com/vitwit/avail-da-module/keeper"
-   availblobmodule "github.com/vitwit/avail-da-module/module"
-   availblobrelayer "github.com/vitwit/avail-da-module/relayer" 
+	cadakeeper "github.com/vitwit/avail-da-module/keeper"
+	cadamodule "github.com/vitwit/avail-da-module/module"
+	cadarelayer "github.com/vitwit/avail-da-module/relayer"
+	"github.com/vitwit/avail-da-module/relayer/avail"
+	httpclient "github.com/vitwit/avail-da-module/relayer/http"
+	cadatypes "github.com/vitwit/avail-da-module/types"
 )
 
 ```
 
-2.Configuration constants.
+2. Constants configuration
 
-After the imports, declare the constant variables required by `avail-da-module`.
+After importing the necessary packages for the cada in your app.go file, the next step is to declare any constant variables that the module will use. These constants are essential for configuring and integrating the cada module with your application.
 
 ```sh
 const (
-	// TODO: Change me
-	AvailAppID = 1
-
-	// publish blocks to avail every n rollchain blocks.
-	publishToAvailBlockInterval = 5 // smaller size == faster testing
+	appName      = "cada-sdk"
+	NodeDir      = ".cada"
 )
 ```
 
-3. Keeper and Relyer declaration
+3. Keeper and Relayer declaration
 
-Inside of the ChainApp struct, the struct which satisfies the cosmos-sdk runtime.AppI interface, add the required avail-da module runtime fields.
+Here's a step-by-step guide to integrating the cada module keeper and relayer into your Cosmos SDK application
+
+Inside of the ChainApp struct, add the required cada module runtime fields.
 
 ```sh
+type SimApp struct {
+    // ...
 
-type ChainApp struct {
-	// ...
+	CadaKeeper  *cadakeeper.Keeper
+	Cadarelayer *cadarelayer.Relayer
+	//
 
-	AvailBlobKeeper  *availblobkeeper.Keeper
-	Availblobrelayer *availblobrelayer.Relayer
-	// ....
 }
 ```
-4. Initialize the `avail-da-module` Keeper and Relayer
 
-Within the `NewChainApp` method, the constructor for the app, initialize the avail-da module components.
+4. Initialize the `Cada` Keeper and Relayer
 
-```sh
-func NewChainApp(
-    // ...
-) *ChainApp {
+Within the `NewSimApp` method, the constructor for the app, initialize the cada module components.
+
+```go
+    func NewSimApp(
+	//...
+    ) *SimApp {
+
         // ...
 
+         // pre-existing code: remove optimistic execution in baseapp options
+        baseAppOptions = append(baseAppOptions, voteExtOp)
+
         // NOTE: pre-existing code, add parameter.
-        keys := storetypes.NewKVStoreKeys(
+            keys := storetypes.NewKVStoreKeys(
             // ...
 
-            // Register avail-da module Store
-            availblob1.StoreKey,
+            // Register cada module Store
+            cadatypes.StoreKey,
         )
 
-        app.AvailBlobKeeper = availblobkeeper.NewKeeper(
-            appCodec,
-            appOpts,
-            runtime.NewKVStoreService(keys[availblob1.StoreKey]),
-            app.UpgradeKeeper,
-            keys[availblob1.StoreKey],
-            publishToAvailBlockInterval,
-            AvailAppID,
-        )
+    httpClient := httpclient.NewHandler()
 
-        app.Availblobrelayer, err = availblobrelayer.NewRelayer(
+    // Avail-DA client
+        cfg := cadatypes.AvailConfigFromAppOpts(appOpts)
+        availDAClient := avail.NewLightClient(cfg.LightClientURL, httpClient)
+
+        app.Cadarelayer, err = cadarelayer.NewRelayer(
             logger,
             appCodec,
-            appOpts,
-            homePath,
+            cfg,
+            NodeDir,
+            availDAClient,
         )
         if err != nil {
             panic(err)
         }
 
-        // Connect relayer to keeper. Must be done after relayer is created.
-        app.AvailBlobKeeper.SetRelayer(app.Availblobrelayer)
-
-        // Rollchains avail-da-module proposal handling
-        availBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(app.AvailBlobKeeper,
-            AppSpecificPrepareProposalHandler(), // i.e. baseapp.NoOpPrepareProposal()
-            AppSpecificProcessProposalHandler(), // i.e. baseapp.NoOpProcessProposal()
-        )
-        bApp.SetPrepareProposal(availBlobProposalHandler.PrepareProposal)
-        bApp.SetProcessProposal(availBlobProposalHandler.ProcessProposal)
-
-        // ...
-
-        // NOTE: pre-existing code, add parameter.
-        app.ModuleManager = module.NewManager(
-            // ...
-
-        availblobmodule.NewAppModule(appCodec, app.AvailBlobKeeper),
+        app.CadaKeeper = cadakeeper.NewKeeper(
+            appCodec,
+            runtime.NewKVStoreService(keys[cadatypes.StoreKey]),
+            app.UpgradeKeeper,
+            keys[cadatypes.StoreKey],
+            appOpts,
+            logger,
+            app.Cadarelayer,
         )
 
-        // NOTE: pre-existing code, add parameter.
-        app.ModuleManager.SetOrderBeginBlockers(
-            // ...
+        // must be done after relayer is created
+        app.CadaKeeper.SetRelayer(app.Cadarelayer)
 
-            // avail-da module begin blocker can be last
-            availblob1.ModuleName,
+        //...
+
+```
+
+5.  Integrate Cada module\'s vote extensions and abci methods
+
+    ```go
+        voteExtensionHandler := cadakeeper.NewVoteExtHandler(
+            logger,
+            app.CadaKeeper,
         )
 
-        // NOTE: pre-existing code, add parameter.
-        app.ModuleManager.SetOrderEndBlockers(
-            // ...
-
-            // avail-da module end blocker can be last
-            availblob1.ModuleName,
+        dph := baseapp.NewDefaultProposalHandler(bApp.Mempool(), bApp)
+        cadaProposalHandler := cadakeeper.NewProofOfBlobProposalHandler(
+            app.CadaKeeper,
+            dph.PrepareProposalHandler(),
+            dph.ProcessProposalHandler(),
+            *voteExtensionHandler,
         )
+        bApp.SetPrepareProposal(cadaProposalHandler.PrepareProposal)
+        bApp.SetProcessProposal(cadaProposalHandler.ProcessProposal)
+        bApp.SetExtendVoteHandler(voteExtensionHandler.ExtendVoteHandler())
+        bApp.SetVerifyVoteExtensionHandler(voteExtensionHandler.VerifyVoteExtensionHandler())
+        
+    ```
 
-        // NOTE: pre-existing code, add parameter.
-        genesisModuleOrder := []string{
-            // ...
+    6. Module manager
 
-            // avail-da genesis module order can be last
-        availblob1.ModuleName,
+    ```go
+
+            // pre existing comments
+
+            /**** Module Options ****/
+
+            // ......
+
+            // NOTE: pre-existing code, add parameter.
+            app.ModuleManager = module.NewManager(
+                // ...
+
+                cadamodule.NewAppModule(appCodec, app.CadaKeeper),
+            )
+
+            // NOTE: pre-existing code, add parameter.
+            app.ModuleManager.SetOrderBeginBlockers(
+                // ...
+
+                // cada begin blocker can be last
+                cadatypes.ModuleName,
+            )
+
+            // NOTE: pre-existing code, add parameter.
+            app.ModuleManager.SetOrderEndBlockers(
+                // ...
+
+                // cada end blocker can be last
+                cadatypes.ModuleName,
+            )
+
+                // NOTE: pre-existing code, add parameter.
+            genesisModuleOrder := []string{
+                // ...
+
+                // cada genesis module order can be last
+                cadatypes.ModuleName,
+            }
+
         }
 
+    )
+    ```
+
+6. Integrate `cada` PreBocker
+
+```go
+
+    // PreBlocker application updates every pre block
+    func (app *SimApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+        err := app.CadaKeeper.PreBlocker(ctx, req)
+        if err != nil {
+            return nil, err
+        }
+        return app.ModuleManager.PreBlock(ctx)
     }
-)
-```
-
-5. Integrate Relayer into FinalizeBlock
-
-The `avail-da-module` relayer needs to be notified when the rollchain blocks are committed so that it is aware of the latest height of the chain. In `FinalizeBlock`, rather than returnig app.BaseApp.FinalizeBlock(req), add error handling to that call and notify the relayer afterward.
-
-```sh
-func (app *ChainApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFinalizeBlock, error) {
-    // ...
-
-	res, err := app.BaseApp.FinalizeBlock(req)
-	if err != nil {
-		return res, err
-	}
-
-	app.Availblobrelayer.NotifyCommitHeight(req.Height)
-
-	return res, nil
-}
-```
-
-6. Integrate `avail-da-module` PreBocker
-
-The `avail-da-module` PreBlocker must be called in the app's PreBlocker.
-
-```sh
-func (app *ChainApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
-	err := app.AvailBlobKeeper.PreBlocker(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return app.ModuleManager.PreBlock(ctx)
-}
-```
-
-7. Integrate relayer startup
-
-The relayer needs to query blocks using the client context in order to package them and publish to Avail Light Client. The relayer also needs to be started with some initial values that must be queried from the app after the app has started. Add the following in RegisterNodeService.
-
-```sh
-
-func (app *ChainApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
-	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
-    app.Availblobrelayer.SetClientContext(clientCtx)
-
-	go app.Availblobrelayer.Start()
-}
 
 ```
 
 ### Commands.go wiring
 
-In your application commands file, incorporate the following to wire up the avail-da module CLI commands.
+In your simapp application commands file, incorporate the following to wire up the cada module CLI commands.
 
 1. Imports
 
-Within the imported packages, add the avail-da module
+Within the imported packages, add the cada module
 
-```sh
+```go
 import (
     // ...
 	"github.com/vitwit/avail-da-module/simapp/app"
-    availblobcli "github.com/vitwit/avail-da-module/client/cli"
-	"github.com/vitwit/avail-da-module/relayer"
+    cadacli "github.com/vitwit/avail-da-module/client/cli"
+	cadatypes "github.com/vitwit/avail-da-module/types"
 )
 ```
 
 2. Init App Config
 
-
-```sh
+````go
 func initAppConfig() (string, interface{}) {
 
 	type CustomAppConfig struct {
 		serverconfig.Config
 
-		Avail *relayer.AvailConfig `mapstructure:"avail"`
+		Cada *cadatypes.AvailConfiguration `mapstructure:"avail"`
 	}
 
     // ...
 
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
-		Avail:  &relayer.DefaultAvailConfig,
+		Avail:  &cadatypes.DefaultAvailConfig,
 	}
 
-	customAppTemplate := serverconfig.DefaultConfigTemplate + relayer.DefaultConfigTemplate 
+	customAppTemplate := serverconfig.DefaultConfigTemplate + cadatypes.DefaultConfigTemplate
 
 	return customAppTemplate, customAppConfig
 }
 ```
 
-3.Init Root Command
+3. Init Root Command
 
-```sh
+```go
 
-func initRootCmd(
-    // ...
-) {
-	// ...
+    func initRootCmd(
+        rootCmd *cobra.Command,
+        txConfig client.TxConfig,
+        _ codectypes.InterfaceRegistry,
+        _ codec.Codec,
+        basicManager module.BasicManager,
+    ) {
+        // ......
 
-	keysCmd := keys.Commands()
-	keysCmd.AddCommand(availblobcli.NewKeysCmd())
 
+        AddCommands(rootCmd, app.DefaultNodeHome, newApp, appExport, addModuleInitFlags)
 
-    // Existing code, only modifying one parameter.
-	rootCmd.AddCommand(
-		server.StatusCommand(),
-		genesisCommand(txConfig, basicManager),
-		queryCommand(),
-		txCommand(),
-		keysCmd, // replace keys.Commands() here with this
-	)
-}
+        keysCmd := keys.Commands()
+        keysCmd.AddCommand(cadacli.NewKeysCmd())
 
+        // add keybase, RPC, query, genesis, and tx child commands
+        rootCmd.AddCommand(
+            server.StatusCommand(),
+            genesisCommand(txConfig, basicManager),
+            queryCommand(),
+            txCommand(),
+            keysCmd,
+            resetCommand(),
+        )
+    }
 ```
-
