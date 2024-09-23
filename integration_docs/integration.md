@@ -26,7 +26,7 @@ import (
 
 2. Constants configuration
 
-After importing the necessary packages for the CADA in your app.go file, the next step is to declare any constant variables that the module will use. These constants are essential for configuring and integrating the CADA module with your application.
+After importing the necessary packages for the cada in your app.go file, the next step is to declare any constant variables that the module will use. These constants are essential for configuring and integrating the cada module with your application.
 
 ```sh
 const (
