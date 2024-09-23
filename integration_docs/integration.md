@@ -2,12 +2,11 @@
 
 Follow these steps to integrate the avail-da module into your Cosmos SDK-based application.
 
-
-### app.go wiring 
+### app.go wiring
 
 In your application's simapp folder, integrate the following imports into the app.go file:
 
-1. Imports 
+1. Imports
 
 ```sh
 
@@ -57,10 +56,10 @@ type SimApp struct {
 
 Within the `NewSimApp` method, the constructor for the app, initialize the avail-da module components.
 
-```sh
+```go
     func NewSimApp(
-	//
-) *SimApp {
+	//...
+    ) *SimApp {
 
         // ...
 
@@ -108,10 +107,9 @@ Within the `NewSimApp` method, the constructor for the app, initialize the avail
 
 ```
 
-5. Integrate Cada module\'s vote extensions and abci methods
+5.  Integrate Cada module\'s vote extensions and abci methods
 
-    ```sh
-
+    ```go
         voteExtensionHandler := availblobkeeper.NewVoteExtHandler(
             logger,
             app.AvailBlobKeeper,
@@ -128,67 +126,71 @@ Within the `NewSimApp` method, the constructor for the app, initialize the avail
         bApp.SetProcessProposal(availBlobProposalHandler.ProcessProposal)
         bApp.SetExtendVoteHandler(voteExtensionHandler.ExtendVoteHandler())
         bApp.SetVerifyVoteExtensionHandler(voteExtensionHandler.VerifyVoteExtensionHandler())
+        
     ```
+
     6. Module manager
 
     ```go
 
-        // pre existing comments
+            // pre existing comments
 
-        /**** Module Options ****/
+            /**** Module Options ****/
 
-        // ......
-
-        // NOTE: pre-existing code, add parameter.
-        app.ModuleManager = module.NewManager(
-            // ...
-
-            availblobmodule.NewAppModule(appCodec, app.AvailBlobKeeper),
-        )
-
-        // NOTE: pre-existing code, add parameter.
-        app.ModuleManager.SetOrderBeginBlockers(
-            // ...
-
-            // avail-da-module begin blocker can be last
-            availblob1.ModuleName,
-        )
-
-        // NOTE: pre-existing code, add parameter.
-        app.ModuleManager.SetOrderEndBlockers(
-            // ...
-
-            // avail-da-module end blocker can be last
-            availblob1.ModuleName,
-        )
+            // ......
 
             // NOTE: pre-existing code, add parameter.
-        genesisModuleOrder := []string{
-            // ...
+            app.ModuleManager = module.NewManager(
+                // ...
 
-            // avail-da genesis module order can be last
-            availblob1.ModuleName,
+                availblobmodule.NewAppModule(appCodec, app.AvailBlobKeeper),
+            )
+
+            // NOTE: pre-existing code, add parameter.
+            app.ModuleManager.SetOrderBeginBlockers(
+                // ...
+
+                // avail-da-module begin blocker can be last
+                availblob1.ModuleName,
+            )
+
+            // NOTE: pre-existing code, add parameter.
+            app.ModuleManager.SetOrderEndBlockers(
+                // ...
+
+                // avail-da-module end blocker can be last
+                availblob1.ModuleName,
+            )
+
+                // NOTE: pre-existing code, add parameter.
+            genesisModuleOrder := []string{
+                // ...
+
+                // avail-da genesis module order can be last
+                availblob1.ModuleName,
+            }
+
         }
 
+    )
+    ```
+
+6. Integrate `avail-da-module` PreBocker
+
+```go
+
+    // PreBlocker application updates every pre block
+    func (app *SimApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+        err := app.AvailBlobKeeper.PreBlocker(ctx, req)
+        if err != nil {
+            return nil, err
+        }
+        return app.ModuleManager.PreBlock(ctx)
     }
-)
-
-7. Integrate `avail-da-module` PreBocker
-
-```sh
-
-// PreBlocker application updates every pre block
-func (app *SimApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
-	err := app.AvailBlobKeeper.PreBlocker(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return app.ModuleManager.PreBlock(ctx)
-}
 
 ```
 
-### Commands.go wiring 
+### Commands.go wiring
 
 In your simapp application commands file, incorporate the following to wire up the avail-da module CLI commands.
 
@@ -196,7 +198,7 @@ In your simapp application commands file, incorporate the following to wire up t
 
 Within the imported packages, add the avail-da module
 
-```sh
+```go
 import (
     // ...
 	"github.com/vitwit/avail-da-module/simapp/app"
@@ -207,7 +209,7 @@ import (
 
 2. Init App Config
 
-```sh
+````go
 func initAppConfig() (string, interface{}) {
 
 	type CustomAppConfig struct {
@@ -223,38 +225,39 @@ func initAppConfig() (string, interface{}) {
 		Avail:  &relayer.DefaultAvailConfig,
 	}
 
-	customAppTemplate := serverconfig.DefaultConfigTemplate + relayer.DefaultConfigTemplate 
+	customAppTemplate := serverconfig.DefaultConfigTemplate + relayer.DefaultConfigTemplate
 
 	return customAppTemplate, customAppConfig
 }
+```
 
 3. Init Root Command
 
-```sh
+```go
 
-func initRootCmd(
-	rootCmd *cobra.Command,
-	txConfig client.TxConfig,
-	_ codectypes.InterfaceRegistry,
-	_ codec.Codec,
-	basicManager module.BasicManager,
-) {
-    // ......
+    func initRootCmd(
+        rootCmd *cobra.Command,
+        txConfig client.TxConfig,
+        _ codectypes.InterfaceRegistry,
+        _ codec.Codec,
+        basicManager module.BasicManager,
+    ) {
+        // ......
 
 
-    AddCommands(rootCmd, app.DefaultNodeHome, newApp, appExport, addModuleInitFlags)
+        AddCommands(rootCmd, app.DefaultNodeHome, newApp, appExport, addModuleInitFlags)
 
-	keysCmd := keys.Commands()
-	keysCmd.AddCommand(availblobcli.NewKeysCmd())
+        keysCmd := keys.Commands()
+        keysCmd.AddCommand(availblobcli.NewKeysCmd())
 
-	// add keybase, RPC, query, genesis, and tx child commands
-	rootCmd.AddCommand(
-		server.StatusCommand(),
-		genesisCommand(txConfig, basicManager),
-		queryCommand(),
-		txCommand(),
-		keysCmd,
-		resetCommand(),
-	)
-}
+        // add keybase, RPC, query, genesis, and tx child commands
+        rootCmd.AddCommand(
+            server.StatusCommand(),
+            genesisCommand(txConfig, basicManager),
+            queryCommand(),
+            txCommand(),
+            keysCmd,
+            resetCommand(),
+        )
+    }
 ```
