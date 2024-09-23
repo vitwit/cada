@@ -1,8 +1,6 @@
 package relayer
 
 import (
-	"time"
-
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -15,13 +13,9 @@ import (
 type Relayer struct {
 	Logger log.Logger
 
-	provenHeights      chan int64
-	latestProvenHeight int64
+	provenHeights chan int64
 
-	commitHeights      chan int64
-	latestCommitHeight int64
-
-	pollInterval time.Duration
+	commitHeights chan int64
 
 	submittedBlocksCache map[int64]bool
 
