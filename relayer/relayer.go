@@ -13,7 +13,7 @@ import (
 
 // Relayer is responsible for posting new blocks to Avail
 type Relayer struct {
-	logger log.Logger
+	Logger log.Logger
 
 	provenHeights      chan int64
 	latestProvenHeight int64
@@ -25,8 +25,8 @@ type Relayer struct {
 
 	submittedBlocksCache map[int64]bool
 
-	localProvider *local.CosmosProvider
-	availDAClient avail.DA
+	LocalProvider local.CosmosProvider
+	AvailDAClient avail.DA
 	clientCtx     client.Context
 
 	availChainID string
@@ -43,23 +43,23 @@ func NewRelayer(
 	daClient avail.DA,
 ) (*Relayer, error) {
 	// local sdk-based chain provider
-	localProvider, err := local.NewProvider(cdc, cfg.CosmosNodeRPC)
+	localProvider, err := local.NewDefaultCosmosProvider(cdc, cfg.CosmosNodeRPC)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Relayer{
-		logger: logger,
+		Logger: logger,
 
 		provenHeights: make(chan int64, 10000),
 		commitHeights: make(chan int64, 10000),
 
-		localProvider:        localProvider,
+		LocalProvider:        localProvider,
 		availChainID:         cfg.ChainID,
 		submittedBlocksCache: make(map[int64]bool),
 		NodeDir:              nodeDir,
 		AvailConfig:          cfg,
-		availDAClient:        daClient,
+		AvailDAClient:        daClient,
 	}, nil
 }
 

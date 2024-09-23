@@ -9,9 +9,9 @@ import (
 
 // SubmitDataToAvailClient submits data to the Avail client using an HTTP POST request.
 func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64) (avail.BlockMetaData, error) {
-	blockInfo, err := r.availDAClient.Submit(data)
+	blockInfo, err := r.AvailDAClient.Submit(data)
 	if err != nil {
-		r.logger.Error("Error while posting block(s) to Avail DA",
+		r.Logger.Error("Error while posting block(s) to Avail DA",
 			"height_start", blocks[0],
 			"height_end", blocks[len(blocks)-1],
 			"appID", strconv.Itoa(r.AvailConfig.AppID),
@@ -20,7 +20,7 @@ func (r *Relayer) SubmitDataToAvailClient(data []byte, blocks []int64) (avail.Bl
 		return blockInfo, err
 	}
 
-	r.logger.Info("Successfully posted block(s) to Avail DA",
+	r.Logger.Info("Successfully posted block(s) to Avail DA",
 		"height_start", blocks[0],
 		"height_end", blocks[len(blocks)-1],
 		"appID", strconv.Itoa(r.AvailConfig.AppID),
@@ -41,7 +41,7 @@ func (r *Relayer) IsDataAvailable(ctx sdk.Context, from, to, availHeight uint64)
 
 	cosmosBlocksData := r.GetBlocksDataFromLocal(ctx, blocks)
 
-	return r.availDAClient.IsDataAvailable(cosmosBlocksData, int(availHeight))
+	return r.AvailDAClient.IsDataAvailable(cosmosBlocksData, int(availHeight))
 }
 
 // GetBlock represents the data structure for a block with its associated transactions.
