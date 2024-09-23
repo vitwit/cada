@@ -38,7 +38,7 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
 
 	"github.com/spf13/cast"
-	availblob1 "github.com/vitwit/avail-da-module"
+	availtypes "github.com/vitwit/avail-da-module/types"
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
@@ -143,7 +143,6 @@ import (
 	availblobrelayer "github.com/vitwit/avail-da-module/relayer"
 	"github.com/vitwit/avail-da-module/relayer/avail"
 	httpclient "github.com/vitwit/avail-da-module/relayer/http"
-	availblobmoduletypes "github.com/vitwit/avail-da-module/types"
 )
 
 const (
@@ -343,7 +342,7 @@ func NewChainApp(
 		icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey,
 		packetforwardtypes.StoreKey,
-		availblob1.StoreKey,
+		availtypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -687,7 +686,7 @@ func NewChainApp(
 	httpClient := httpclient.NewHandler()
 
 	// Avail-DA client
-	cfg := availblobmoduletypes.AvailConfigFromAppOpts(appOpts)
+	cfg := availtypes.AvailConfigFromAppOpts(appOpts)
 	availDAClient := avail.NewLightClient(cfg.LightClientURL, httpClient)
 
 	app.Availblobrelayer, err = availblobrelayer.NewRelayer(
@@ -703,9 +702,9 @@ func NewChainApp(
 
 	app.AvailBlobKeeper = availblobkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[availblob1.StoreKey]),
+		runtime.NewKVStoreService(keys[availtypes.StoreKey]),
 		app.UpgradeKeeper,
-		keys[availblob1.StoreKey],
+		keys[availtypes.StoreKey],
 		appOpts,
 		logger,
 		app.Availblobrelayer,
@@ -817,7 +816,7 @@ func NewChainApp(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		availblob1.ModuleName,
+		availtypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -834,7 +833,7 @@ func NewChainApp(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		availblob1.ModuleName,
+		availtypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -859,7 +858,7 @@ func NewChainApp(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		availblob1.ModuleName,
+		availtypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
