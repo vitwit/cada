@@ -54,7 +54,7 @@ build_tags_comma_sep := $(subst $(empty),$(comma),$(build_tags))
 # process linker flags
 
 ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=rollchain \
-		  -X github.com/cosmos/cosmos-sdk/version.AppName=availd \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=cada \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
@@ -77,11 +77,11 @@ ifeq ($(OS),Windows_NT)
 	$(error wasmd server not supported. Use "make build-windows-client" for client)
 	exit 1
 else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/availd ./cmd/availd
+	go build -mod=readonly $(BUILD_FLAGS) -o build/cada ./cmd/cada
 endif
 
 build-windows-client: go.sum
-	GOOS=windows GOARCH=amd64 go build -mod=readonly $(BUILD_FLAGS) -o build/availd.exe ./cmd/availd
+	GOOS=windows GOARCH=amd64 go build -mod=readonly $(BUILD_FLAGS) -o build/cada.exe ./cmd/cada
 
 build-contract-tests-hooks:
 ifeq ($(OS),Windows_NT)
@@ -91,7 +91,7 @@ else
 endif
 
 install: go.sum
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/availd
+	go install -mod=readonly $(BUILD_FLAGS) ./cmd/cada
 
 ########################################
 ### Tools & dependencies
@@ -107,7 +107,7 @@ go.sum: go.mod
 draw-deps:
 	@# requires brew install graphviz or apt-get install graphviz
 	go install github.com/RobotsAndPencils/goviz@latest
-	@goviz -i ./cmd/availd -d 2 | dot -Tpng -o dependency-graph.png
+	@goviz -i ./cmd/cada -d 2 | dot -Tpng -o dependency-graph.png
 
 clean:
 	rm -rf snapcraft-local.yaml build/
@@ -222,14 +222,14 @@ setup-testnet: is-localic-installed install local-image set-testnet-configs setu
 # Run this before testnet keys are added
 # chainid-1 is used in the testnet.json
 set-testnet-configs:
-	availd config set client chain-id chainid-1
-	availd config set client keyring-backend test
-	availd config set client output text
+	cada config set client chain-id chainid-1
+	cada config set client keyring-backend test
+	cada config set client output text
 
 # import keys from testnet.json into test keyring
 setup-testnet-keys:
-	-`echo "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry" | availd keys add acc0 --recover`
-	-`echo "wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise" | availd keys add acc1 --recover`
+	-`echo "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry" | cada keys add acc0 --recover`
+	-`echo "wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise" | cada keys add acc1 --recover`
 
 testnet: setup-testnet
 	spawn local-ic start testnet

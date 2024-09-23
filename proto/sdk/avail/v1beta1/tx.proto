@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/vitwit/avail-da-module/types";
 
-// Msg defines the Msg service for avail da module
+// Msg defines the Msg service for cada module
 service Msg {
   option (cosmos.msg.v1.service) = true;
 

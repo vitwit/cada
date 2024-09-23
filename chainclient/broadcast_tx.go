@@ -15,15 +15,15 @@ import (
 	"github.com/vitwit/avail-da-module/types"
 )
 
-// GetBinPath returns the path to the Avail SDK home directory within the user's home directory.
+// GetBinPath returns the path to the cada home directory within the user's home directory.
 func GetBinPath(daemon string) string {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	availdHomePath := filepath.Join(homeDir, daemon)
-	return availdHomePath
+	cadaHomePath := filepath.Join(homeDir, daemon)
+	return cadaHomePath
 }
 
 // ExecuteTX handles the creation and submission of a transaction to update blob status on the chain.

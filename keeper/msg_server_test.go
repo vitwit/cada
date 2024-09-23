@@ -1,12 +1,12 @@
 package keeper_test
 
 import (
-	availkeeper "github.com/vitwit/avail-da-module/keeper"
+	cadakeeper "github.com/vitwit/avail-da-module/keeper"
 	"github.com/vitwit/avail-da-module/types"
 )
 
 func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
-	err := availkeeper.UpdateEndHeight(s.ctx, s.store, uint64(20))
+	err := cadakeeper.UpdateEndHeight(s.ctx, s.store, uint64(20))
 	s.Require().NoError(err)
 
 	testCases := []struct {
@@ -75,7 +75,7 @@ func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-			availkeeper.UpdateBlobStatus(s.ctx, s.store, tc.status)
+			cadakeeper.UpdateBlobStatus(s.ctx, s.store, tc.status)
 			s.Require().NoError(err)
 
 			_, err := s.msgserver.UpdateBlobStatus(s.ctx, tc.inputMsg)
