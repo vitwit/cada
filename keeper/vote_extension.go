@@ -95,8 +95,30 @@ func (h *VoteExtHandler) ExtendVoteHandler() sdk.ExtendVoteHandler {
 // VerifyVoteExtensionHandler handles the verification of vote extensions by validating the provided vote extension data.
 // This function is used to verify the correctness and validity of the vote extensions submitted during the voting process.
 func (h *VoteExtHandler) VerifyVoteExtensionHandler() sdk.VerifyVoteExtensionHandler {
-	return func(_ sdk.Context, _ *abci.RequestVerifyVoteExtension) (*abci.ResponseVerifyVoteExtension, error) {
-		// TODO: add proper validation for the votes if any
-		return &abci.ResponseVerifyVoteExtension{Status: abci.ResponseVerifyVoteExtension_ACCEPT}, nil
+	return func(ctx sdk.Context, req *abci.RequestVerifyVoteExtension) (*abci.ResponseVerifyVoteExtension, error) {
+
+		// Ensure request is not nil
+		if req == nil {
+			return &abci.ResponseVerifyVoteExtension{
+				Status: abci.ResponseVerifyVoteExtension_REJECT,
+			}, fmt.Errorf("request is nil")
+		}
+
+		// Example: Validate vote height (assuming the vote has a height field)
+		if req.Height <= 0 {
+			return &abci.ResponseVerifyVoteExtension{
+				Status: abci.ResponseVerifyVoteExtension_REJECT,
+			}, fmt.Errorf("invalid vote height: %d", req.Height)
+		}
+
+		if len(req.VoteExtension) == 0 {
+			return &abci.ResponseVerifyVoteExtension{
+				Status: abci.ResponseVerifyVoteExtension_REJECT,
+			}, fmt.Errorf("vote extension data is empty")
+		}
+
+		return &abci.ResponseVerifyVoteExtension{
+			Status: abci.ResponseVerifyVoteExtension_ACCEPT,
+		}, nil
 	}
 }

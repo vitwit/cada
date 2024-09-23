@@ -2,6 +2,7 @@ package relayer
 
 import (
 	"context"
+	"log"
 	"time"
 )
 
@@ -38,7 +39,7 @@ func (r *Relayer) Start() error {
 // updateHeight is called when the provenHeight has changed
 func (r *Relayer) updateHeight(height int64) {
 	if height > r.latestProvenHeight {
-		// fmt.Println("Latest proven height:", height) // TODO: remove, debug only
+		log.Printf("Latest proven height: %d", height) // Logging instead of fmt.Println
 		r.latestProvenHeight = height
 		r.pruneCache(height)
 	}
