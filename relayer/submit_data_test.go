@@ -8,7 +8,7 @@ import (
 	relayer "github.com/vitwit/avail-da-module/relayer"
 	"github.com/vitwit/avail-da-module/relayer/avail"
 	mocks "github.com/vitwit/avail-da-module/relayer/avail/mocks"
-	availtypes "github.com/vitwit/avail-da-module/types"
+	cadatypes "github.com/vitwit/avail-da-module/types"
 )
 
 func TestSubmitDataToAvailClient(t *testing.T) {
@@ -19,7 +19,7 @@ func TestSubmitDataToAvailClient(t *testing.T) {
 	relayer := &relayer.Relayer{
 		AvailDAClient: mockDAClient,
 		Logger:        logger,
-		AvailConfig:   availtypes.AvailConfiguration{AppID: 1},
+		AvailConfig:   cadatypes.AvailConfiguration{AppID: 1},
 	}
 
 	data := []byte("test data")

@@ -13,7 +13,7 @@ const (
 	FlagCoinType = "coin-type"
 )
 
-// NewKeysCmd returns a root CLI command handler for all x/availblob keys commands.
+// NewKeysCmd returns a root CLI command handler for all cada keys commands.
 func NewKeysCmd() *cobra.Command {
 	keysCmd := &cobra.Command{
 		Use:                        types.ModuleName,

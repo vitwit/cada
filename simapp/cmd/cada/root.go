@@ -53,8 +53,8 @@ func NewRootCmd() *cobra.Command {
 		WithViper("")
 
 	rootCmd := &cobra.Command{
-		Use:           "availd",
-		Short:         "availd blob",
+		Use:           "cada",
+		Short:         "Cada connects cosmos chains with Avail.",
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs

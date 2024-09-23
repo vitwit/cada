@@ -9,11 +9,11 @@ import (
 	types "github.com/vitwit/avail-da-module/types"
 )
 
-// GetQueryCmd returns the root query command for the avail-da module.
+// GetQueryCmd returns the root query command for the cada module.
 func GetQueryCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   types.ModuleName,
-		Short: "Querying commands for the avail-da module",
+		Short: "Querying commands for the cada module",
 		RunE:  client.ValidateCmd,
 	}
 

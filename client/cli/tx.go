@@ -13,7 +13,7 @@ import (
 	types "github.com/vitwit/avail-da-module/types"
 )
 
-// NewTxCmd creates and returns a Cobra command for transaction subcommands related to the availblob module.
+// NewTxCmd creates and returns a Cobra command for transaction subcommands related to the cada module.
 func NewTxCmd(_ *keeper.Keeper) *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        types.ModuleName,
