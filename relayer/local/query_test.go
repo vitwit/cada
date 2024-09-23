@@ -3,96 +3,95 @@ package local_test
 import (
 	"context"
 	"fmt"
+	"testing"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/bytes"
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
-	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/assert"
+	provider "github.com/vitwit/avail-da-module/relayer/local"
+	mocks "github.com/vitwit/avail-da-module/relayer/local/mocks"
 )
 
-type MockRPCClient struct {
-	mock.Mock
-}
+func TestGetBlockAtHeight_Success(t *testing.T) {
+	mockRPCClient := mocks.NewRPCClient(t)
+	cosmosProvider := &provider.DefaultCosmosProvider{RPCClient: mockRPCClient}
+	ctx := context.Background()
+	height := int64(100)
 
-func (m *MockRPCClient) Block(ctx context.Context, height *int64) (*coretypes.ResultBlock, error) {
-	args := m.Called(ctx, height)
-
-	if block, ok := args.Get(0).(*coretypes.ResultBlock); ok {
-		return block, args.Error(1)
-	}
-
-	return nil, args.Error(1)
-}
-
-func (m *MockRPCClient) Status(ctx context.Context) (*coretypes.ResultStatus, error) {
-	args := m.Called(ctx)
-
-	if status, ok := args.Get(0).(*coretypes.ResultStatus); ok {
-		return status, args.Error(1)
-	}
-
-	return nil, args.Error(1)
-}
-
-func (m *MockRPCClient) ABCIQuery(ctx context.Context, path string, data bytes.HexBytes) (*coretypes.ResultABCIQuery, error) {
-	args := m.Called(ctx, path, data)
-	return args.Get(0).(*coretypes.ResultABCIQuery), args.Error(1)
-}
-
-func (s *CosmosProviderTestSuite) TestQueryABCI_Success() {
-	path := "/store"
-	data := bytes.HexBytes("queryData")
-
-	result := &coretypes.ResultABCIQuery{}
-
-	s.mockRPCClient.On("ABCIQuery", mock.Anything, path, data).Return(result, nil)
-
-	resp, err := s.cosmosProvider.QueryABCI(context.Background(), path, data)
-
-	s.Require().NoError(err)
-	s.Require().NotNil(resp)
-}
-
-func (s *CosmosProviderTestSuite) TestGetBlockAtHeight_Success() {
-	height := int64(10)
 	expectedBlock := &coretypes.ResultBlock{}
-	s.mockRPCClient.On("Block", mock.Anything, &height).Return(expectedBlock, nil)
+	mockRPCClient.On("Block", ctx, &height).Return(expectedBlock, nil)
 
-	block, err := s.cosmosProvider.GetBlockAtHeight(context.Background(), height)
+	block, err := cosmosProvider.GetBlockAtHeight(ctx, height)
 
-	s.Require().NoError(err)
-	s.Require().Equal(expectedBlock, block)
+	assert.NoError(t, err)
+	assert.Equal(t, expectedBlock, block)
+	mockRPCClient.AssertCalled(t, "Block", ctx, &height)
 }
 
-func (s *CosmosProviderTestSuite) TestGetBlockAtHeight_Error() {
-	height := int64(10)
-	expectedError := fmt.Errorf("error querying block")
-	s.mockRPCClient.On("Block", mock.Anything, &height).Return(nil, expectedError)
+func TestGetBlockAtHeight_Error(t *testing.T) {
+	mockRPCClient := mocks.NewRPCClient(t)
+	cosmosProvider := &provider.DefaultCosmosProvider{RPCClient: mockRPCClient}
+	ctx := context.Background()
+	height := int64(100)
 
-	block, err := s.cosmosProvider.GetBlockAtHeight(context.Background(), height)
+	mockRPCClient.On("Block", ctx, &height).Return(nil, fmt.Errorf("block query error"))
 
-	s.Require().Error(err)
-	s.Require().Nil(block)
+	block, err := cosmosProvider.GetBlockAtHeight(ctx, height)
+
+	assert.Nil(t, block)
+	assert.Error(t, err)
+	mockRPCClient.AssertCalled(t, "Block", ctx, &height)
 }
 
-func (s *CosmosProviderTestSuite) TestStatus_Success() {
-	expectedStatus := &coretypes.ResultStatus{
-		// Populate with expected status data
+func TestStatus_Success(t *testing.T) {
+	mockRPCClient := mocks.NewRPCClient(t)
+	cosmosProvider := &provider.DefaultCosmosProvider{RPCClient: mockRPCClient}
+	ctx := context.Background()
+
+	expectedStatus := &coretypes.ResultStatus{}
+	mockRPCClient.On("Status", ctx).Return(expectedStatus, nil)
+
+	status, err := cosmosProvider.Status(ctx)
+
+	assert.NoError(t, err)
+	assert.Equal(t, expectedStatus, status)
+	mockRPCClient.AssertCalled(t, "Status", ctx)
+}
+
+func TestStatus_Error(t *testing.T) {
+	mockRPCClient := mocks.NewRPCClient(t)
+	cosmosProvider := &provider.DefaultCosmosProvider{RPCClient: mockRPCClient}
+	ctx := context.Background()
+
+	mockRPCClient.On("Status", ctx).Return(nil, fmt.Errorf("status query error"))
+
+	status, err := cosmosProvider.Status(ctx)
+
+	assert.Nil(t, status)
+	assert.Error(t, err)
+	mockRPCClient.AssertCalled(t, "Status", ctx)
+}
+
+func TestQueryABCI_Success(t *testing.T) {
+	mockRPCClient := mocks.NewRPCClient(t)
+	cosmosProvider := &provider.DefaultCosmosProvider{RPCClient: mockRPCClient}
+	ctx := context.Background()
+	path := "/custom/path"
+	data := []byte("query-data")
+	hexData := bytes.HexBytes(data)
+
+	expectedResult := &coretypes.ResultABCIQuery{
+		Response: abci.ResponseQuery{
+			Code:  0,
+			Value: data,
+		},
 	}
-	s.mockRPCClient.On("Status", mock.Anything).Return(expectedStatus, nil)
+	mockRPCClient.On("ABCIQuery", ctx, path, hexData).Return(expectedResult, nil)
 
-	status, err := s.cosmosProvider.Status(context.Background())
+	response, err := cosmosProvider.QueryABCI(ctx, path, data)
 
-	s.Require().NoError(err)
-	s.Require().Equal(expectedStatus, status)
-}
-
-func (s *CosmosProviderTestSuite) TestStatus_Error() {
-	expectedError := fmt.Errorf("error querying status")
-	s.mockRPCClient.On("Status", mock.Anything).Return(nil, expectedError)
-
-	status, err := s.cosmosProvider.Status(context.Background())
-
-	s.Require().Error(err)
-	s.Require().Nil(status)
-	s.Require().Equal("error querying status: error querying status", err.Error())
+	assert.NoError(t, err)
+	assert.Equal(t, expectedResult.Response.Value, response)
+	mockRPCClient.AssertCalled(t, "ABCIQuery", ctx, path, hexData)
 }

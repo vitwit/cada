@@ -23,7 +23,7 @@ type RPCClient interface {
 
 // GetBlockAtHeight retrieves the block information at a specific height from the chain
 // using the RPC client.
-func (cc *CosmosProvider) GetBlockAtHeight(ctx context.Context, height int64) (*coretypes.ResultBlock, error) {
+func (cc *DefaultCosmosProvider) GetBlockAtHeight(ctx context.Context, height int64) (*coretypes.ResultBlock, error) {
 	block, err := cc.RPCClient.Block(ctx, &height)
 	if err != nil {
 		return nil, fmt.Errorf("error querying block at height %d: %w", height, err)
@@ -32,7 +32,7 @@ func (cc *CosmosProvider) GetBlockAtHeight(ctx context.Context, height int64) (*
 }
 
 // Status queries the status of this node, can be used to check if it is catching up or a validator
-func (cc *CosmosProvider) Status(ctx context.Context) (*coretypes.ResultStatus, error) {
+func (cc *DefaultCosmosProvider) Status(ctx context.Context) (*coretypes.ResultStatus, error) {
 	status, err := cc.RPCClient.Status(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("error querying status: %w", err)
@@ -41,7 +41,7 @@ func (cc *CosmosProvider) Status(ctx context.Context) (*coretypes.ResultStatus, 
 }
 
 // QueryABCI performs an ABCI query and returns the appropriate response and error sdk error code.
-func (cc *CosmosProvider) QueryABCI(ctx context.Context, path string, data []byte) (abci.ResponseQuery, error) {
+func (cc *DefaultCosmosProvider) QueryABCIRPC(ctx context.Context, path string, data []byte) (abci.ResponseQuery, error) {
 	result, err := cc.RPCClient.ABCIQuery(ctx, path, data)
 	if err != nil {
 		return abci.ResponseQuery{}, err

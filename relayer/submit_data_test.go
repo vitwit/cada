@@ -1,80 +1,44 @@
 package relayer_test
 
-// import (
-// 	"encoding/base64"
-// 	"encoding/json"
-// 	"net/http"
-// 	"net/http/httptest"
+import (
+	"testing"
 
-// 	relayer "github.com/vitwit/avail-da-module/relayer"
-// )
+	"cosmossdk.io/log"
+	"github.com/stretchr/testify/assert"
+	relayer "github.com/vitwit/avail-da-module/relayer"
+	"github.com/vitwit/avail-da-module/relayer/avail"
+	mocks "github.com/vitwit/avail-da-module/relayer/avail/mocks"
+	availtypes "github.com/vitwit/avail-da-module/types"
+)
 
-// func (s *RelayerTestSuite) TestSubmitDataToAvailClient_Success() {
-// 	data := []byte("test data")
-// 	blocks := []int64{1, 2, 3}
+func TestSubmitDataToAvailClient(t *testing.T) {
+	logger := log.NewNopLogger()
 
-// 	blockInfo := relayer.BlockInfo{
-// 		BlockHash:   "hash123",
-// 		BlockNumber: 1,
-// 		Hash:        "somehash",
-// 	}
+	mockDAClient := new(mocks.DA)
 
-// 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		if r.Method != http.MethodPost {
-// 			s.T().Errorf("Expected POST method, got %s", r.Method)
-// 		}
+	relayer := &relayer.Relayer{
+		AvailDAClient: mockDAClient,
+		Logger:        logger,
+		AvailConfig:   availtypes.AvailConfiguration{AppID: 1},
+	}
 
-// 		var requestBody map[string]string
-// 		if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-// 			http.Error(w, "Invalid request body", http.StatusBadRequest)
-// 			return
-// 		}
+	data := []byte("test data")
+	blocks := []int64{1, 2, 3}
 
-// 		if requestBody["data"] != base64.StdEncoding.EncodeToString(data) {
-// 			http.Error(w, "Unexpected data", http.StatusBadRequest)
-// 			return
-// 		}
+	expectedBlockInfo := avail.BlockMetaData{
+		BlockHash:   "hash123",
+		BlockNumber: 42,
+		Hash:        "hash456",
+	}
 
-// 		responseBody, _ := json.Marshal(blockInfo)
-// 		w.Write(responseBody)
-// 	}))
+	t.Run("success", func(t *testing.T) {
+		mockDAClient.On("Submit", data).Return(expectedBlockInfo, nil)
 
-// 	defer mockServer.Close()
+		blockInfo, err := relayer.SubmitDataToAvailClient(data, blocks)
 
-// 	blockInfoResult, err := s.relayer.SubmitDataToAvailClient("seed", 1, data, blocks, mockServer.URL)
+		assert.NoError(t, err)
+		assert.Equal(t, expectedBlockInfo, blockInfo)
 
-// 	s.Require().NoError(err)
-// 	s.Require().Equal(blockInfo, blockInfoResult)
-// }
-
-// func (s *RelayerTestSuite) TestSubmitDataToAvailClient_HTTPError() {
-// 	data := []byte("test data")
-// 	blocks := []int64{1, 2, 3}
-
-// 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-// 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-// 	}))
-
-// 	defer mockServer.Close()
-
-// 	blockInfo, err := s.relayer.SubmitDataToAvailClient("seed", 1, data, blocks, mockServer.URL)
-
-// 	s.Require().Error(err)
-// 	s.Require().Equal(relayer.BlockInfo{}, blockInfo)
-// }
-
-// func (s *RelayerTestSuite) TestSubmitDataToAvailClient_UnmarshalError() {
-// 	data := []byte("test data")
-// 	blocks := []int64{1, 2, 3}
-
-// 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-// 		w.Write([]byte(`{invalid json}`))
-// 	}))
-
-// 	defer mockServer.Close()
-
-// 	blockInfo, err := s.relayer.SubmitDataToAvailClient("seed", 1, data, blocks, mockServer.URL)
-
-// 	s.Require().Error(err)
-// 	s.Require().Equal(relayer.BlockInfo{}, blockInfo)
-// }
+		mockDAClient.AssertExpectations(t)
+	})
+}
