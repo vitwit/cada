@@ -106,7 +106,7 @@ Within the `NewSimApp` method, the constructor for the app, initialize the avail
 
         //...
 
-    ```
+```
 
 5. Integrate Cada module\'s vote extensions and abci methods
 
