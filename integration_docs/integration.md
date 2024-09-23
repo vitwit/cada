@@ -15,29 +15,28 @@ import (
 
     // ......
 
-   "github.com/vitwit/avail-da-module"
-   availblobkeeper "github.com/vitwit/avail-da-module/keeper"
-   availblobmodule "github.com/vitwit/avail-da-module/module"
-   availblobrelayer "github.com/vitwit/avail-da-module/relayer" 
+   	availblobkeeper "github.com/vitwit/avail-da-module/keeper"
+	availblobmodule "github.com/vitwit/avail-da-module/module"
+	availblobrelayer "github.com/vitwit/avail-da-module/relayer"
+	"github.com/vitwit/avail-da-module/relayer/avail"
+	httpclient "github.com/vitwit/avail-da-module/relayer/http"
+	availtypes "github.com/vitwit/avail-da-module/types"
 )
 
 ```
 
 2. Constants configuration
 
-After importing the necessary packages for the avail-da module in your app.go file, the next step is to declare any constant variables that the module will use. These constants are essential for configuring and integrating the avail-da module with your application.
+After importing the necessary packages for the avail-da module in your app.go file, the next step is to declare any constant variables that the module will use. These constants are essential for configuring and integrating the CADA module with your application.
 
 ```sh
 const (
-	// TODO: Change me
-	AvailAppID = 1
-
-	// publish blocks to avail every n rollchain blocks.
-	publishToAvailBlockInterval = 5 // smaller size == faster testing
+	appName      = "avail-sdk"
+	NodeDir      = ".availsdk"
 )
 ```
 
-3. Keeper and Relyer declaration
+3. Keeper and Relayer declaration
 
 Here's a step-by-step guide to integrating the avail-da module keeper and relayer into your Cosmos SDK application
 
@@ -74,34 +73,63 @@ Within the `NewSimApp` method, the constructor for the app, initialize the avail
             // Register avail-da module Store
             availblob1.StoreKey,
         )
+    httpClient := httpclient.NewHandler()
 
-        app.AvailBlobKeeper = availblobkeeper.NewKeeper(
-            appCodec,
-            appOpts,
-            runtime.NewKVStoreService(keys[availblob1.StoreKey]),
-            app.UpgradeKeeper,
-            keys[availblob1.StoreKey],
-            publishToAvailBlockInterval,
-            AvailAppID,
-        )
+        // Avail-DA client
+        cfg := availtypes.AvailConfigFromAppOpts(appOpts)
+        availDAClient := avail.NewLightClient(cfg.LightClientURL, httpClient)
 
         app.Availblobrelayer, err = availblobrelayer.NewRelayer(
             logger,
             appCodec,
-            appOpts,
-            homePath,
+            cfg,
+            NodeDir,
+            availDAClient,
         )
         if err != nil {
             panic(err)
         }
 
+        app.AvailBlobKeeper = availblobkeeper.NewKeeper(
+            appCodec,
+            runtime.NewKVStoreService(keys[availtypes.StoreKey]),
+            app.UpgradeKeeper,
+            keys[availtypes.StoreKey],
+            appOpts,
+            logger,
+            app.Availblobrelayer,
+        )
+
         // must be done after relayer is created
         app.AvailBlobKeeper.SetRelayer(app.Availblobrelayer)
 
+        //...
+    ```
+
+    5. Integrate Cada module\'s vote extensions and abci methods
+
+    ```sh
+
+        voteExtensionHandler := availblobkeeper.NewVoteExtHandler(
+            logger,
+            app.AvailBlobKeeper,
+        )
+
         dph := baseapp.NewDefaultProposalHandler(bApp.Mempool(), bApp)
-        availBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(app.AvailBlobKeeper, dph.PrepareProposalHandler(), dph.ProcessProposalHandler())
+        availBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(
+            app.AvailBlobKeeper,
+            dph.PrepareProposalHandler(),
+            dph.ProcessProposalHandler(),
+            *voteExtensionHandler,
+        )
         bApp.SetPrepareProposal(availBlobProposalHandler.PrepareProposal)
         bApp.SetProcessProposal(availBlobProposalHandler.ProcessProposal)
+        bApp.SetExtendVoteHandler(voteExtensionHandler.ExtendVoteHandler())
+        bApp.SetVerifyVoteExtensionHandler(voteExtensionHandler.VerifyVoteExtensionHandler())
+    ```
+    6. Module manager
+
+    ```go
 
         // pre existing comments
 
@@ -143,7 +171,7 @@ Within the `NewSimApp` method, the constructor for the app, initialize the avail
     }
 )
 
-5. Integrate `avail-da-module` PreBocker
+7. Integrate `avail-da-module` PreBocker
 
 ```sh
 
@@ -156,28 +184,6 @@ func (app *SimApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (
 	return app.ModuleManager.PreBlock(ctx)
 }
 
-```
-
-6. Integrate relayer startup
-
-To integrate the relayer startup into your Cosmos SDK application, you will need to query necessary values and initialize the relayer. Here’s how you can do it:
-
-* Modify RegisterNodeService Function :
-In your app.go file, locate the RegisterNodeService function. You need to add code to initialize and start the relayer after your application has started.
-
-* Add the Relayer Initialization: Inside the RegisterNodeService function, you will need to query necessary values from the application and initialize the relayer. 
-
-Here’s how you can do it: 
-
-```sh
-
-func (app *SimApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
-	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
-
-	app.Availblobrelayer.SetClientContext(clientCtx)
-
-	go app.Availblobrelayer.Start()
-}
 ```
 
 ### Commands.go wiring 
@@ -227,23 +233,26 @@ func initAppConfig() (string, interface{}) {
 func initRootCmd(
 	rootCmd *cobra.Command,
 	txConfig client.TxConfig,
-	interfaceRegistry codectypes.InterfaceRegistry,
-	appCodec codec.Codec,
+	_ codectypes.InterfaceRegistry,
+	_ codec.Codec,
 	basicManager module.BasicManager,
 ) {
-        // ......
+    // ......
 
 
-       server.AddCommands(rootCmd, simapp.DefaultNodeHome, newApp, appExport, addModuleInitFlags)
+    AddCommands(rootCmd, app.DefaultNodeHome, newApp, appExport, addModuleInitFlags)
 
-	    keysCmd := keys.Commands()
-	    keysCmd.AddCommand(availblobcli.NewKeysCmd())
+	keysCmd := keys.Commands()
+	keysCmd.AddCommand(availblobcli.NewKeysCmd())
 
-        rootCmd.AddCommand(
+	// add keybase, RPC, query, genesis, and tx child commands
+	rootCmd.AddCommand(
 		server.StatusCommand(),
 		genesisCommand(txConfig, basicManager),
 		queryCommand(),
 		txCommand(),
 		keysCmd,
+		resetCommand(),
 	)
+}
 ```
