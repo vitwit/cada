@@ -1,6 +1,6 @@
 # Configuration 
 
-The CADA module configuration is located in config/app.toml and is used for connecting to the avail and cosmos networks to submit blocks data.
+The cada module configuration is located in config/app.toml and is used for connecting to the avail and cosmos networks to submit blocks data.
 
 Below is the default configuration for integrating with Avail. You can customize these settings by modifying them to suit your specific requirements.
 
