@@ -6,7 +6,6 @@ import (
 )
 
 func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
-
 	err := availkeeper.UpdateEndHeight(s.ctx, s.store, uint64(20))
 	s.Require().NoError(err)
 
@@ -21,7 +20,7 @@ func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
 			&types.MsgUpdateBlobStatusRequest{
 				ValidatorAddress: s.addrs[1].String(),
 				BlocksRange: &types.Range{
-					From: 11,
+					From: 1,
 					To:   20,
 				},
 				AvailHeight: 20,
@@ -49,7 +48,7 @@ func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
 			&types.MsgUpdateBlobStatusRequest{
 				ValidatorAddress: s.addrs[1].String(),
 				BlocksRange: &types.Range{
-					From: 11,
+					From: 1,
 					To:   20,
 				},
 				AvailHeight: 20,

@@ -6,11 +6,11 @@ import (
 )
 
 // InitGenesis initializes the module's state from a genesis state.
-func (k *Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) error {
+func (k *Keeper) InitGenesis(_ sdk.Context, _ *types.GenesisState) error {
 	return nil
 }
 
 // ExportGenesis exports the module's state to a genesis state.
-func (k *Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
+func (k *Keeper) ExportGenesis(_ sdk.Context) *types.GenesisState {
 	return &types.GenesisState{}
 }
