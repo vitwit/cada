@@ -50,7 +50,8 @@ type SimApp struct {
 	Availblobrelayer *availblobrelayer.Relayer
 	//
 
-}```
+}
+```
 
 4. Initialize the `avail-da-module` Keeper and Relayer
 
