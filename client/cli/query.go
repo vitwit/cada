@@ -6,14 +6,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
-	availblob "github.com/vitwit/avail-da-module"
-	"github.com/vitwit/avail-da-module/types"
+	types "github.com/vitwit/avail-da-module/types"
 )
 
 // GetQueryCmd returns the root query command for the avail-da module.
 func GetQueryCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   availblob.ModuleName,
+		Use:   types.ModuleName,
 		Short: "Querying commands for the avail-da module",
 		RunE:  client.ValidateCmd,
 	}

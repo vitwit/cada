@@ -30,7 +30,6 @@ func GetBinPath(daemon string) string {
 // It uses keyring and RPC client configurations to interact with the network.
 func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, config types.AvailConfiguration, nodeDir string) error {
 	// Define keyring and RPC client configuration
-	// homePath := "/home/vitwit/.simapp"
 	homePath := GetBinPath(nodeDir)
 	keyName := config.ValidatorKey
 	rpcAddress := config.CosmosNodeRPC
@@ -70,13 +69,13 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 		return fmt.Errorf("error retrieving account: %w", err)
 	}
 
+	// Create a transaction factory
 	// Set the correct account number and sequence
 	factory := NewFactory(clientCtx).
 		WithAccountNumber(account.GetAccountNumber()).
 		WithSequence(account.GetSequence())
 
-	// Create a transaction factory and set the validator address in the message
-	// factory := NewFactory(clientCtx)
+	// set the validator address in the message
 	msg.ValidatorAddress = valAddr.String()
 
 	// Generate and broadcast the transaction

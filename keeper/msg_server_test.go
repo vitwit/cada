@@ -6,8 +6,6 @@ import (
 )
 
 func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
-	// err := s.keeper.SetProvenHeight(s.ctx, 10)
-	// s.Require().NoError(err)
 
 	err := availkeeper.UpdateEndHeight(s.ctx, s.store, uint64(20))
 	s.Require().NoError(err)

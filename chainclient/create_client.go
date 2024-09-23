@@ -1,8 +1,6 @@
 package chainclient
 
 import (
-	"fmt"
-
 	cometrpc "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -123,29 +121,11 @@ func AccountCreate(accountName, mnemonic, _ string, c client.Context) (*keyring.
 	}
 
 	path := hd.CreateHDPath(118, 0, 0).String()
-	// fmt.Println("pathhh......", path)
 
-	// record, str, err := c.Keyring.NewMnemonic("test_key1", keyring.English, path, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
-	// fmt.Println("recorddddd.......", err, str, record)
-
-	// k, _, err = kb.NewMnemonic("test", English, types.FullFundraiserPath, DefaultBIP39Passphrase, hd.Secp256k1)
 	info, err := c.Keyring.NewAccount(accountName, mnemonic, keyring.DefaultBIP39Passphrase, path, algo)
-	fmt.Println("after creationnnn.........", info, err)
 	if err != nil {
 		return nil, err
 	}
-	// pk, err := info.GetPubKey()
-	// if err != nil {
-	// 	return nil, err
-	// }
 
-	// addr := sdk.AccAddress(pk.Address())
-	// fmt.Println("address hereee...", addr)
-
-	// aa, err := info.GetAddress()
-	// fmt.Println("here aa and err.......", aa, err)
-
-	// account := c.ToAccount(info)
-	// account.Mnemonic = mnemonic
 	return info, nil
 }

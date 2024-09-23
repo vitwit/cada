@@ -76,8 +76,6 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 	// if there is any another tx, it might give any marshelling error, so ignoring this err
 	bz, _ := json.Marshal(injectedVoteExtTx)
 
-	// proposalTxs = append(proposalTxs, bz)
-
 	proposalTxs = append([][]byte{bz}, proposalTxs...)
 	return &abci.ResponsePrepareProposal{
 		Txs: proposalTxs,

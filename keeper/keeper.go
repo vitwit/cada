@@ -10,21 +10,16 @@ import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
-	availblob1 "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/relayer"
+	types "github.com/vitwit/avail-da-module/types"
 )
 
 type Keeper struct {
-	// stakingKeeper *stakingkeeper.Keeper
 	upgradeKeeper *upgradekeeper.Keeper
-	relayer       *relayer.Relayer
+
+	relayer *relayer.Relayer
 
 	Validators collections.Map[string, string]
-	// ClientID   collections.Item[string]
-	// ProvenHeight            collections.Item[uint64]
-	// PendingBlocksToTimeouts collections.Map[int64, int64]
-	// TimeoutsToPendingBlocks collections.Map[int64, types.PendingBlocks]
-	// keyring                 keyring.Keyring
 
 	storeKey storetypes2.StoreKey
 
@@ -33,7 +28,8 @@ type Keeper struct {
 	unprovenBlocks map[int64][]byte
 
 	ProposerAddress []byte
-	ClientCmd       *cobra.Command
+
+	ClientCmd *cobra.Command
 }
 
 func NewKeeper(
@@ -50,11 +46,7 @@ func NewKeeper(
 	return &Keeper{
 		upgradeKeeper: uk,
 
-		Validators: collections.NewMap(sb, availblob1.ValidatorsKey, "validators", collections.StringKey, collections.StringValue),
-		// ClientID:   collections.NewItem(sb, availblob1.ClientIDKey, "client_id", collections.StringValue),
-		// ProvenHeight:            collections.NewItem(sb, availblob1.ProvenHeightKey, "proven_height", collections.Uint64Value),
-		// PendingBlocksToTimeouts: collections.NewMap(sb, availblob1.PendingBlocksToTimeouts, "pending_blocks_to_timeouts", collections.Int64Key, collections.Int64Value),
-		// TimeoutsToPendingBlocks: collections.NewMap(sb, availblob1.TimeoutsToPendingBlocks, "timeouts_to_pending_blocks", collections.Int64Key, codec.CollValue[types.PendingBlocks](cdc)),
+		Validators: collections.NewMap(sb, types.ValidatorsKey, "validators", collections.StringKey, collections.StringValue),
 
 		storeKey: key,
 

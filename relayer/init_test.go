@@ -15,10 +15,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/stretchr/testify/suite"
-	cada "github.com/vitwit/avail-da-module"
 	module "github.com/vitwit/avail-da-module/module"
 	relayer "github.com/vitwit/avail-da-module/relayer"
 	httpclient "github.com/vitwit/avail-da-module/relayer/http"
+	types "github.com/vitwit/avail-da-module/types"
 )
 
 type RelayerTestSuite struct {
@@ -38,7 +38,7 @@ func TestRelayerTestSuite(t *testing.T) {
 }
 
 func (s *RelayerTestSuite) SetupTest() {
-	key := storetypes.NewKVStoreKey(cada.ModuleName)
+	key := storetypes.NewKVStoreKey(types.ModuleName)
 	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
 	s.ctx = testCtx.Ctx.WithBlockHeader(cmtproto.Header{Time: cmttime.Now()})
 	s.encCfg = moduletestutil.MakeTestEncodingConfig(module.AppModuleBasic{})

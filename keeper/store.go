@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	availblob1 "github.com/vitwit/avail-da-module"
+	types "github.com/vitwit/avail-da-module/types"
 )
 
 const (
@@ -47,7 +47,7 @@ func ParseVotingEndHeight(height uint64) string {
 // CanUpdateStatusToPending checks if the blob status can be updated to "pending".
 // This function verifies whether the current status allows transitioning to the "pending" state.
 func CanUpdateStatusToPending(store storetypes2.KVStore) bool {
-	statusBytes := store.Get(availblob1.BlobStatusKey)
+	statusBytes := store.Get(types.BlobStatusKey)
 	if len(statusBytes) == 0 {
 		return true
 	}
@@ -59,7 +59,7 @@ func CanUpdateStatusToPending(store storetypes2.KVStore) bool {
 
 // GetStatusFromStore retrieves the current status of the blob from the store.
 func GetStatusFromStore(store storetypes2.KVStore) uint32 {
-	statusBytes := store.Get(availblob1.BlobStatusKey)
+	statusBytes := store.Get(types.BlobStatusKey)
 
 	if len(statusBytes) == 0 {
 		return ReadyState
@@ -76,35 +76,35 @@ func UpdateBlobStatus(_ sdk.Context, store storetypes2.KVStore, status uint32) e
 
 	binary.BigEndian.PutUint32(statusBytes, status)
 
-	store.Set(availblob1.BlobStatusKey, statusBytes)
+	store.Set(types.BlobStatusKey, statusBytes)
 	return nil
 }
 
 // UpdateStartHeight updates the start height in the KV store.
 func UpdateStartHeight(_ sdk.Context, store storetypes2.KVStore, startHeight uint64) error {
-	return updateHeight(store, availblob1.PrevHeightKey, startHeight)
+	return updateHeight(store, types.PrevHeightKey, startHeight)
 }
 
 // UpdateEndHeight updates the end height in the KV store.
 func UpdateEndHeight(_ sdk.Context, store storetypes2.KVStore, endHeight uint64) error {
-	return updateHeight(store, availblob1.NextHeightKey, endHeight)
+	return updateHeight(store, types.NextHeightKey, endHeight)
 }
 
 // UpdateProvenHeight updates the proven height in the KV store.
 func UpdateProvenHeight(_ sdk.Context, store storetypes2.KVStore, provenHeight uint64) error {
-	return updateHeight(store, availblob1.ProvenHeightKey, provenHeight)
+	return updateHeight(store, types.ProvenHeightKey, provenHeight)
 }
 
 // UpdateAvailHeight updates the avail height in the store
 func UpdateAvailHeight(_ sdk.Context, store storetypes2.KVStore, availHeight uint64) error {
-	return updateHeight(store, availblob1.AvailHeightKey, availHeight)
+	return updateHeight(store, types.AvailHeightKey, availHeight)
 }
 
 // UpdateVotingEndHeight updates the voting end height in the KV store.
 func UpdateVotingEndHeight(_ sdk.Context, store storetypes2.KVStore, votingEndHeight uint64, isLastVoting bool) error {
-	key := availblob1.VotingEndHeightKey
+	key := types.VotingEndHeightKey
 	if isLastVoting {
-		key = availblob1.LastVotingEndHeightKey
+		key = types.LastVotingEndHeightKey
 	}
 	return updateHeight(store, key, votingEndHeight)
 }
@@ -121,31 +121,31 @@ func updateHeight(store storetypes2.KVStore, key collections.Prefix, height uint
 
 // GetProvenHeightFromStore retrieves the proven height from the KV store.
 func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
-	return k.getHeight(ctx, availblob1.ProvenHeightKey)
+	return k.getHeight(ctx, types.ProvenHeightKey)
 }
 
 // GetAvailHeightFromStore retrieves the avail height from the KV store.
 func (k *Keeper) GetAvailHeightFromStore(ctx sdk.Context) uint64 {
-	return k.getHeight(ctx, availblob1.AvailHeightKey)
+	return k.getHeight(ctx, types.AvailHeightKey)
 }
 
 // GetVotingEndHeightFromStore retrieves the ending vote height from store
 func (k *Keeper) GetVotingEndHeightFromStore(ctx sdk.Context, isLastVoting bool) uint64 {
-	key := availblob1.VotingEndHeightKey
+	key := types.VotingEndHeightKey
 	if isLastVoting {
-		key = availblob1.LastVotingEndHeightKey
+		key = types.LastVotingEndHeightKey
 	}
 	return k.getHeight(ctx, key)
 }
 
 // GetStartHeightFromStore retrieves the start height from store
 func (k *Keeper) GetStartHeightFromStore(ctx sdk.Context) uint64 {
-	return k.getHeight(ctx, availblob1.PrevHeightKey)
+	return k.getHeight(ctx, types.PrevHeightKey)
 }
 
 // GetEndHeightFromStore retrieves the end height from store
 func (k *Keeper) GetEndHeightFromStore(ctx sdk.Context) uint64 {
-	return k.getHeight(ctx, availblob1.NextHeightKey)
+	return k.getHeight(ctx, types.NextHeightKey)
 }
 
 // getHeight retrieves and decodes a height value from the KV store.
