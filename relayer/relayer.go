@@ -48,7 +48,7 @@ func NewRelayer(
 	daClient avail.DA,
 ) (*Relayer, error) {
 	// local sdk-based chain provider
-	localProvider, err := local.NewProvider(cdc, cfg.CosmosNodeRPC)
+	localProvider, err := local.NewDefaultCosmosProvider(cdc, cfg.CosmosNodeRPC)
 	if err != nil {
 		return nil, err
 	}
