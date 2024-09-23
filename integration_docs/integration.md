@@ -105,9 +105,10 @@ Within the `NewSimApp` method, the constructor for the app, initialize the avail
         app.AvailBlobKeeper.SetRelayer(app.Availblobrelayer)
 
         //...
+
     ```
 
-    5. Integrate Cada module\'s vote extensions and abci methods
+5. Integrate Cada module\'s vote extensions and abci methods
 
     ```sh
 
