@@ -1,2 +1,2 @@
 validatorKey: "alice"
-keyringType: "test"
+keyringBackend: "test"
