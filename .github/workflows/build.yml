@@ -26,5 +26,8 @@ jobs:
       - name: Display Go version
         run: go version
 
-      - name: Build cada
-        run: make build
+      # - name: Build cada
+      #   run: make build
+
+      - name: Build simapp
+        run: make -C simapp build

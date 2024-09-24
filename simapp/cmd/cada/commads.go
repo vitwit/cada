@@ -41,8 +41,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
-	availblobcli "github.com/vitwit/avail-da-module/client/cli"
-	availtypes "github.com/vitwit/avail-da-module/types"
+	cadacli "github.com/vitwit/avail-da-module/client/cli"
+	cadatypes "github.com/vitwit/avail-da-module/types"
 )
 
 // initCometBFTConfig helps to override default CometBFT Config values.
@@ -65,7 +65,7 @@ func initAppConfig() (string, interface{}) {
 	type CustomAppConfig struct {
 		serverconfig.Config
 
-		Avail *availtypes.AvailConfiguration `mapstructure:"avail"`
+		Avail *cadatypes.AvailConfiguration `mapstructure:"avail"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
@@ -88,10 +88,10 @@ func initAppConfig() (string, interface{}) {
 
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
-		Avail:  &availtypes.DefaultAvailConfig,
+		Avail:  &cadatypes.DefaultAvailConfig,
 	}
 
-	customAppTemplate := serverconfig.DefaultConfigTemplate + availtypes.DefaultConfigTemplate
+	customAppTemplate := serverconfig.DefaultConfigTemplate + cadatypes.DefaultConfigTemplate
 
 	return customAppTemplate, customAppConfig
 }
@@ -118,9 +118,9 @@ func initRootCmd(
 	AddCommands(rootCmd, app.DefaultNodeHome, newApp, appExport, addModuleInitFlags)
 
 	keysCmd := keys.Commands()
-	keysCmd.AddCommand(availblobcli.NewKeysCmd())
+	keysCmd.AddCommand(cadacli.NewKeysCmd())
 
-	// add keybase, auxiliary RPC, query, genesis, and tx child commands
+	// add keybase, RPC, query, genesis, and tx child commands
 	rootCmd.AddCommand(
 		server.StatusCommand(),
 		genesisCommand(txConfig, basicManager),

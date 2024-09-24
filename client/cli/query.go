@@ -6,15 +6,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
-	availblob "github.com/vitwit/avail-da-module"
-	"github.com/vitwit/avail-da-module/types"
+	types "github.com/vitwit/avail-da-module/types"
 )
 
-// GetQueryCmd returns the root query command for the avail-da module.
+// GetQueryCmd returns the root query command for the cada module.
 func GetQueryCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   availblob.ModuleName,
-		Short: "Querying commands for the avail-da module",
+		Use:   types.ModuleName,
+		Short: "Querying commands for the cada module",
 		RunE:  client.ValidateCmd,
 	}
 
@@ -27,8 +26,8 @@ func GetQueryCmd() *cobra.Command {
 func GetLatestBlobStatusInfo() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-da-status",
-		Short: "Show what range of blocks are being submitted and their status",
-		Long: `Show what range of blocks are being submitted and their status,
+		Short: "Shows what range of blocks are being submitted and their status",
+		Long: `Shows what range of blocks are being submitted and their status,
 		`,
 		Example: "simd query cada get-da-status",
 		Args:    cobra.ExactArgs(0),

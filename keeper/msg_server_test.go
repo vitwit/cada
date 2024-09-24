@@ -1,15 +1,12 @@
 package keeper_test
 
 import (
-	availkeeper "github.com/vitwit/avail-da-module/keeper"
+	cadakeeper "github.com/vitwit/avail-da-module/keeper"
 	"github.com/vitwit/avail-da-module/types"
 )
 
 func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
-	err := s.keeper.SetProvenHeight(s.ctx, 10)
-	s.Require().NoError(err)
-
-	err = availkeeper.UpdateEndHeight(s.ctx, s.store, uint64(20))
+	err := cadakeeper.UpdateEndHeight(s.ctx, s.store, uint64(20))
 	s.Require().NoError(err)
 
 	testCases := []struct {
@@ -23,7 +20,7 @@ func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
 			&types.MsgUpdateBlobStatusRequest{
 				ValidatorAddress: s.addrs[1].String(),
 				BlocksRange: &types.Range{
-					From: 11,
+					From: 1,
 					To:   20,
 				},
 				AvailHeight: 20,
@@ -51,7 +48,7 @@ func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
 			&types.MsgUpdateBlobStatusRequest{
 				ValidatorAddress: s.addrs[1].String(),
 				BlocksRange: &types.Range{
-					From: 11,
+					From: 1,
 					To:   20,
 				},
 				AvailHeight: 20,
@@ -78,7 +75,7 @@ func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-			availkeeper.UpdateBlobStatus(s.ctx, s.store, tc.status)
+			cadakeeper.UpdateBlobStatus(s.ctx, s.store, tc.status)
 			s.Require().NoError(err)
 
 			_, err := s.msgserver.UpdateBlobStatus(s.ctx, tc.inputMsg)

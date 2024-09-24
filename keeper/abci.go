@@ -10,6 +10,18 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// StakeWeightedVotes represents the aggregated stake-weighted votes from validators,
+// along with the associated commit information for a specific consensus round.
+type StakeWeightedVotes struct {
+	// A map where the key is the range of pending blocks(e.g. "1 10"), and the value is the
+	// validator's voting power.
+	Votes map[string]int64
+
+	// ExtendedCommitInfo Contains additional information about the commit phase, including
+	//  vote extensions and details about the current consensus round.
+	ExtendedCommitInfo abci.ExtendedCommitInfo
+}
+
 // ProofOfBlobProposalHandler manages the proposal and vote extension logic related to
 // blob transactions in the consensus process.
 type ProofOfBlobProposalHandler struct {
@@ -60,12 +72,11 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 		Votes:              votes,
 		ExtendedCommitInfo: req.LocalLastCommit,
 	}
-	bz, err := json.Marshal(injectedVoteExtTx)
-	if err != nil {
-		fmt.Println("failed to encode injected vote extension tx", "err", err)
-	}
 
-	proposalTxs = append(proposalTxs, bz)
+	// if there is any another tx, it might give any marshelling error, so ignoring this err
+	bz, _ := json.Marshal(injectedVoteExtTx)
+
+	proposalTxs = append([][]byte{bz}, proposalTxs...)
 	return &abci.ResponsePrepareProposal{
 		Txs: proposalTxs,
 	}, nil
@@ -81,11 +92,12 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(_ sdk.Context, req *abci.Re
 
 	var injectedVoteExtTx StakeWeightedVotes
 	if err := json.Unmarshal(req.Txs[0], &injectedVoteExtTx); err != nil {
-		fmt.Println("failed to decode injected vote extension tx", "err", err)
-		// return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_REJECT}, nil
+		// if there is any another tx, it might give any unmarshelling error, so ignoring this err
+		return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_ACCEPT}, nil
 	}
 
 	// TODO: write some validations
+	// if injectedVoteExtTx.ExtendedCommitInfo != nil {// }
 
 	return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_ACCEPT}, nil
 }
@@ -99,9 +111,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 
 	if len(req.Txs) > 0 && currentHeight == int64(votingEndHeight) && blobStatus == InVotingState {
 		var injectedVoteExtTx StakeWeightedVotes
-		if err := json.Unmarshal(req.Txs[0], &injectedVoteExtTx); err != nil {
-			fmt.Println("preblocker failed to decode injected vote extension tx", "err", err)
-		} else {
+		if err := json.Unmarshal(req.Txs[0], &injectedVoteExtTx); err == nil {
 			from := k.GetStartHeightFromStore(ctx)
 			to := k.GetEndHeightFromStore(ctx)
 
@@ -121,7 +131,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	}
 
 	currentBlockHeight := ctx.BlockHeight()
-	if !k.IsValidBlockToPostTODA(uint64(currentBlockHeight)) {
+	if !k.IsValidBlockToPostToDA(uint64(currentBlockHeight)) {
 		return nil
 	}
 
@@ -137,7 +147,6 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	}
 
 	var blocksToSumit []int64
-
 	for i := fromHeight; i < endHeight; i++ {
 		blocksToSumit = append(blocksToSumit, int64(i))
 	}
@@ -150,9 +159,9 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 	return nil
 }
 
-// IsValidBlockToPostTODA checks if the given block height is valid for posting data.
+// IsValidBlockToPostToDA checks if the given block height is valid for posting data.
 // The block is considered valid if it meets the defined interval for posting.
-func (k *Keeper) IsValidBlockToPostTODA(height uint64) bool {
+func (k *Keeper) IsValidBlockToPostToDA(height uint64) bool {
 	if height <= uint64(1) {
 		return false
 	}

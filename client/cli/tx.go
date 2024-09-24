@@ -9,16 +9,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
-	availblob "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/keeper"
-	"github.com/vitwit/avail-da-module/types"
+	types "github.com/vitwit/avail-da-module/types"
 )
 
-// NewTxCmd creates and returns a Cobra command for transaction subcommands related to the availblob module.
+// NewTxCmd creates and returns a Cobra command for transaction subcommands related to the cada module.
 func NewTxCmd(_ *keeper.Keeper) *cobra.Command {
 	txCmd := &cobra.Command{
-		Use:                        availblob.ModuleName,
-		Short:                      availblob.ModuleName + " transaction subcommands",
+		Use:                        types.ModuleName,
+		Short:                      types.ModuleName + " transaction subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,

@@ -14,10 +14,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
-	availblob "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/client/cli"
 	"github.com/vitwit/avail-da-module/keeper"
-	"github.com/vitwit/avail-da-module/types"
+	types "github.com/vitwit/avail-da-module/types"
 )
 
 var (
@@ -37,7 +36,7 @@ type AppModuleBasic struct {
 
 // Name returns the params module's name.
 func (AppModuleBasic) Name() string {
-	return availblob.ModuleName
+	return types.ModuleName
 }
 
 // RegisterLegacyAminoCodec registers the params module's types on the given LegacyAmino codec.
@@ -78,11 +77,11 @@ func NewAppModule(cdc codec.Codec, keeper *keeper.Keeper) AppModule {
 }
 
 func NewAppModuleBasic(m AppModule) module.AppModuleBasic {
-	return module.CoreAppModuleBasicAdaptor(availblob.ModuleName, m)
+	return module.CoreAppModuleBasicAdaptor(types.ModuleName, m)
 }
 
 // Name returns the rollchain module's name.
-func (AppModule) Name() string { return availblob.ModuleName }
+func (AppModule) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the rollchain module's types on the LegacyAmino codec.
 func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
@@ -117,12 +116,6 @@ func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServerImpl(am.keeper))
-
-	// Register in place module state migration migrations
-	// m := keeper.NewMigrator(am.keeper)
-	// if err := cfg.RegisterMigration(rollchain.ModuleName, 1, m.Migrate1to2); err != nil {
-	// 	panic(fmt.Sprintf("failed to migrate x/%s from version 1 to 2: %v", rollchain.ModuleName, err))
-	// }
 }
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.
@@ -134,7 +127,7 @@ func (AppModule) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 func (AppModule) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig, bz json.RawMessage) error {
 	var data types.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
-		return fmt.Errorf("failed to unmarshal %s genesis state: %w", availblob.ModuleName, err)
+		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
 
 	return data.Validate()
@@ -154,7 +147,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 	return nil
 }
 
-// ExportGenesis returns the exported genesis state as raw bytes for the rollchain
+// ExportGenesis returns the exported genesis state as raw bytes for the cada
 // module.
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	gs := am.keeper.ExportGenesis(ctx)

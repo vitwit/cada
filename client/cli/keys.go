@@ -3,7 +3,7 @@ package cli
 import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
-	availblob "github.com/vitwit/avail-da-module"
+	types "github.com/vitwit/avail-da-module/types"
 )
 
 const (
@@ -13,11 +13,11 @@ const (
 	FlagCoinType = "coin-type"
 )
 
-// NewKeysCmd returns a root CLI command handler for all x/availblob keys commands.
+// NewKeysCmd returns a root CLI command handler for all cada keys commands.
 func NewKeysCmd() *cobra.Command {
 	keysCmd := &cobra.Command{
-		Use:                        availblob.ModuleName,
-		Short:                      availblob.ModuleName + " keys subcommands",
+		Use:                        types.ModuleName,
+		Short:                      types.ModuleName + " keys subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,

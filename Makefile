@@ -73,7 +73,7 @@ lint-fix:
 .PHONY: lint lint-fix
 
 GO := go
-TARGET := availd
+TARGET := cada
 BINDIR ?= $(GOPATH)/bin
 
 .PHONY: all build install clean
@@ -100,9 +100,9 @@ clean:
 # Run this before testnet keys are added
 # chainid-1 is used in the testnet.json
 set-testnet-configs:
-	availd config set client chain-id chainid-1
-	availd config set client keyring-backend test
-	availd config set client output text
+	cada config set client chain-id chainid-1
+	cada config set client keyring-backend test
+	cada config set client output text
 
 
 ###############################################################################

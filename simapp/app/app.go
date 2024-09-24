@@ -38,7 +38,6 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
 
 	"github.com/spf13/cast"
-	availblob1 "github.com/vitwit/avail-da-module"
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
@@ -138,17 +137,17 @@ import (
 	packetforwardkeeper "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/keeper"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
 
-	availblobkeeper "github.com/vitwit/avail-da-module/keeper"
-	availblobmodule "github.com/vitwit/avail-da-module/module"
-	availblobrelayer "github.com/vitwit/avail-da-module/relayer"
+	cadakeeper "github.com/vitwit/avail-da-module/keeper"
+	cadamodule "github.com/vitwit/avail-da-module/module"
+	cadarelayer "github.com/vitwit/avail-da-module/relayer"
 	"github.com/vitwit/avail-da-module/relayer/avail"
 	httpclient "github.com/vitwit/avail-da-module/relayer/http"
-	availblobmoduletypes "github.com/vitwit/avail-da-module/types"
+	cadatypes "github.com/vitwit/avail-da-module/types"
 )
 
 const (
-	appName      = "avail-sdk"
-	NodeDir      = ".availsdk"
+	appName      = "cada-sdk"
+	NodeDir      = ".cada"
 	Bech32Prefix = "cosmos"
 )
 
@@ -232,8 +231,8 @@ type ChainApp struct {
 	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
 
-	AvailBlobKeeper  *availblobkeeper.Keeper
-	Availblobrelayer *availblobrelayer.Relayer
+	CadaKeeper  *cadakeeper.Keeper
+	Cadarelayer *cadarelayer.Relayer
 
 	PacketForwardKeeper *packetforwardkeeper.Keeper
 
@@ -343,7 +342,7 @@ func NewChainApp(
 		icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey,
 		packetforwardtypes.StoreKey,
-		availblob1.StoreKey,
+		cadatypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -687,10 +686,10 @@ func NewChainApp(
 	httpClient := httpclient.NewHandler()
 
 	// Avail-DA client
-	cfg := availblobmoduletypes.AvailConfigFromAppOpts(appOpts)
+	cfg := cadatypes.AvailConfigFromAppOpts(appOpts)
 	availDAClient := avail.NewLightClient(cfg.LightClientURL, httpClient)
 
-	app.Availblobrelayer, err = availblobrelayer.NewRelayer(
+	app.Cadarelayer, err = cadarelayer.NewRelayer(
 		logger,
 		appCodec,
 		cfg,
@@ -701,33 +700,33 @@ func NewChainApp(
 		panic(err)
 	}
 
-	app.AvailBlobKeeper = availblobkeeper.NewKeeper(
+	app.CadaKeeper = cadakeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[availblob1.StoreKey]),
+		runtime.NewKVStoreService(keys[cadatypes.StoreKey]),
 		app.UpgradeKeeper,
-		keys[availblob1.StoreKey],
+		keys[cadatypes.StoreKey],
 		appOpts,
 		logger,
-		app.Availblobrelayer,
+		app.Cadarelayer,
 	)
 
 	// must be done after relayer is created
-	app.AvailBlobKeeper.SetRelayer(app.Availblobrelayer)
+	app.CadaKeeper.SetRelayer(app.Cadarelayer)
 
-	voteExtensionHandler := availblobkeeper.NewVoteExtHandler(
+	voteExtensionHandler := cadakeeper.NewVoteExtHandler(
 		logger,
-		app.AvailBlobKeeper,
+		app.CadaKeeper,
 	)
 
 	dph := baseapp.NewDefaultProposalHandler(bApp.Mempool(), bApp)
-	availBlobProposalHandler := availblobkeeper.NewProofOfBlobProposalHandler(
-		app.AvailBlobKeeper,
+	cadaProposalHandler := cadakeeper.NewProofOfBlobProposalHandler(
+		app.CadaKeeper,
 		dph.PrepareProposalHandler(),
 		dph.ProcessProposalHandler(),
 		*voteExtensionHandler,
 	)
-	bApp.SetPrepareProposal(availBlobProposalHandler.PrepareProposal)
-	bApp.SetProcessProposal(availBlobProposalHandler.ProcessProposal)
+	bApp.SetPrepareProposal(cadaProposalHandler.PrepareProposal)
+	bApp.SetProcessProposal(cadaProposalHandler.ProcessProposal)
 	bApp.SetExtendVoteHandler(voteExtensionHandler.ExtendVoteHandler())
 	bApp.SetVerifyVoteExtensionHandler(voteExtensionHandler.VerifyVoteExtensionHandler())
 
@@ -772,7 +771,7 @@ func NewChainApp(
 		ibctm.NewAppModule(),
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 		// custom
-		availblobmodule.NewAppModule(appCodec, app.AvailBlobKeeper),
+		cadamodule.NewAppModule(appCodec, app.CadaKeeper),
 		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
 	)
 
@@ -817,7 +816,7 @@ func NewChainApp(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		availblob1.ModuleName,
+		cadatypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -834,7 +833,7 @@ func NewChainApp(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		availblob1.ModuleName,
+		cadatypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -859,7 +858,7 @@ func NewChainApp(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		availblob1.ModuleName,
+		cadatypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
@@ -1017,9 +1016,6 @@ func (app *ChainApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.Respon
 		return res, err
 	}
 
-	//app.Availblobrelayer.NotifyCommitHeight(req.Height)
-	app.Availblobrelayer.NotifyCommitHeight(req.Height)
-
 	return res, nil
 }
 
@@ -1039,7 +1035,7 @@ func (app *ChainApp) Name() string { return app.BaseApp.Name() }
 
 // PreBlocker application updates every pre block
 func (app *ChainApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
-	err := app.AvailBlobKeeper.PreBlocker(ctx, req)
+	err := app.CadaKeeper.PreBlocker(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -1223,10 +1219,6 @@ func (app *ChainApp) RegisterTendermintService(clientCtx client.Context) {
 
 func (app *ChainApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
 	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
-
-	app.Availblobrelayer.SetClientContext(clientCtx)
-
-	go app.Availblobrelayer.Start()
 }
 
 // GetMaccPerms returns a copy of the module account permissions

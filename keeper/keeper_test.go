@@ -19,11 +19,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/stretchr/testify/suite"
-	cada "github.com/vitwit/avail-da-module"
 	"github.com/vitwit/avail-da-module/keeper"
 	module "github.com/vitwit/avail-da-module/module"
 	relayer "github.com/vitwit/avail-da-module/relayer"
-	"github.com/vitwit/avail-da-module/types"
+	types "github.com/vitwit/avail-da-module/types"
 )
 
 type TestSuite struct {
@@ -52,7 +51,7 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (s *TestSuite) SetupTest() {
-	key := storetypes.NewKVStoreKey(cada.ModuleName)
+	key := storetypes.NewKVStoreKey(types.ModuleName)
 	storeService := runtime.NewKVStoreService(key)
 	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
 	s.ctx = testCtx.Ctx.WithBlockHeader(cmtproto.Header{Time: cmttime.Now()})
