@@ -28,6 +28,9 @@ var (
 	LastVotingEndHeightKey = collections.NewPrefix(8)
 
 	AvailHeightKey = collections.NewPrefix(9)
+
+	// PendingHeightKey saves the height at which the state is changed to pending
+	PendingHeightKey = collections.NewPrefix(10)
 )
 
 const (
