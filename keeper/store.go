@@ -17,6 +17,11 @@ const (
 	FailureState  uint32 = 3
 )
 
+// if the previous status has been pending for too long
+func (k *Keeper) isExpired(currentHeight, pendingStartHeight uint64, status uint32) bool {
+	return status == PendingState && currentHeight-pendingStartHeight >= k.relayer.AvailConfig.ExpirationInterval
+}
+
 func ParseStatus(status uint32, startHeight, endHeight uint64) string {
 	if startHeight == 0 && endHeight == 0 {
 		return ""
@@ -46,15 +51,17 @@ func ParseVotingEndHeight(height uint64) string {
 
 // CanUpdateStatusToPending checks if the blob status can be updated to "pending".
 // This function verifies whether the current status allows transitioning to the "pending" state.
-func CanUpdateStatusToPending(store storetypes2.KVStore) bool {
+func (k *Keeper) CanUpdateStatusToPending(ctx sdk.Context, store storetypes2.KVStore) bool {
 	statusBytes := store.Get(types.BlobStatusKey)
 	if len(statusBytes) == 0 {
 		return true
 	}
 
+	pendingStartHeight := k.GetPendingHeightFromStore(ctx)
+
 	status := binary.BigEndian.Uint32(statusBytes)
 
-	return status == ReadyState || status == FailureState
+	return status == ReadyState || status == FailureState || k.isExpired(uint64(ctx.BlockHeight()), pendingStartHeight, status)
 }
 
 // GetStatusFromStore retrieves the current status of the blob from the store.
@@ -83,6 +90,11 @@ func UpdateBlobStatus(_ sdk.Context, store storetypes2.KVStore, status uint32) e
 // UpdateStartHeight updates the start height in the KV store.
 func UpdateStartHeight(_ sdk.Context, store storetypes2.KVStore, startHeight uint64) error {
 	return updateHeight(store, types.PrevHeightKey, startHeight)
+}
+
+// UpdatePendingHeight updates the height at which the status is changed to pending in the KV store
+func UpdatePendingHeight(_ sdk.Context, store storetypes2.KVStore, startHeight uint64) error {
+	return updateHeight(store, types.PendingHeightKey, startHeight)
 }
 
 // UpdateEndHeight updates the end height in the KV store.
@@ -122,6 +134,11 @@ func updateHeight(store storetypes2.KVStore, key collections.Prefix, height uint
 // GetProvenHeightFromStore retrieves the proven height from the KV store.
 func (k *Keeper) GetProvenHeightFromStore(ctx sdk.Context) uint64 {
 	return k.getHeight(ctx, types.ProvenHeightKey)
+}
+
+// GetPendingHeightFromStore retrieves the pending start height from the KV store.
+func (k *Keeper) GetPendingHeightFromStore(ctx sdk.Context) uint64 {
+	return k.getHeight(ctx, types.PendingHeightKey)
 }
 
 // GetAvailHeightFromStore retrieves the avail height from the KV store.

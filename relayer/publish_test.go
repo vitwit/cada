@@ -20,8 +20,8 @@ func TestGetBlocksDataFromLocal(t *testing.T) {
 	mockLocalProvider := new(localmocks.CosmosProvider)
 
 	relayer := &relayer.Relayer{
-		LocalProvider: mockLocalProvider,
-		Logger:        logger,
+		CosmosProvider: mockLocalProvider,
+		Logger:         logger,
 	}
 
 	blockHeights := []int64{1, 2, 3}

@@ -20,6 +20,9 @@ type StakeWeightedVotes struct {
 	// ExtendedCommitInfo Contains additional information about the commit phase, including
 	//  vote extensions and details about the current consensus round.
 	ExtendedCommitInfo abci.ExtendedCommitInfo
+
+	// TotalVotingPower is the sum of all validators' voting power
+	TotalVotingPower int64
 }
 
 // ProofOfBlobProposalHandler manages the proposal and vote extension logic related to
@@ -62,7 +65,7 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 	h.keeper.ProposerAddress = req.ProposerAddress
 	proposalTxs := req.Txs
 
-	votes, err := h.aggregateVotes(ctx, req.LocalLastCommit)
+	votes, totalVotingPower, err := h.aggregateVotes(ctx, req.LocalLastCommit)
 	if err != nil {
 		fmt.Println("error while aggregating votes", err)
 		return nil, err
@@ -71,6 +74,7 @@ func (h *ProofOfBlobProposalHandler) PrepareProposal(ctx sdk.Context, req *abci.
 	injectedVoteExtTx := StakeWeightedVotes{
 		Votes:              votes,
 		ExtendedCommitInfo: req.LocalLastCommit,
+		TotalVotingPower:   totalVotingPower,
 	}
 
 	// if there is any another tx, it might give any marshelling error, so ignoring this err
@@ -102,6 +106,14 @@ func (h *ProofOfBlobProposalHandler) ProcessProposal(_ sdk.Context, req *abci.Re
 	return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_ACCEPT}, nil
 }
 
+// 66% of voting power is needed. Change the percentage if required
+func isEnoughVoting(voting, totalVoting int64) bool {
+	// division can be inaccurate due to decimal roundups
+	// voting / totalVoting * 100 > 66
+	// voting * 100 > 66 * totalVoting
+	return voting*100 > 66*totalVoting
+}
+
 // PreBlocker runs before finalizing each block, responsible for handling vote extensions
 // and managing the posting of blocks to the Avail light client.
 func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) error {
@@ -119,8 +131,9 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 			votingPower := injectedVoteExtTx.Votes[pendingRangeKey]
 
 			state := FailureState
+			totalVotingPower := injectedVoteExtTx.TotalVotingPower
 
-			if votingPower > 0 { // TODO: calculate voting power properly
+			if isEnoughVoting(votingPower, totalVotingPower) {
 				state = ReadyState
 			}
 
@@ -177,14 +190,17 @@ func (k *Keeper) IsValidBlockToPostToDA(height uint64) bool {
 // specific block ranges.
 // If the vote extension contains a vote for the pending range, it sums the voting power
 // of validators.
-func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.ExtendedCommitInfo) (map[string]int64, error) {
+func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.ExtendedCommitInfo) (map[string]int64, int64, error) {
 	from := h.keeper.GetStartHeightFromStore(ctx)
 	to := h.keeper.GetEndHeightFromStore(ctx)
 
 	pendingRangeKey := Key(from, to)
 	votes := make(map[string]int64, 1)
+	totalVoting := 0
 
 	for _, v := range ci.Votes {
+		totalVoting += int(v.Validator.Power)
+
 		// Process only votes with BlockIDFlagCommit, indicating the validator committed to the block.
 		// Skip votes with other flags (e.g., BlockIDFlagUnknown, BlockIDFlagNil).
 		if v.BlockIdFlag != cmtproto.BlockIDFlagCommit {
@@ -210,5 +226,5 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 		}
 
 	}
-	return votes, nil
+	return votes, int64(totalVoting), nil
 }

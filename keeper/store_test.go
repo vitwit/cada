@@ -24,13 +24,13 @@ func (s *TestSuite) TestCanUpdateStatusToPending() {
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-			res := store.CanUpdateStatusToPending(s.store)
+			res := s.keeper.CanUpdateStatusToPending(s.ctx, s.store)
 			s.True(res)
 			if tc.updateStatus {
 				err := store.UpdateBlobStatus(s.ctx, s.store, tc.status)
 				s.Require().NoError(err)
 
-				res := store.CanUpdateStatusToPending(s.store)
+				res := s.keeper.CanUpdateStatusToPending(s.ctx, s.store)
 				s.False(res)
 			}
 		})

@@ -24,6 +24,8 @@ type AvailConfiguration struct {
 	PublishBlobInterval uint64 `json:"publish-blob-interval"`
 
 	VoteInterval uint64 `json:"vote-interval"`
+
+	ExpirationInterval uint64 `json:"expiration-interval"`
 }
 
 const (
@@ -38,6 +40,7 @@ const (
 	FlagPublishBlobInterval = "avail.publish-blob-interval"
 	FlagVoteInterval        = "avail.vote-interval"
 	FlagValidatorKey        = "avail.validator-key"
+	FlagExpirationInterval  = "avail.expiration-interval"
 	FlagCosmosNodeDir       = "avail.cosmos-node-dir"
 	FlagKeyringBackendType  = "avail.keyring-backend-type"
 
@@ -66,6 +69,9 @@ const (
 	# It is the period before validators verify whether data is truly included in
 	# Avail and confirm it with the network using vote extension
 	vote-interval = 5
+
+	# If the previous blocks status remains pending beyond the expiration interval, it should be marked as expired
+	expiration-interval = 30
 	`
 )
 
@@ -74,8 +80,9 @@ var DefaultAvailConfig = AvailConfiguration{
 	AppID:               1,
 	CosmosNodeRPC:       "http://127.0.0.1:26657",
 	MaxBlobBlocks:       20,
-	PublishBlobInterval: 10,
+	PublishBlobInterval: 5,
 	VoteInterval:        5,
+	ExpirationInterval:  30,
 	LightClientURL:      "http://127.0.0.1:8000",
 }
 
@@ -89,5 +96,6 @@ func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {
 		MaxBlobBlocks:       cast.ToUint64(appOpts.Get(FlagMaxBlobBlocks)),
 		PublishBlobInterval: cast.ToUint64(appOpts.Get(FlagPublishBlobInterval)),
 		VoteInterval:        cast.ToUint64(appOpts.Get(FlagVoteInterval)),
+		ExpirationInterval:  cast.ToUint64(appOpts.Get(FlagExpirationInterval)),
 	}
 }
