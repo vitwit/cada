@@ -133,7 +133,7 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 			state := FailureState
 			totalVotingPower := injectedVoteExtTx.TotalVotingPower
 
-			if isEnoughVoting(votingPower, totalVotingPower) { // TODO: calculate voting power properly
+			if isEnoughVoting(votingPower, totalVotingPower) {
 				state = ReadyState
 			}
 
