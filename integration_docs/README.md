@@ -12,7 +12,7 @@ To set up the cada, users must configure their `validatorKey` and `keyringType` 
 
 - **validatorKey**: This is the name of the key associated with the validator node. Replace `"alice"` with your specific validator's key.
 
-- **keyringType**: Defines where the key is stored. Common options are `"test"` for testing or `"os"` for using the OS keyring in production.
+- **keyringBackend**: Defines where the key is stored. Common options are `"test"` for testing or `"os"` for using the OS keyring in production.
 
 ## Integration with SDK-Based Applications
 
