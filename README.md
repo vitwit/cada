@@ -10,7 +10,7 @@ Note: Ensure that the Avail light client URL is correctly configured for the mod
 
 # How It Works
 
-There are four main components in the workflow:
+There are main components in the workflow:
 
 ## 1. Cosmos Chain
 The core logic of **Cada** is implemented and executed on the Cosmos chain.
