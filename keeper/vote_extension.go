@@ -108,7 +108,6 @@ func (h *VoteExtHandler) VerifyVoteExtensionHandler() sdk.VerifyVoteExtensionHan
 				Status: abci.ResponseVerifyVoteExtension_REJECT,
 			}, fmt.Errorf("request is nil")
 		}
-
 		// Example: Validate vote height (assuming the vote has a height field)
 		if req.Height <= 0 {
 			return &abci.ResponseVerifyVoteExtension{
