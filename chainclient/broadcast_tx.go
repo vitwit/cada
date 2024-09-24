@@ -43,7 +43,7 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 	keyName := clientConfig.ValidatorKey
 
 	// Create a keyring
-	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec)) // TODO : update keyring backend type
+	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec))
 	if err != nil {
 		return fmt.Errorf("error creating keyring: %w", err)
 	}

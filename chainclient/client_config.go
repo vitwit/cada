@@ -2,10 +2,7 @@ package chainclient
 
 import (
 	"fmt"
-	"log"
 	"os"
-
-	"gopkg.in/yaml.v3"
 )
 
 // Config represents the structure of the config.yaml file
@@ -16,22 +13,26 @@ type Config struct {
 
 func GetClientConfig() Config {
 	// Read the YAML configuration file
-	wd, err := os.Getwd()
-	fmt.Println("working dirrr........", wd)
-	configpath := fmt.Sprintf(wd + "/chainclient/config.yaml")
-	fmt.Println("comnfig pathhhhh....", configpath)
-	data, err := os.ReadFile(configpath)
-	if err != nil {
-		log.Println("Error reading YAML file: %v", err)
-	}
+	// wd, _ := os.Getwd()
+	// fmt.Println("working dirrr........", wd)
+	// configpath := fmt.Sprintf(wd + "/chainclient/config.yaml")
+
+	// path, err := filepath.Abs("./config.yaml")
+	// fmt.Println("path an derrorr.....", path, err)
+
+	// // configPath := config.yaml
+	// // fmt.Println("comnfig pathhhhh....", configpath)
+	// data, err := os.ReadFile(path)
+	// if err != nil {
+	// 	log.Println("Error reading YAML file: %v", err)
+	// }
 
 	// Initialize a Config struct
-	var config Config
+	// var config Config
 
-	// Unmarshal the YAML data into the Config struct
-	err = yaml.Unmarshal(data, &config)
-	if err != nil {
-		log.Println("Error unmarshalling YAML: %v", err)
+	config := Config{ //TODO: think about better approach
+		ValidatorKey:   os.Getenv("VALIDATOR_KEY"),
+		KeyringBackend: os.Getenv("KEYRING_BACKEND"),
 	}
 
 	// Output the configuration values

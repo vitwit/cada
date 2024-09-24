@@ -10,9 +10,6 @@ type AvailConfiguration struct {
 	// avail light node url
 	LightClientURL string `mapstructure:"light-client-url"`
 
-	// avail chain ID
-	// ChainID string `mapstructure:"chain-id"`
-
 	// Overrides built-in app-id used
 	AppID int `mapstructure:"app-id"`
 
@@ -61,7 +58,7 @@ const (
 	cosmos-node-rpc = "http://127.0.0.1:26657"
 
 	# Maximum number of blocks over which blobs can be processed
-	max-blob-blocks = 10
+	max-blob-blocks = 20
 
 	# The frequency at which block data is posted to the Avail Network
 	publish-blob-interval = 5
@@ -73,7 +70,6 @@ const (
 )
 
 var DefaultAvailConfig = AvailConfiguration{
-	// ChainID:             "avail-1",
 	Seed:                "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice",
 	AppID:               1,
 	CosmosNodeRPC:       "http://127.0.0.1:26657",
@@ -81,8 +77,6 @@ var DefaultAvailConfig = AvailConfiguration{
 	PublishBlobInterval: 10,
 	VoteInterval:        5,
 	LightClientURL:      "http://127.0.0.1:8000",
-	// ValidatorKey:        "alice",
-	// CosmosNodeDir:          ".simapp",
 }
 
 func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {
@@ -95,7 +89,5 @@ func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {
 		MaxBlobBlocks:       cast.ToUint64(appOpts.Get(FlagMaxBlobBlocks)),
 		PublishBlobInterval: cast.ToUint64(appOpts.Get(FlagPublishBlobInterval)),
 		VoteInterval:        cast.ToUint64(appOpts.Get(FlagVoteInterval)),
-		// ValidatorKey:        cast.ToString(appOpts.Get(FlagValidatorKey)),
-		// CosmosNodeDir:          cast.ToString(appOpts.Get(FlagCosmosNodeDir)),
 	}
 }
