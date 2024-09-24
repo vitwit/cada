@@ -31,8 +31,16 @@ func GetBinPath(daemon string) string {
 func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.BinaryCodec, config types.AvailConfiguration, nodeDir string) error {
 	// Define keyring and RPC client configuration
 	homePath := GetBinPath(nodeDir)
-	keyName := config.ValidatorKey
+	// keyName := config.ValidatorKey
 	rpcAddress := config.CosmosNodeRPC
+
+	// read chain client config
+	clientConfig := GetClientConfig()
+	if clientConfig.KeyringType == "" {
+		clientConfig.KeyringType = keyring.BackendTest
+	}
+
+	keyName := clientConfig.ValidatorKey
 
 	// Create a keyring
 	kr, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homePath, os.Stdin, cdc.(codec.Codec)) // TODO : update keyring backend type

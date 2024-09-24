@@ -19,9 +19,9 @@ type Relayer struct {
 
 	submittedBlocksCache map[int64]bool
 
-	LocalProvider local.CosmosProvider
-	AvailDAClient avail.DA
-	clientCtx     client.Context
+	CosmosProvider local.CosmosProvider
+	AvailDAClient  avail.DA
+	clientCtx      client.Context
 
 	availChainID string
 	AvailConfig  types.AvailConfiguration
@@ -48,8 +48,8 @@ func NewRelayer(
 		provenHeights: make(chan int64, 10000),
 		commitHeights: make(chan int64, 10000),
 
-		LocalProvider:        localProvider,
-		availChainID:         cfg.ChainID,
+		CosmosProvider: localProvider,
+		// availChainID:         cfg.ChainID,
 		submittedBlocksCache: make(map[int64]bool),
 		NodeDir:              nodeDir,
 		AvailConfig:          cfg,
