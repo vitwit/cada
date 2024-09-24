@@ -10,12 +10,13 @@ import (
 func (k *Keeper) SetBlobStatusPending(ctx sdk.Context, startHeight, endHeight uint64) bool {
 	store := ctx.KVStore(k.storeKey)
 
-	if !CanUpdateStatusToPending(store) { // Todo: we should check for expiration too (what if the status was pending for too long)
+	if !k.CanUpdateStatusToPending(ctx, store) {
 		return false
 	}
 
 	UpdateBlobStatus(ctx, store, PendingState)
 	UpdateStartHeight(ctx, store, startHeight)
+	UpdatePendingHeight(ctx, store, uint64(ctx.BlockHeight()))
 	UpdateEndHeight(ctx, store, endHeight)
 	return true
 }

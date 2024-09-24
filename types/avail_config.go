@@ -26,8 +26,9 @@ type AvailConfiguration struct {
 
 	PublishBlobInterval uint64 `json:"publish-blob-interval"`
 
-	VoteInterval uint64 `json:"vote-interval"`
-	ValidatorKey string `json:"validator-key"`
+	VoteInterval       uint64 `json:"vote-interval"`
+	ValidatorKey       string `json:"validator-key"`
+	ExpirationInterval uint64 `json:"expiration-interval"`
 	// CosmosNodeDir   string `json:"cosmos-node-dir"`
 }
 
@@ -43,6 +44,7 @@ const (
 	FlagPublishBlobInterval = "avail.publish-blob-interval"
 	FlagVoteInterval        = "avail.vote-interval"
 	FlagValidatorKey        = "avail.validator-key"
+	FlagExpirationInterval  = "avail.expiration-interval"
 	FlagCosmosNodeDir       = "avail.cosmos-node-dir"
 
 	DefaultConfigTemplate = `
@@ -65,7 +67,7 @@ const (
 	cosmos-node-rpc = "http://127.0.0.1:26657"
 
 	# Maximum number of blocks over which blobs can be processed
-	max-blob-blocks = 10
+	max-blob-blocks = 20
 
 	# The frequency at which block data is posted to the Avail Network
 	publish-blob-interval = 5
@@ -73,6 +75,9 @@ const (
 	# It is the period before validators verify whether data is truly included in
 	# Avail and confirm it with the network using vote extension
 	vote-interval = 5
+
+	# If the previous blocks status remains pending beyond the expiration interval, it should be marked as expired
+	expiration-interval = 30
 
 	# It is the keyname of the cosmos validator account to sign the transactions
 	validator-key = "alice"
@@ -85,8 +90,9 @@ var DefaultAvailConfig = AvailConfiguration{
 	AppID:               1,
 	CosmosNodeRPC:       "http://127.0.0.1:26657",
 	MaxBlobBlocks:       20,
-	PublishBlobInterval: 10,
+	PublishBlobInterval: 5,
 	VoteInterval:        5,
+	ExpirationInterval:  30,
 	LightClientURL:      "http://127.0.0.1:8000",
 	ValidatorKey:        "alice",
 	// CosmosNodeDir:          ".simapp",
