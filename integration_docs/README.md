@@ -8,11 +8,19 @@ The default configuration file for the CADA module can be found [here](./config.
 
 ## Validator Key and Keyring Type Setup
 
-To set up the cada, users must configure their `validatorKey` and `keyringType` in the [config.yaml](/chainclient/config.yaml) file:
+To configure the CADA module, users are required to export the validatorKey and keyringType environment variables.
 
-- **validatorKey**: This is the name of the key associated with the validator node. Replace `"alice"` with your specific validator's key.
+**ValidatorKey**: Specifies the name of the key associated with the validator node.
 
-- **keyringBackend**: Defines where the key is stored. Common options are `"test"` for testing or `"os"` for using the OS keyring in production.
+**KeyringBackend**: Specifies where the key is stored. Common options include "test" for testing purposes or "os" for using the operating system’s keyring in production. By default, the keyring-backend is set to "test".
+
+Export the ValidatorKey and KeyringBackend by running the following commands:
+
+```sh
+export VALIDATOR_KEY="alice"
+export KEYRING_BACKEND="os"
+```
+Ensure that these values are correctly configured before proceeding with further steps.
 
 ## Integration with SDK-Based Applications
 
@@ -20,7 +28,7 @@ To integrate CADA into your Cosmos SDK-based application, follow these steps:
 
 - Ensure you are using the latest version of Go for full compatibility.
 - Add the CADA module to your application's app.go file.
-- Modify the [config.yaml](/chainclient/config.yaml) file with validator and keyring setup.
+- Export the values of the VALIDATOR_KEY and KEYRING_BACKEND environment variables.
 - Modify the [configuration file](./config.md) to set how data is posted to the Avail network.
 
 For a detailed walkthrough,refer to this [integration guide](./integration.md).
