@@ -2,25 +2,48 @@
 
 CADA is a module designed to connect Cosmos sovereign chains with the Avail network, making it easier for any Cosmos chain or rollapp to use Avail as their Data Availability (DA) layer. With CADA, developers can improve the scalability and security of their decentralized applications within the Cosmos ecosystem. It enables better data handling and availability, allowing Cosmos-based chains to tap into the strengths of Avail and build a more connected and resilient blockchain network.
 
-# How It Works
-For example:
-Let blobInterval = 10,
-
-- At height `11`, blocks from `1` to `10` are posted.
-- At height `21`, blocks from `11` to `20` are posted.
-
-For more detailed information, refer to the `CADA` module specification [here](./specs/README.md).
-
 # Integration Guide
 
 To integrate the CADA module into your application, follow the steps outlined in the [integration guide](./integration_docs/README.md)
 
 Note: Ensure that the Avail light client URL is correctly configured for the module to function as expected. For instructions on setup Avail locally, please refer to [this documentation](https://github.com/rollkit/avail-da?tab=readme-ov-file#avail-da).
 
+# How It Works
+
+There are four main components in the workflow:
+
+## 1. Cosmos Chain
+The core logic of **Cada** is implemented and executed on the Cosmos chain.
+
+In the Cada module:
+- At each block interval, the `PreBlocker` ABCI method sends a request to the `Relayer`, specifying the range of block heights ready to be posted to the **Avail** Data Availability (DA) network.
+- The chain is responsible for aggregating vote extensions from all validators and verifying whether the data has been made available on Avail.
+- Since verification requires communicating with the light client, an asynchronous voting mechanism is needed. **Vote extensions** enable this asynchronous voting mechanism for verification purposes.
+
+![Vote Extension](https://github.com/user-attachments/assets/c0edb8e7-20fd-468a-9109-4f31718e4467)
+
+## 2. Relayer
+The **Relayer** facilitates communication between the Cosmos Chain, the Avail light client, and the Cosmos Provider.
+
+- **Data Submission**: The relayer is responsible for fetching block data from the local provider and posting it to the Avail light client via an HTTP request.
+- Based on the response from the light client, the relayer submits a transaction informing the validators of the data availability status and the specific Avail block height where the data is included, so that validators can verify it.
+  
+- **Data Verification**: During verification, the relayer communicates with the Avail light client to confirm whether the data is truly available at the specified height.
+
+![Data Submission](https://github.com/user-attachments/assets/4e17b98f-ca8c-4b4c-a79e-8c60f123cb2c)
+
+## 3. Avail Light Node
+The **Avail Light Client** allows interaction with the Avail DA network without requiring a full node, and without having to trust remote peers. It leverages **Data Availability Sampling (DAS)**, which the light client performs on every newly created block.
+
+- The chain communicates with the Avail light client via the relayer during the data availability verification process.
+
+Find more details about the Avail Light Client [here](https://docs.availproject.org/docs/operate-a-node/run-a-light-client/Overview).
+
+## 4. Cosmos Provider
+The **Cosmos Provider** is responsible for fetching block data via RPC so that the data can be posted to Avail for availability checks.
+
 
 # Architecture
-
-![blocks-data-submission](https://github.com/user-attachments/assets/4e17b98f-ca8c-4b4c-a79e-8c60f123cb2c)
 
 
 - At each block interval, a request is sent from the `PreBlocker` ABCI method to the Keeper, specifying the range of block heights that are ready to be posted to the `Avail` DA network.
@@ -47,7 +70,7 @@ Note: Ensure that the Avail light client URL is correctly configured for the mod
     votingEndBlock = currentBlock + votingInterval
     ```
 
-![vote-extension](https://github.com/user-attachments/assets/c0edb8e7-20fd-468a-9109-4f31718e4467)
+
 
 - At block height `VotingEndBlock - 1`, all the validators verify if the specified blocks data is truly made available at the specified Avail height. They cast their vote (YES or NO) using `vote extensions`.
 
