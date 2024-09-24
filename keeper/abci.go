@@ -199,6 +199,8 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 	totalVoting := 0
 
 	for _, v := range ci.Votes {
+		totalVoting += int(v.Validator.Power)
+
 		// Process only votes with BlockIDFlagCommit, indicating the validator committed to the block.
 		// Skip votes with other flags (e.g., BlockIDFlagUnknown, BlockIDFlagNil).
 		if v.BlockIdFlag != cmtproto.BlockIDFlagCommit {
@@ -215,18 +217,13 @@ func (h *ProofOfBlobProposalHandler) aggregateVotes(ctx sdk.Context, ci abci.Ext
 			continue
 		}
 
-		currentTotalVoting := 0
 		for voteRange, isVoted := range voteExt.Votes {
-
-			currentTotalVoting += int(v.Validator.Power)
 			if voteRange != pendingRangeKey || !isVoted {
 				continue
 			}
 
 			votes[voteRange] += v.Validator.Power
 		}
-
-		totalVoting = max(totalVoting, currentTotalVoting)
 
 	}
 	return votes, int64(totalVoting), nil
