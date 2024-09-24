@@ -7,11 +7,7 @@ replace (
 	cosmossdk.io/x/evidence => cosmossdk.io/x/evidence v0.1.0
 	cosmossdk.io/x/upgrade => cosmossdk.io/x/upgrade v0.1.1 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
 	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v1.1.0
-	github.com/cosmos/cosmos-sdk => github.com/vitwit/cosmos-sdk v0.50.6-0.20240905105834-9a5babf69986
 	github.com/cosmos/ibc-go/v8 => github.com/cosmos/ibc-go/v8 v8.2.1
-	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
-	github.com/prometheus/client_model => github.com/prometheus/client_model v0.6.0 // Remove once cosmos-sdk fork has been updated to latest v0.50.6
-	github.com/prometheus/common => github.com/prometheus/common v0.47.0
 	github.com/spf13/viper => github.com/spf13/viper v1.17.0 // v1.18+ breaks app overrides
 )
 
@@ -42,12 +38,13 @@ require (
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/hashicorp/go-getter v1.7.4 // indirect
+	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/opencontainers/image-spec v1.1.0-rc5 // indirect
 	github.com/opencontainers/runc v1.1.5 // indirect
-	github.com/prometheus/client_golang v1.19.0 // indirect
+	github.com/prometheus/client_golang v1.20.4 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.52.2 // indirect
-	github.com/prometheus/procfs v0.13.0 // indirect
+	github.com/prometheus/common v0.55.0 // indirect
+	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	google.golang.org/api v0.171.0 // indirect
@@ -125,7 +122,7 @@ require (
 	github.com/improbable-eng/grpc-web v0.15.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jmhodges/levigo v1.0.0 // indirect
-	github.com/klauspost/compress v1.17.7 // indirect
+	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lib/pq v1.10.7 // indirect

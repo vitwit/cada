@@ -36,8 +36,8 @@ func ExecuteTX(ctx sdk.Context, msg types.MsgUpdateBlobStatusRequest, cdc codec.
 
 	// read chain client config
 	clientConfig := GetClientConfig()
-	if clientConfig.KeyringType == "" {
-		clientConfig.KeyringType = keyring.BackendTest
+	if clientConfig.KeyringBackend == "" {
+		clientConfig.KeyringBackend = keyring.BackendTest
 	}
 
 	keyName := clientConfig.ValidatorKey
