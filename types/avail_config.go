@@ -109,6 +109,7 @@ func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {
 		PublishBlobInterval: cast.ToUint64(appOpts.Get(FlagPublishBlobInterval)),
 		VoteInterval:        cast.ToUint64(appOpts.Get(FlagVoteInterval)),
 		ValidatorKey:        cast.ToString(appOpts.Get(FlagValidatorKey)),
+		ExpirationInterval:  cast.ToUint64(appOpts.Get(FlagExpirationInterval)),
 		// CosmosNodeDir:          cast.ToString(appOpts.Get(FlagCosmosNodeDir)),
 	}
 }
