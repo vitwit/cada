@@ -771,7 +771,7 @@ func NewChainApp(
 		ibctm.NewAppModule(),
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 		// custom
-		cadamodule.NewAppModule(appCodec, app.CadaKeeper),
+		cadamodule.NewAppModule(appCodec, app.CadaKeeper, app.AccountKeeper, app.BankKeeper),
 		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
 	)
 

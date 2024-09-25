@@ -12,10 +12,15 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 	"github.com/vitwit/avail-da-module/x/cada/client/cli"
 	"github.com/vitwit/avail-da-module/x/cada/keeper"
+	simulation "github.com/vitwit/avail-da-module/x/cada/simulation"
 	types "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
@@ -64,15 +69,20 @@ func (ab AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistr
 }
 
 type AppModule struct {
-	cdc    codec.Codec
-	keeper *keeper.Keeper
+	cdc        codec.Codec
+	keeper     *keeper.Keeper
+	authkeeper authkeeper.AccountKeeper
+	bankkeeper bankkeeper.Keeper
+	govkeeper  govkeeper.Keeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper *keeper.Keeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper *keeper.Keeper, ak authkeeper.AccountKeeper, bk bankkeeper.Keeper) AppModule {
 	return AppModule{
-		cdc:    cdc,
-		keeper: keeper,
+		cdc:        cdc,
+		keeper:     keeper,
+		authkeeper: ak,
+		bankkeeper: bk,
 	}
 }
 
@@ -164,3 +174,19 @@ func (am AppModule) IsOnePerModuleType() {}
 
 // IsAppModule implements the appmodule.AppModule interface.
 func (am AppModule) IsAppModule() {}
+
+func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
+	simulation.RandomizedGenState(simState)
+}
+
+// RegisterStoreDecoder registers a decoder for distribution module's types
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {
+}
+
+// WeightedOperations returns the all the accounts module operations with their respective weights.
+func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
+	return simulation.WeightedOperations(
+		simState.AppParams, simState.Cdc, simState.TxConfig,
+		am.authkeeper, am.bankkeeper, *am.keeper,
+	)
+}
