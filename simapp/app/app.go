@@ -137,12 +137,12 @@ import (
 	packetforwardkeeper "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/keeper"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
 
-	cadakeeper "github.com/vitwit/avail-da-module/keeper"
-	cadamodule "github.com/vitwit/avail-da-module/module"
 	cadarelayer "github.com/vitwit/avail-da-module/relayer"
 	"github.com/vitwit/avail-da-module/relayer/avail"
 	httpclient "github.com/vitwit/avail-da-module/relayer/http"
-	cadatypes "github.com/vitwit/avail-da-module/types"
+	cadakeeper "github.com/vitwit/avail-da-module/x/cada/keeper"
+	cadamodule "github.com/vitwit/avail-da-module/x/cada/module"
+	cadatypes "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 const (
