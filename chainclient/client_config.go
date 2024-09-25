@@ -12,24 +12,6 @@ type Config struct {
 }
 
 func GetClientConfig() Config {
-	// Read the YAML configuration file
-	// wd, _ := os.Getwd()
-	// fmt.Println("working dirrr........", wd)
-	// configpath := fmt.Sprintf(wd + "/chainclient/config.yaml")
-
-	// path, err := filepath.Abs("./config.yaml")
-	// fmt.Println("path an derrorr.....", path, err)
-
-	// // configPath := config.yaml
-	// // fmt.Println("comnfig pathhhhh....", configpath)
-	// data, err := os.ReadFile(path)
-	// if err != nil {
-	// 	log.Println("Error reading YAML file: %v", err)
-	// }
-
-	// Initialize a Config struct
-	// var config Config
-
 	config := Config{ //TODO: think about better approach
 		ValidatorKey:   os.Getenv("VALIDATOR_KEY"),
 		KeyringBackend: os.Getenv("KEYRING_BACKEND"),
