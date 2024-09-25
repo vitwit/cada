@@ -16,7 +16,7 @@ There are main components in the workflow:
 The core logic of **Cada** is implemented and executed on the Cosmos chain.
 
 In the Cada module:
-- At each block interval, the `PreBlocker` ABCI method sends a request to the `Relayer`, specifying the range of block heights ready to be posted to the **Avail** Data Availability (DA) network.
+- At each block interval, the `PreBlocker` ABCI method sends a request to the `Relayer`, specifying the range of block heights that are ready to be posted to the **Avail** Data Availability (DA) network.
 ![Data Submission](https://github.com/user-attachments/assets/4e17b98f-ca8c-4b4c-a79e-8c60f123cb2c)
 - The chain is responsible for aggregating vote extensions from all validators and verifying whether the data has been made available on Avail.
 - Since verification requires communicating with the light client, an asynchronous voting mechanism is needed. **Vote extensions** enable this asynchronous voting mechanism for verification purposes.
