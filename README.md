@@ -13,7 +13,7 @@ Note: Ensure that the Avail light client URL is correctly configured for the mod
 There are main components in the workflow:
 
 ## 1. Cada
-The core logic of **Cada** is implemented and executed on the Cosmos chain.
+The core functionality of the **Cada** module is integrated with and operates on the Cosmos blockchain.
 
 In the Cada module:
 - At each block interval, the `PreBlocker` ABCI method sends a request to the `Relayer`, specifying the range of block heights that are ready to be posted to the **Avail** Data Availability (DA) network.
