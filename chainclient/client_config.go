@@ -12,7 +12,8 @@ type Config struct {
 }
 
 func GetClientConfig() Config {
-	config := Config{ //TODO: think about better approach
+	// TODO: think about better approach(may be read from config.yaml)
+	config := Config{
 		ValidatorKey:   os.Getenv("VALIDATOR_KEY"),
 		KeyringBackend: os.Getenv("KEYRING_BACKEND"),
 	}
