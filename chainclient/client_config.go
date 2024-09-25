@@ -30,7 +30,7 @@ func GetClientConfig() Config {
 	// Initialize a Config struct
 	// var config Config
 
-	config := Config{ //TODO: think about better approach
+	config := Config{ // TODO: think about better approach
 		ValidatorKey:   os.Getenv("VALIDATOR_KEY"),
 		KeyringBackend: os.Getenv("KEYRING_BACKEND"),
 	}

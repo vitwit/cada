@@ -23,9 +23,8 @@ type Relayer struct {
 	AvailDAClient  avail.DA
 	clientCtx      client.Context
 
-	availChainID string
-	AvailConfig  types.AvailConfiguration
-	NodeDir      string
+	AvailConfig types.AvailConfiguration
+	NodeDir     string
 }
 
 // NewRelayer creates a new Relayer instance
