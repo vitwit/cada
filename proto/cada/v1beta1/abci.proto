@@ -3,7 +3,7 @@ package cada.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package =  "github.com/vitwit/avail-da-module/types";
+option go_package =  "github.com/vitwit/avail-da-module/x/cada/types";
 
 // InjectedData represents a message containing data that has been injected.
 message InjectedData {
