@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/vitwit/avail-da-module/relayer/avail"
 	"github.com/vitwit/avail-da-module/relayer/local"
-	"github.com/vitwit/avail-da-module/types"
+	"github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 // Relayer is responsible for posting new blocks to Avail

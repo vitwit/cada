@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	store "github.com/vitwit/avail-da-module/keeper"
+	store "github.com/vitwit/avail-da-module/x/cada/keeper"
 )
 
 func (s *TestSuite) TestCanUpdateStatusToPending() {

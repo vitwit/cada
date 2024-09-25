@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/vitwit/avail-da-module/types"
+	"github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 type msgServer struct {

@@ -3,7 +3,7 @@ package cli
 import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
-	types "github.com/vitwit/avail-da-module/types"
+	types "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 const (

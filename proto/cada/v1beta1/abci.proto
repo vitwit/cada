@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sdk.avail.v1beta1;
+package cada.v1beta1;
 
 import "gogoproto/gogo.proto";
 

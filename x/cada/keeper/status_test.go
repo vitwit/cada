@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/vitwit/avail-da-module/types"
+	"github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 func (s *TestSuite) TestSetBlobStatusPending() {

@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	store "github.com/vitwit/avail-da-module/keeper"
-	"github.com/vitwit/avail-da-module/types"
+	store "github.com/vitwit/avail-da-module/x/cada/keeper"
+	"github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 func (s *TestSuite) TestSubmitBlobStatus() {

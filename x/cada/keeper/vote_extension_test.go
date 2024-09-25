@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	abci "github.com/cometbft/cometbft/abci/types"
-	store "github.com/vitwit/avail-da-module/keeper"
+	store "github.com/vitwit/avail-da-module/x/cada/keeper"
 )
 
 func (s *TestSuite) TestExtendVoteHandler() {

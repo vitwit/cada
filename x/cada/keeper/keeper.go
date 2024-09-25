@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 	"github.com/vitwit/avail-da-module/relayer"
-	types "github.com/vitwit/avail-da-module/types"
+	types "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 type Keeper struct {

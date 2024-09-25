@@ -1,7 +1,7 @@
 syntax = "proto3";
-package sdk.avail.v1beta1;
+package cada.v1beta1;
 
-import "sdk/avail/v1beta1/tx.proto";
+import "cada/v1beta1/tx.proto";
 
 option go_package =  "github.com/vitwit/avail-da-module/types";
 

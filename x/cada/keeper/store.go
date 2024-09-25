@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/collections"
 	storetypes2 "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	types "github.com/vitwit/avail-da-module/types"
+	types "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 const (

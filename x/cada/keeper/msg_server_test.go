@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	cadakeeper "github.com/vitwit/avail-da-module/keeper"
-	"github.com/vitwit/avail-da-module/types"
+	cadakeeper "github.com/vitwit/avail-da-module/x/cada/keeper"
+	"github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 func (s *TestSuite) TestMsgServer_UpdateBlobStatus() {

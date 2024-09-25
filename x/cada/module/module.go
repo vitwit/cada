@@ -14,9 +14,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
-	"github.com/vitwit/avail-da-module/client/cli"
-	"github.com/vitwit/avail-da-module/keeper"
-	types "github.com/vitwit/avail-da-module/types"
+	"github.com/vitwit/avail-da-module/x/cada/client/cli"
+	"github.com/vitwit/avail-da-module/x/cada/keeper"
+	types "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 var (

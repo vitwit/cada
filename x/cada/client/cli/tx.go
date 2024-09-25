@@ -9,8 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
-	"github.com/vitwit/avail-da-module/keeper"
-	types "github.com/vitwit/avail-da-module/types"
+	"github.com/vitwit/avail-da-module/x/cada/keeper"
+	types "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 // NewTxCmd creates and returns a Cobra command for transaction subcommands related to the cada module.

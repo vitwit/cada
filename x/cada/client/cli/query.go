@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
-	types "github.com/vitwit/avail-da-module/types"
+	types "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 // GetQueryCmd returns the root query command for the cada module.

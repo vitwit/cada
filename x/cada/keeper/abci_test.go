@@ -4,7 +4,7 @@ import (
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	store "github.com/vitwit/avail-da-module/keeper"
+	store "github.com/vitwit/avail-da-module/x/cada/keeper"
 )
 
 func (s *TestSuite) TestPrepareProposal() {

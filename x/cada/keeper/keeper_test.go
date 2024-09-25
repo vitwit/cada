@@ -19,10 +19,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/stretchr/testify/suite"
-	"github.com/vitwit/avail-da-module/keeper"
-	module "github.com/vitwit/avail-da-module/module"
 	relayer "github.com/vitwit/avail-da-module/relayer"
-	types "github.com/vitwit/avail-da-module/types"
+	"github.com/vitwit/avail-da-module/x/cada/keeper"
+	module "github.com/vitwit/avail-da-module/x/cada/module"
+	types "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 type TestSuite struct {
