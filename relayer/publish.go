@@ -26,7 +26,7 @@ func (r *Relayer) GetBlocksDataFromLocal(ctx sdk.Context, blocks []int64) []byte
 	var bb []byte
 
 	for _, height := range blocks {
-		res, err := r.LocalProvider.GetBlockAtHeight(ctx, height)
+		res, err := r.CosmosProvider.GetBlockAtHeight(ctx, height)
 		if err != nil {
 			r.Logger.Error("Error getting block", "height:", height, "error", err)
 			return []byte{}

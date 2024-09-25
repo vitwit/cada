@@ -10,9 +10,6 @@ type AvailConfiguration struct {
 	// avail light node url
 	LightClientURL string `mapstructure:"light-client-url"`
 
-	// avail chain ID
-	ChainID string `mapstructure:"chain-id"`
-
 	// Overrides built-in app-id used
 	AppID int `mapstructure:"app-id"`
 
@@ -26,10 +23,9 @@ type AvailConfiguration struct {
 
 	PublishBlobInterval uint64 `json:"publish-blob-interval"`
 
-	VoteInterval       uint64 `json:"vote-interval"`
-	ValidatorKey       string `json:"validator-key"`
+	VoteInterval uint64 `json:"vote-interval"`
+
 	ExpirationInterval uint64 `json:"expiration-interval"`
-	// CosmosNodeDir   string `json:"cosmos-node-dir"`
 }
 
 const (
@@ -46,6 +42,7 @@ const (
 	FlagValidatorKey        = "avail.validator-key"
 	FlagExpirationInterval  = "avail.expiration-interval"
 	FlagCosmosNodeDir       = "avail.cosmos-node-dir"
+	FlagKeyringBackendType  = "avail.keyring-backend-type"
 
 	DefaultConfigTemplate = `
 
@@ -53,9 +50,6 @@ const (
 
 	# Avail light client node url for posting data
 	light-client-url = "http://127.0.0.1:8000"
-
-	# Avail chain id
-	chain-id = "avail-1"
 
 	# Overrides the expected  avail app-id, test-only
 	override-app-id = "1"
@@ -78,14 +72,10 @@ const (
 
 	# If the previous blocks status remains pending beyond the expiration interval, it should be marked as expired
 	expiration-interval = 30
-
-	# It is the keyname of the cosmos validator account to sign the transactions
-	validator-key = "alice"
 	`
 )
 
 var DefaultAvailConfig = AvailConfiguration{
-	ChainID:             "avail-1",
 	Seed:                "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice",
 	AppID:               1,
 	CosmosNodeRPC:       "http://127.0.0.1:26657",
@@ -94,13 +84,11 @@ var DefaultAvailConfig = AvailConfiguration{
 	VoteInterval:        5,
 	ExpirationInterval:  30,
 	LightClientURL:      "http://127.0.0.1:8000",
-	ValidatorKey:        "alice",
-	// CosmosNodeDir:          ".simapp",
 }
 
 func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {
 	return AvailConfiguration{
-		ChainID:             cast.ToString(appOpts.Get(FlagChainID)),
+		// ChainID:             cast.ToString(appOpts.Get(FlagChainID)),
 		AppID:               cast.ToInt(appOpts.Get(FlagOverrideAppID)),
 		Seed:                cast.ToString(appOpts.Get(FlagSeed)),
 		LightClientURL:      cast.ToString(appOpts.Get(FlagLightClientURL)),
@@ -108,8 +96,6 @@ func AvailConfigFromAppOpts(appOpts servertypes.AppOptions) AvailConfiguration {
 		MaxBlobBlocks:       cast.ToUint64(appOpts.Get(FlagMaxBlobBlocks)),
 		PublishBlobInterval: cast.ToUint64(appOpts.Get(FlagPublishBlobInterval)),
 		VoteInterval:        cast.ToUint64(appOpts.Get(FlagVoteInterval)),
-		ValidatorKey:        cast.ToString(appOpts.Get(FlagValidatorKey)),
 		ExpirationInterval:  cast.ToUint64(appOpts.Get(FlagExpirationInterval)),
-		// CosmosNodeDir:          cast.ToString(appOpts.Get(FlagCosmosNodeDir)),
 	}
 }
