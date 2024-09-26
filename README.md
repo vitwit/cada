@@ -42,7 +42,7 @@ In the CADA module:
 ## 2. Relayer
 The **Relayer** facilitates communication between the Cosmos Chain, the Avail light client, and the Cosmos Provider.
 
-- **Data Submission**: The relayer is responsible for fetching block data from the cosmos provider and posting it to the Avail light client via an HTTP request.
+- **Data Submission**: The relayer is responsible for fetching block data from the Cosmos provider and posting it to the Avail light client via an HTTP request.
 - Based on the response from the light client, the relayer submits a transaction informing the validators of the data availability status and the specific Avail block height where the data is included, so that validators can verify it.
   
 - **Data Verification**: During verification, the relayer communicates with the Avail light client to confirm whether the data is truly available at the specified height.
