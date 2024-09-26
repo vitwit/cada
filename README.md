@@ -10,18 +10,34 @@ Note: Ensure that the Avail light client URL is correctly configured for the mod
 
 # How It Works
 
-There are main components in the workflow:
+CADA(Cosmos Chain): Initiates the process by running the PreBlocker ABCI method.
 
-## 1. Cada
-The core functionality of the **Cada** module is integrated with and operates on the Cosmos blockchain.
+Request to Relayer: Sends block range information to the relayer.
 
-In the Cada module:
+Relayer: Fetches the block data from the Cosmos Provider and posts it to the Avail Light Client.
+
+Avail Light Client: Confirms whether the data is available.
+
+If Yes: Broadcast the Avail height and status.
+
+If No: Retry data submission.
+
+Validators: Vote to confirm the data availability, updating the blob status to "Success" or "Failure" based on results.
+
+
+These are main components in the workflow:
+
+## 1. CADA
+The core functionality of the **CADA** module is integrated with and operates on the Cosmos blockchain.
+
+In the CADA module:
 - At each block interval, the `PreBlocker` ABCI method sends a request to the `Relayer`, specifying the range of block heights that are ready to be posted to the **Avail** Data Availability (DA) network.
-![Data Submission](https://github.com/user-attachments/assets/4e17b98f-ca8c-4b4c-a79e-8c60f123cb2c)
+![Data Submission](https://github.com/user-attachments/assets/fc4d23cc-f6bd-4210-8407-47a57adcc290)
+
 - The chain is responsible for aggregating vote extensions from all validators and verifying whether the data has been made available on Avail.
 - Since verification requires communicating with the light client, an asynchronous voting mechanism is needed. **Vote extensions** enable this asynchronous voting mechanism for verification purposes.
 
-![Vote Extension](https://github.com/user-attachments/assets/c0edb8e7-20fd-468a-9109-4f31718e4467)
+![Vote Extension](https://github.com/user-attachments/assets/ea5b10ab-fb64-4ed0-8761-44675a852a01)
 
 ## 2. Relayer
 The **Relayer** facilitates communication between the Cosmos Chain, the Avail light client, and the Cosmos Provider.
@@ -44,7 +60,7 @@ Find more details about the Avail Light Client [here](https://docs.availproject.
 The **Cosmos Provider** is responsible for fetching block data via RPC so that the data can be posted to Avail for availability checks.
 
 
-# Architecture
+# Workflow
 
 
 - At each block interval, a request is sent from the `PreBlocker` ABCI method to the Keeper, specifying the range of block heights that are ready to be posted to the `Avail` DA network.
