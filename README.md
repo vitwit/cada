@@ -17,13 +17,11 @@ The core functionality of the **Cada** module is integrated with and operates on
 
 In the Cada module:
 - At each block interval, the `PreBlocker` ABCI method sends a request to the `Relayer`, specifying the range of block heights that are ready to be posted to the **Avail** Data Availability (DA) network.
-![Data Submission](https://github.com/user-attachments/assets/d5a990e2-f0b0-431e-b618-f6ed38b6b2ad)
-
+![Data Submission](https://github.com/user-attachments/assets/4e17b98f-ca8c-4b4c-a79e-8c60f123cb2c)
 - The chain is responsible for aggregating vote extensions from all validators and verifying whether the data has been made available on Avail.
 - Since verification requires communicating with the light client, an asynchronous voting mechanism is needed. **Vote extensions** enable this asynchronous voting mechanism for verification purposes.
 
-![Vote Extension](https://github.com/user-attachments/assets/b39babbb-8947-49db-b387-77835453c99e)
-
+![Vote Extension](https://github.com/user-attachments/assets/c0edb8e7-20fd-468a-9109-4f31718e4467)
 
 ## 2. Relayer
 The **Relayer** facilitates communication between the Cosmos Chain, the Avail light client, and the Cosmos Provider.
