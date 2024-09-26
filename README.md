@@ -10,19 +10,19 @@ Note: Ensure that the Avail light client URL is correctly configured for the mod
 
 # How It Works
 
-##### CADA(Cosmos Chain): Initiates the process by running the PreBlocker ABCI method.
+CADA(Cosmos Chain): Initiates the process by running the PreBlocker ABCI method.
 
-##### Request to Relayer: Sends block range information to the relayer.
+Request to Relayer: Sends block range information to the relayer.
 
-##### Relayer: Fetches the block data from the Cosmos Provider and posts it to the Avail Light Client.
+Relayer: Fetches the block data from the Cosmos Provider and posts it to the Avail Light Client.
 
-##### Avail Light Client: Confirms whether the data is available.
+Avail Light Client: Confirms whether the data is available.
 
-##### If Yes: Broadcast the Avail height and status.
+If Yes: Broadcast the Avail height and status.
 
-##### If No: Retry data submission.
+If No: Retry data submission.
 
-##### Validators: Vote to confirm the data availability, updating the blob status to "Success" or "Failure" based on results.
+Validators: Vote to confirm the data availability, updating the blob status to "Success" or "Failure" based on results.
 
 
 These are main components in the workflow:
