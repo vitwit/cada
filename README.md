@@ -10,7 +10,7 @@ Note: Ensure that the Avail light client URL is correctly configured for the mod
 
 # How It Works
 
-`Cosmos Chain`: Initiates the process by running the PreBlocker ABCI method.
+` CADA(Cosmos Chain)`: Initiates the process by running the PreBlocker ABCI method.
 
 `Request to Relayer`: Sends block range information to the relayer.
 
@@ -22,7 +22,7 @@ Note: Ensure that the Avail light client URL is correctly configured for the mod
 
 `If No`: Retry data submission.
 
-`Validators`: Vote to confirm the data availability, updating the status to "Ready" or "Failure" based on results.
+`Validators`: Vote to confirm the data availability, updating the blob status to "Success" or "Failure" based on results.
 
 There are main components in the workflow:
 
