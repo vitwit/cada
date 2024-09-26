@@ -10,6 +10,14 @@ Note: Ensure that the Avail light client URL is correctly configured for the mod
 
 # How It Works
 
+`Cosmos Chain`: Initiates the process by running the PreBlocker ABCI method.
+Request to Relayer: Sends block range information to the relayer.
+Relayer: Fetches the block data from the Cosmos Provider and posts it to the Avail Light Client.
+Avail Light Client: Confirms whether the data is available.
+If Yes: Broadcast the Avail height and status.
+If No: Retry data submission.
+Validators: Vote to confirm the data availability, updating the status to "Ready" or "Failure" based on results.
+
 There are main components in the workflow:
 
 ## 1. Cada
