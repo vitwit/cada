@@ -175,6 +175,10 @@ func (k *Keeper) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) err
 // IsValidBlockToPostToDA checks if the given block height is valid for posting data.
 // The block is considered valid if it meets the defined interval for posting.
 func (k *Keeper) IsValidBlockToPostToDA(height uint64) bool {
+	if k.relayer.AvailConfig.PublishBlobInterval == 0 {
+		return false
+	}
+
 	if height <= uint64(1) {
 		return false
 	}

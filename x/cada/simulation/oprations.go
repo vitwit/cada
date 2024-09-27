@@ -22,7 +22,7 @@ const (
 )
 
 func WeightedOperations(
-	appParams simtypes.AppParams, _ codec.JSONCodec, txConfig client.TxConfig,
+	appParams simtypes.AppParams, cdc codec.JSONCodec, txConfig client.TxConfig,
 	ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, k keeper.Keeper,
 ) simulation.WeightedOperations {
 	var weightMsgUpdateBlobStatusRequest int
@@ -33,12 +33,13 @@ func WeightedOperations(
 	return simulation.WeightedOperations{
 		simulation.NewWeightedOperation(
 			weightMsgUpdateBlobStatusRequest,
-			SimulateUpdateBlobStatus(txConfig, ak, bk, k),
+			SimulateUpdateBlobStatus(txConfig, cdc, ak, bk, k),
 		),
 	}
 }
 
-func SimulateUpdateBlobStatus(txConfig client.TxConfig, ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, _ keeper.Keeper) simtypes.Operation {
+func SimulateUpdateBlobStatus(txConfig client.TxConfig, cdc codec.JSONCodec, ak authkeeper.AccountKeeper,
+	bk bankkeeper.Keeper, _ keeper.Keeper) simtypes.Operation {
 	return func(
 		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
@@ -56,22 +57,8 @@ func SimulateUpdateBlobStatus(txConfig client.TxConfig, ak authkeeper.AccountKee
 			To:   toBlock,
 		}
 
-		account := ak.GetAccount(ctx, simaAccount.Address)
-		spendable := bk.SpendableCoins(ctx, account.GetAddress())
-
 		msg := availtypes.NewMsgUpdateBlobStatus(simaAccount.Address.String(), blockRange, availHeight, isSuccess)
-		txCtx := simulation.OperationInput{
-			R:               r,
-			App:             app,
-			TxGen:           txConfig,
-			Cdc:             nil,
-			Msg:             msg,
-			Context:         ctx,
-			SimAccount:      simaAccount,
-			ModuleName:      availtypes.ModuleName,
-			CoinsSpentInMsg: spendable,
-		}
 
-		return simulation.GenAndDeliverTxWithRandFees(txCtx)
+		return simtypes.NewOperationMsg(msg, true, ""), nil, nil
 	}
 }

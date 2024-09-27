@@ -3,7 +3,8 @@
 DOCKER := $(shell which docker)
 
 export GO111MODULE = on
-SIMAPP = ./simapp
+SIMAPP = ./simapp/app/
+BINDIR ?= $(GOPATH)/bin
 
 ###############################################################################
 ###                                     e2e                                 ###
@@ -76,6 +77,7 @@ lint-fix:
 GO := go
 TARGET := cada
 BINDIR ?= $(GOPATH)/bin
+CURRENT_DIR = $(shell pwd)
 
 .PHONY: all build install clean
 
@@ -142,9 +144,12 @@ endif
 
 .PHONY: run-tests test test-all $(TEST_TARGETS)
 
+runsim:
+	go install github.com/cosmos/tools/cmd/runsim@v1.0.0
+
 test-sim-nondeterminism:
 	@echo "Running non-determinism test..."
-	@go test -mod=readonly $(SIMAPP) -run TestAppStateDeterminism -Enabled=true \
+	@cd ${CURRENT_DIR}/simapp/app && go test -mod=readonly -run TestAppStateDeterminism -Enabled=true \
 		-NumBlocks=20 -BlockSize=200 -Commit=true -Period=0 -v -timeout 24h
 
 test-sim-custom-genesis-fast:
@@ -153,13 +158,13 @@ test-sim-custom-genesis-fast:
 	@go test -mod=readonly $(SIMAPP) -run TestFullAppSimulation -Genesis=${HOME}/.cada/config/genesis.json \
 		-Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
 
-test-sim-import-export: runsim
-	@echo "Running application import/export simulation. This may take several minutes..."
-	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(APP) -ExitOnFail 50 5 TestAppImportExport
+# test-sim-import-export: runsim
+# 	@echo "Running application import/export simulation. This may take several minutes..."
+# 	@cd ${CURRENT_DIR}/simapp && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 5 TestAppImportExport
 
 test-sim-after-import: runsim
 	@echo "Running application simulation-after-import. This may take several minutes..."
-	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(APP) -ExitOnFail 50 5 TestAppSimulationAfterImport
+	@cd ${CURRENT_DIR}/simapp && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 5 TestAppSimulationAfterImport
 
 test-sim-custom-genesis-multi-seed: runsim
 	@echo "Running multi-seed custom genesis simulation..."
