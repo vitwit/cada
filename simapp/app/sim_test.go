@@ -34,7 +34,7 @@ import (
 )
 
 // SimAppChainID hardcoded chainID for simulation
-const SimAppChainID = "simulation-app"
+const SimAppChainID = "demo"
 
 var FlagEnableStreamingValue bool
 

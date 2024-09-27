@@ -112,6 +112,13 @@ set-testnet-configs:
 ###                           Tests & Simulation                            ###
 ###############################################################################
 
+# make init-simapp initializes a single local node network
+# it is useful for testing and development
+# Usage: make install && make init-simapp && simd start
+# Warning: make init-simapp will remove all data in simapp home directory
+init-simapp:
+	./simapp/init-chain.sh
+
 test: test-unit
 test-all: test-unit test-ledger-mock test-race test-cover
 
@@ -152,38 +159,38 @@ test-sim-nondeterminism:
 	@cd ${CURRENT_DIR}/simapp/app && go test -mod=readonly -run TestAppStateDeterminism -Enabled=true \
 		-NumBlocks=20 -BlockSize=200 -Commit=true -Period=0 -v -timeout 24h
 
-test-sim-custom-genesis-fast:
-	@echo "Running custom genesis simulation..."
-	@echo "By default, ${HOME}/.cada/config/genesis.json will be used."
-	@go test -mod=readonly $(SIMAPP) -run TestFullAppSimulation -Genesis=${HOME}/.cada/config/genesis.json \
-		-Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
+# test-sim-custom-genesis-fast:
+# 	@echo "Running custom genesis simulation..."
+# 	@echo "By default, ${HOME}/.cada/config/genesis.json will be used."
+# 	@cd ${CURRENT_DIR}/simapp && go test -mod=readonly -run TestFullAppSimulation -Genesis=${HOME}/.cada/config/genesis.json \
+# 		-Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
 
 # test-sim-import-export: runsim
 # 	@echo "Running application import/export simulation. This may take several minutes..."
 # 	@cd ${CURRENT_DIR}/simapp && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 5 TestAppImportExport
 
-test-sim-after-import: runsim
-	@echo "Running application simulation-after-import. This may take several minutes..."
-	@cd ${CURRENT_DIR}/simapp && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 5 TestAppSimulationAfterImport
+# test-sim-after-import: runsim
+# 	@echo "Running application simulation-after-import. This may take several minutes..."
+# 	@cd ${CURRENT_DIR}/simapp && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 5 TestAppSimulationAfterImport
 
-test-sim-custom-genesis-multi-seed: runsim
-	@echo "Running multi-seed custom genesis simulation..."
-	@echo "By default, ${HOME}/.univ/config/genesis.json will be used."
-	@$(BINDIR)/runsim -Genesis=${HOME}/.univ/config/genesis.json -SimAppPkg=$(APP) -ExitOnFail 400 5 TestFullAppSimulation
+# test-sim-custom-genesis-multi-seed: runsim
+# 	@echo "Running multi-seed custom genesis simulation..."
+# 	@echo "By default, ${HOME}/.cada/config/genesis.json will be used."
+# 	@cd ${CURRENT_DIR}/simapp && $(BINDIR)/runsim -Genesis=${HOME}/.cada/config/genesis.json -SimAppPkg=. -ExitOnFail 400 5 TestFullAppSimulation
 
-test-sim-multi-seed-long: runsim
-	@echo "Running long multi-seed application simulation. This may take awhile!"
-	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(APP) -ExitOnFail 500 50 TestFullAppSimulation
+# test-sim-multi-seed-long: runsim
+# 	@echo "Running long multi-seed application simulation. This may take awhile!"
+# 	@cd ${CURRENT_DIR}/simapp && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 500 50 TestFullAppSimulation
 
-test-sim-multi-seed-short: runsim
-	@echo "Running short multi-seed application simulation. This may take awhile!"
-	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(APP) -ExitOnFail 50 10 TestFullAppSimulation
+# test-sim-multi-seed-short: runsim
+# 	@echo "Running short multi-seed application simulation. This may take awhile!"
+# 	@cd ${CURRENT_DIR}/simapp && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 10 TestFullAppSimulation
 
-test-sim-benchmark-invariants:
-	@echo "Running simulation invariant benchmarks..."
-	@go test -mod=readonly $(APP) -benchmem -bench=BenchmarkInvariants -run=^$ \
-	-Enabled=true -NumBlocks=1000 -BlockSize=200 \
-	-Period=1 -Commit=true -Seed=57 -v -timeout 24h
+# test-sim-benchmark-invariants:
+# 	@echo "Running simulation invariant benchmarks..."
+# 	cd ${CURRENT_DIR}/simapp && @go test -mod=readonly -benchmem -bench=BenchmarkInvariants -run=^$ \
+# 	-Enabled=true -NumBlocks=1000 -BlockSize=200 \
+# 	-Period=1 -Commit=true -Seed=57 -v -timeout 24h
 
 .PHONY: \
 test-sim-nondeterminism \

@@ -38,12 +38,19 @@ func WeightedOperations(
 	}
 }
 
-func SimulateUpdateBlobStatus(txConfig client.TxConfig, cdc codec.JSONCodec, ak authkeeper.AccountKeeper,
-	bk bankkeeper.Keeper, _ keeper.Keeper) simtypes.Operation {
+func SimulateUpdateBlobStatus(txConfig client.TxConfig, _ codec.JSONCodec, ak authkeeper.AccountKeeper,
+	bk bankkeeper.Keeper, _ keeper.Keeper,
+) simtypes.Operation {
 	return func(
 		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simaAccount, _ := simtypes.RandomAcc(r, accs)
+
+		// Ensure the account has a valid public key
+		account := ak.GetAccount(ctx, simaAccount.Address)
+		if account == nil || account.GetPubKey() == nil {
+			return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "account has no pubkey"), nil, nil
+		}
 
 		fromBlock := r.Uint64()%100 + 1
 		toBlock := fromBlock + r.Uint64()%10
@@ -57,8 +64,33 @@ func SimulateUpdateBlobStatus(txConfig client.TxConfig, cdc codec.JSONCodec, ak 
 			To:   toBlock,
 		}
 
+		// Fetch spendable coins to simulate transaction fees (even if just dummy fees)
+		spendable := bk.SpendableCoins(ctx, simaAccount.Address)
+		if spendable.Empty() {
+			return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "account has no spendable coins"), nil, nil
+		}
+
+		// Ensure TxGen is properly initialized
+		if txConfig == nil {
+			return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "TxGen is nil"), nil, nil
+		}
+
 		msg := availtypes.NewMsgUpdateBlobStatus(simaAccount.Address.String(), blockRange, availHeight, isSuccess)
 
-		return simtypes.NewOperationMsg(msg, true, ""), nil, nil
+		txCtx := simulation.OperationInput{
+			R:               r,
+			App:             app,
+			TxGen:           txConfig,
+			Msg:             msg,
+			Context:         ctx,
+			SimAccount:      simaAccount,
+			ModuleName:      availtypes.ModuleName,
+			CoinsSpentInMsg: spendable,
+		}
+
+		// Generate and deliver the transaction
+		return simulation.GenAndDeliverTxWithRandFees(txCtx)
+
+		//return simtypes.NewOperationMsg(msg, true, ""), nil, nil
 	}
 }

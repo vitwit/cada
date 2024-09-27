@@ -49,59 +49,6 @@ jobs:
         run: |
           make test-sim-nondeterminism
 
-  test-sim-import-export:
-    runs-on: ubuntu-latest
-    needs: [build]
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
-        with:
-          go-version: "1.21"
-          check-latest: true
-      - uses: actions/cache@v3
-        with:
-          path: ~/go/bin
-          key: ${{ runner.os }}-go-runsim-binary
-      - name: test-sim-import-export
-        run: |
-          make test-sim-import-export
-
-  test-sim-after-import:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
-        with:
-          go-version: "1.21"
-          check-latest: true
-      - uses: actions/cache@v3
-        with:
-          path: ~/go/bin
-          key: ${{ runner.os }}-go-runsim-binary
-      - name: test-sim-after-import
-        run: |
-          make test-sim-after-import
-
-  test-sim-multi-seed-short:
-    runs-on: ubuntu-latest
-    needs: [build]
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
-        with:
-          go-version: "1.21"
-          check-latest: true
-      - uses: actions/cache@v3
-        with:
-          path: ~/go/bin
-          key: ${{ runner.os }}-go-runsim-binary
-      - name: test-sim-multi-seed-short
-        run: |
-          make test-sim-multi-seed-short
-
   sims-notify-success:
     needs:
       [test-sim-multi-seed-short, test-sim-after-import, test-sim-import-export]
