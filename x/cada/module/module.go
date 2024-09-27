@@ -15,7 +15,6 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 	"github.com/vitwit/avail-da-module/x/cada/client/cli"
@@ -73,7 +72,6 @@ type AppModule struct {
 	keeper     *keeper.Keeper
 	authkeeper authkeeper.AccountKeeper
 	bankkeeper bankkeeper.Keeper
-	govkeeper  govkeeper.Keeper
 }
 
 // NewAppModule creates a new AppModule object
@@ -180,7 +178,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 }
 
 // RegisterStoreDecoder registers a decoder for distribution module's types
-func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {
+func (am AppModule) RegisterStoreDecoder(_ simtypes.StoreDecoderRegistry) {
 }
 
 // WeightedOperations returns the all the accounts module operations with their respective weights.

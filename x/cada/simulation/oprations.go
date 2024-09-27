@@ -22,7 +22,7 @@ const (
 )
 
 func WeightedOperations(
-	appParams simtypes.AppParams, cdc codec.JSONCodec, txConfig client.TxConfig,
+	appParams simtypes.AppParams, _ codec.JSONCodec, txConfig client.TxConfig,
 	ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, k keeper.Keeper,
 ) simulation.WeightedOperations {
 	var weightMsgUpdateBlobStatusRequest int
@@ -36,14 +36,12 @@ func WeightedOperations(
 			SimulateUpdateBlobStatus(txConfig, ak, bk, k),
 		),
 	}
-
 }
 
-func SimulateUpdateBlobStatus(txConfig client.TxConfig, ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, k keeper.Keeper) simtypes.Operation {
+func SimulateUpdateBlobStatus(txConfig client.TxConfig, ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, _ keeper.Keeper) simtypes.Operation {
 	return func(
 		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-
 		simaAccount, _ := simtypes.RandomAcc(r, accs)
 
 		fromBlock := r.Uint64()%100 + 1
