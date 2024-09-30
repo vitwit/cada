@@ -24,9 +24,19 @@ jobs:
           go-version: "1.21"
           check-latest: true
       - run: make -C simapp build
+
+  install-runsim:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.21"
+      - name: Display go version
+        run: go version
       - name: Install runsim
-        run: go install github.com/cosmos/tools/cmd/runsim@v1.0.0
-      - uses: actions/cache@v3
+        run: export GO111MODULE="on" && go install github.com/cosmos/tools/cmd/runsim@v1.0.0
+      - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -146,4 +156,3 @@ jobs:
           SLACK_COLOR: danger
           SLACK_MESSAGE: Sims are failing
           SLACK_FOOTER: ""
-          
