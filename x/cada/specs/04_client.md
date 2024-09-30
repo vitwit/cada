@@ -17,6 +17,7 @@ simd query cada --help
 ```
 
 #### Query the Status
+
 The `get-da-status` command enables users to retrieve comprehensive information, including the range of blocks currently being posted to Avail, the current status, the last proven height, the Avail height where the data is made available, and the voting block height by which voting should conclude.
 
 ```sh
