@@ -12,8 +12,7 @@ import (
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/vitwit/avail-da-module/x/cada/keeper"
-	cadastore "github.com/vitwit/avail-da-module/x/cada/keeper"
+	cadakeeper "github.com/vitwit/avail-da-module/x/cada/keeper"
 	availtypes "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
@@ -24,8 +23,8 @@ const (
 )
 
 func WeightedOperations(
-	appParams simtypes.AppParams, cdc codec.JSONCodec, txConfig client.TxConfig,
-	ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, k keeper.Keeper,
+	appParams simtypes.AppParams, _ codec.JSONCodec, _ client.TxConfig,
+	ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, k cadakeeper.Keeper,
 ) simulation.WeightedOperations {
 	var weightMsgUpdateBlobStatusRequest int
 	appParams.GetOrGenerate(OpWeightMsgUpdateBlobStatusRequest, &weightMsgUpdateBlobStatusRequest, nil, func(_ *rand.Rand) {
@@ -40,11 +39,10 @@ func WeightedOperations(
 	}
 }
 
-func SimulateMsgUpdateBlobStatus(ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, k keeper.Keeper) simtypes.Operation {
+func SimulateMsgUpdateBlobStatus(ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, k cadakeeper.Keeper) simtypes.Operation {
 	return func(
 		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-
 		ctx = ctx.WithBlockHeight(20)
 		// Randomly select a sender account
 		sender, _ := simtypes.RandomAcc(r, accs)
@@ -78,11 +76,11 @@ func SimulateMsgUpdateBlobStatus(ak authkeeper.AccountKeeper, bk bankkeeper.Keep
 		)
 
 		store := ctx.KVStore(k.GetStoreKey())
-		cadastore.UpdateEndHeight(ctx, store, uint64(20))
+		cadakeeper.UpdateEndHeight(ctx, store, uint64(20))
 
-		cadastore.UpdateProvenHeight(ctx, store, uint64(4))
+		cadakeeper.UpdateProvenHeight(ctx, store, uint64(4))
 
-		cadastore.UpdateBlobStatus(ctx, store, uint32(1))
+		cadakeeper.UpdateBlobStatus(ctx, store, uint32(1))
 
 		// Set up the transaction context
 		txCtx := simulation.OperationInput{
