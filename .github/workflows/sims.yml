@@ -36,6 +36,8 @@ jobs:
         run: go version
       - name: Install runsim
         run: export GO111MODULE="on" && go install github.com/cosmos/tools/cmd/runsim@v1.0.0
+      - name: Add Go bin to PATH
+        run: echo "${HOME}/go/bin" >> $GITHUB_PATH  # This adds the Go bin directory to PATH
       - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
@@ -73,6 +75,8 @@ jobs:
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
+      - name: Add Go bin to PATH
+        run: echo "${HOME}/go/bin" >> $GITHUB_PATH
       - name: test-sim-import-export
         run: |
           make test-sim-import-export
@@ -90,6 +94,8 @@ jobs:
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
+      - name: Add Go bin to PATH
+        run: echo "${HOME}/go/bin" >> $GITHUB_PATH
       - name: test-sim-after-import
         run: |
           make test-sim-after-import
@@ -108,6 +114,8 @@ jobs:
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
+      - name: Add Go bin to PATH
+        run: echo "${HOME}/go/bin" >> $GITHUB_PATH
       - name: test-sim-multi-seed-short
         run: |
           make test-sim-multi-seed-short
