@@ -41,7 +41,7 @@ func WeightedOperations(
 
 func SimulateMsgUpdateBlobStatus(ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, k cadakeeper.Keeper) simtypes.Operation {
 	return func(
-		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
+		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, _ string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		ctx = ctx.WithBlockHeight(20)
 		// Randomly select a sender account
