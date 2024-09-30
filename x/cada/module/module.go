@@ -12,14 +12,12 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 	"github.com/vitwit/avail-da-module/x/cada/client/cli"
 	"github.com/vitwit/avail-da-module/x/cada/keeper"
-	simulation "github.com/vitwit/avail-da-module/x/cada/simulation"
 	types "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
@@ -173,18 +171,18 @@ func (am AppModule) IsOnePerModuleType() {}
 // IsAppModule implements the appmodule.AppModule interface.
 func (am AppModule) IsAppModule() {}
 
-func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
-	simulation.RandomizedGenState(simState)
-}
+// func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
+// 	simulation.RandomizedGenState(simState)
+// }
 
-// RegisterStoreDecoder registers a decoder for distribution module's types
-func (am AppModule) RegisterStoreDecoder(_ simtypes.StoreDecoderRegistry) {
-}
+// // RegisterStoreDecoder registers a decoder for distribution module's types
+// func (am AppModule) RegisterStoreDecoder(_ simtypes.StoreDecoderRegistry) {
+// }
 
-// WeightedOperations returns the all the accounts module operations with their respective weights.
-func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
-	return simulation.WeightedOperations(
-		simState.AppParams, simState.Cdc, simState.TxConfig,
-		am.authkeeper, am.bankkeeper, *am.keeper,
-	)
-}
+// // WeightedOperations returns the all the accounts module operations with their respective weights.
+// func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
+// 	return simulation.WeightedOperations(
+// 		simState.AppParams, simState.Cdc, simState.TxConfig,
+// 		am.authkeeper, am.bankkeeper, *am.keeper,
+// 	)
+// }
