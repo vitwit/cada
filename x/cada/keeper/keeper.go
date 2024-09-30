@@ -66,3 +66,7 @@ func (k *Keeper) GetBlobStatus(ctx sdk.Context) uint32 {
 	store := ctx.KVStore(k.storeKey)
 	return GetStatusFromStore(store)
 }
+
+func (k Keeper) GetStoreKey() storetypes2.StoreKey {
+	return k.storeKey
+}

@@ -1,18 +1,19 @@
 package simulation
 
 import (
-	"fmt"
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	"github.com/vitwit/avail-da-module/x/cada/keeper"
+	cadastore "github.com/vitwit/avail-da-module/x/cada/keeper"
 	availtypes "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
@@ -34,101 +35,69 @@ func WeightedOperations(
 	return simulation.WeightedOperations{
 		simulation.NewWeightedOperation(
 			weightMsgUpdateBlobStatusRequest,
-			SimulateUpdateBlobStatus(txConfig, cdc, ak, bk, k),
+			SimulateMsgUpdateBlobStatus(ak, bk, k),
 		),
 	}
 }
 
-func SimulateUpdateBlobStatus(txConfig client.TxConfig, _ codec.JSONCodec, ak authkeeper.AccountKeeper,
-	bk bankkeeper.Keeper, _ keeper.Keeper,
-) simtypes.Operation {
+func SimulateMsgUpdateBlobStatus(ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, k keeper.Keeper) simtypes.Operation {
 	return func(
 		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simaAccount, _ := simtypes.RandomAcc(r, accs)
 
-		if simaAccount.Address.Empty() {
-			fmt.Printf("simaAccount address is empty\n")
-			return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "simaAccount address is empty"), nil, nil
+		ctx = ctx.WithBlockHeight(20)
+		// Randomly select a sender account
+		sender, _ := simtypes.RandomAcc(r, accs)
+
+		// Ensure the sender has sufficient balance
+		account := ak.GetAccount(ctx, sender.Address)
+		spendable := bk.SpendableCoins(ctx, account.GetAddress())
+
+		// Generate random fees for the transaction
+		fees, err := simtypes.RandomFees(r, ctx, spendable)
+		if err != nil {
+			return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "unable to generate fees"), nil, err
 		}
 
-		// Ensure TxGen is properly initialized
-		if txConfig == nil {
-			return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "TxGen is nil"), nil, nil
-		}
+		// Prepare a random blob status update
+		newStatus := true      // You can randomize this value as needed
+		fromBlock := uint64(5) // Example block range start
+		toBlock := uint64(20)  // Example block range end
+		availHeight := uint64(120)
 
-		// account := ak.GetAccount(ctx, simaAccount.Address)
-		// if account == nil {
-		// 	fmt.Printf("account is nil for address: %s\n", simaAccount.Address.String())
-		// 	return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "account is nil"), nil, nil
-		// }
-
-		// fmt.Printf("account: %v\n", account)
-
-		// pubKey := account.GetPubKey()
-		// if pubKey == nil {
-		// 	fmt.Printf("account has no pubkey: %s\n", account.GetAddress().String())
-		// 	return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "account has no pubkey"), nil, nil
-		// }
-
-		//fmt.Printf("account.GetPubKey(): %v\n", pubKey)
-
-		fromBlock := r.Uint64()%100 + 1
-		toBlock := fromBlock + r.Uint64()%10
-
-		isSuccess := r.Intn(2) == 1
-
-		availHeight := r.Uint64()%100 + 1
-
-		blockRange := availtypes.Range{
+		ran := availtypes.Range{
 			From: fromBlock,
 			To:   toBlock,
 		}
 
-		fmt.Printf("fromBlock: %v\n", fromBlock)
-		fmt.Printf("toBlock: %v\n", toBlock)
-		fmt.Printf("availHeight: %v\n", availHeight)
+		msg := availtypes.NewMsgUpdateBlobStatus(
+			sender.Address.String(),
+			ran,
+			availHeight,
+			newStatus,
+		)
 
-		// Fetch spendable coins to simulate transaction fees (even if just dummy fees)
-		spendable := bk.SpendableCoins(ctx, simaAccount.Address)
-		fmt.Printf("spendable:::::::::::::::::::::::: %v\n", spendable)
-		if spendable.Empty() {
-			return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "account has no spendable coins"), nil, nil
-		}
+		store := ctx.KVStore(k.GetStoreKey())
+		cadastore.UpdateEndHeight(ctx, store, uint64(20))
 
-		fmt.Printf("txConfig:::::::::::::::::::::::::::::: %v\n", txConfig)
+		cadastore.UpdateProvenHeight(ctx, store, uint64(4))
 
-		fmt.Printf("simaAccount.Address.String(): %v\n", simaAccount.Address.String())
+		cadastore.UpdateBlobStatus(ctx, store, uint32(1))
 
-		msg := availtypes.NewMsgUpdateBlobStatus(simaAccount.Address.String(), blockRange, availHeight, isSuccess)
-
-		fmt.Printf("r: %v\n", r)
-		fmt.Printf("app: %v\n", app)
-		fmt.Printf("msg: %v\n", msg)
-		fmt.Printf("ctx: %v\n", ctx)
-
+		// Set up the transaction context
 		txCtx := simulation.OperationInput{
-			R:               r,
-			App:             app,
-			TxGen:           txConfig,
-			Msg:             msg,
-			Context:         ctx,
-			SimAccount:      simaAccount,
-			ModuleName:      availtypes.ModuleName,
-			CoinsSpentInMsg: spendable,
+			R:             r,
+			App:           app,
+			TxGen:         moduletestutil.MakeTestEncodingConfig().TxConfig,
+			Cdc:           nil,
+			Msg:           msg,
+			Context:       ctx,
+			SimAccount:    sender,
+			AccountKeeper: ak,
+			ModuleName:    availtypes.ModuleName,
 		}
-
-		opMsg, futureOps, err := simulation.GenAndDeliverTxWithRandFees(txCtx)
-		if err != nil {
-			fmt.Printf("errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr: %v\n", err)
-			return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "error generating or delivering tx"), nil, err
-		}
-
-		return opMsg, futureOps, nil
 
 		// Generate and deliver the transaction
-		//return simulation.GenAndDeliverTxWithRandFees(txCtx)
-
-		//return simtypes.NewOperationMsg(msg, true, ""), nil, nil
+		return simulation.GenAndDeliverTx(txCtx, fees)
 	}
 }
