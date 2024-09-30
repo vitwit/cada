@@ -94,6 +94,7 @@ jobs:
         run: echo "${HOME}/go/bin" >> $GITHUB_PATH
       - name: test-sim-import-export
         run: |
+          ${HOME}/go/bin/runsim --help 
           make test-sim-import-export
 
   test-sim-after-import:
