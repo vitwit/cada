@@ -96,8 +96,8 @@ The **Cosmos Provider** is responsible for fetching block data via RPC so that t
 - At block height `VotingEndBlock`, all the votes from `vote_extensions` will be collected and aggregated. If the collective `voting power is > 66%`, the status will be updated
 
     ```
-    status = READY // success and ready for next blocks
-    provenHeight = Range End
+    status = SUCCESS // success and ready for next blocks
+    provenHeight = Range EndHeight // End Height from the given block range
 
     ```
 - In case of failure at any stage, the whole flow will be repeated.
