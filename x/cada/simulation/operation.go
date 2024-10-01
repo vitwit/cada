@@ -13,7 +13,7 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	cadakeeper "github.com/vitwit/avail-da-module/x/cada/keeper"
-	availtypes "github.com/vitwit/avail-da-module/x/cada/types"
+	cadatypes "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 const (
@@ -44,31 +44,28 @@ func SimulateMsgUpdateBlobStatus(ak authkeeper.AccountKeeper, bk bankkeeper.Keep
 		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, _ string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		ctx = ctx.WithBlockHeight(20)
-		// Randomly select a sender account
+
 		sender, _ := simtypes.RandomAcc(r, accs)
 
-		// Ensure the sender has sufficient balance
 		account := ak.GetAccount(ctx, sender.Address)
 		spendable := bk.SpendableCoins(ctx, account.GetAddress())
 
-		// Generate random fees for the transaction
 		fees, err := simtypes.RandomFees(r, ctx, spendable)
 		if err != nil {
-			return simtypes.NoOpMsg(availtypes.ModuleName, availtypes.TypeMsgUpdateBlobStatus, "unable to generate fees"), nil, err
+			return simtypes.NoOpMsg(cadatypes.ModuleName, cadatypes.TypeMsgUpdateBlobStatus, "unable to generate fees"), nil, err
 		}
 
-		// Prepare a random blob status update
-		newStatus := true      // You can randomize this value as needed
-		fromBlock := uint64(5) // Example block range start
-		toBlock := uint64(20)  // Example block range end
+		newStatus := true
+		fromBlock := uint64(5)
+		toBlock := uint64(20)
 		availHeight := uint64(120)
 
-		ran := availtypes.Range{
+		ran := cadatypes.Range{
 			From: fromBlock,
 			To:   toBlock,
 		}
 
-		msg := availtypes.NewMsgUpdateBlobStatus(
+		msg := cadatypes.NewMsgUpdateBlobStatus(
 			sender.Address.String(),
 			ran,
 			availHeight,
@@ -76,13 +73,22 @@ func SimulateMsgUpdateBlobStatus(ak authkeeper.AccountKeeper, bk bankkeeper.Keep
 		)
 
 		store := ctx.KVStore(k.GetStoreKey())
-		cadakeeper.UpdateEndHeight(ctx, store, uint64(20))
 
-		cadakeeper.UpdateProvenHeight(ctx, store, uint64(4))
+		err = cadakeeper.UpdateEndHeight(ctx, store, uint64(20))
+		if err != nil {
+			return simtypes.NoOpMsg(cadatypes.ModuleName, cadatypes.TypeMsgUpdateBlobStatus, "unable to update end height"), nil, err
+		}
 
-		cadakeeper.UpdateBlobStatus(ctx, store, uint32(1))
+		err = cadakeeper.UpdateProvenHeight(ctx, store, uint64(4))
+		if err != nil {
+			return simtypes.NoOpMsg(cadatypes.ModuleName, cadatypes.TypeMsgUpdateBlobStatus, "unable to update proven height"), nil, err
+		}
 
-		// Set up the transaction context
+		err = cadakeeper.UpdateBlobStatus(ctx, store, uint32(1))
+		if err != nil {
+			return simtypes.NoOpMsg(cadatypes.ModuleName, cadatypes.TypeMsgUpdateBlobStatus, "unable to update status to pending state"), nil, err
+		}
+
 		txCtx := simulation.OperationInput{
 			R:             r,
 			App:           app,
@@ -92,10 +98,9 @@ func SimulateMsgUpdateBlobStatus(ak authkeeper.AccountKeeper, bk bankkeeper.Keep
 			Context:       ctx,
 			SimAccount:    sender,
 			AccountKeeper: ak,
-			ModuleName:    availtypes.ModuleName,
+			ModuleName:    cadatypes.ModuleName,
 		}
 
-		// Generate and deliver the transaction
 		return simulation.GenAndDeliverTx(txCtx, fees)
 	}
 }
