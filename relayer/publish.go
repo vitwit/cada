@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	dacli "github.com/vitwit/avail-da-module/chainclient"
-	"github.com/vitwit/avail-da-module/types"
+	"github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 // PostBlocks is called in the PreBlocker. The proposer will publish the blocks at this point

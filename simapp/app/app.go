@@ -137,12 +137,12 @@ import (
 	packetforwardkeeper "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/keeper"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
 
-	cadakeeper "github.com/vitwit/avail-da-module/keeper"
-	cadamodule "github.com/vitwit/avail-da-module/module"
 	cadarelayer "github.com/vitwit/avail-da-module/relayer"
 	"github.com/vitwit/avail-da-module/relayer/avail"
 	httpclient "github.com/vitwit/avail-da-module/relayer/http"
-	cadatypes "github.com/vitwit/avail-da-module/types"
+	cadakeeper "github.com/vitwit/avail-da-module/x/cada/keeper"
+	cadamodule "github.com/vitwit/avail-da-module/x/cada/module"
+	cadatypes "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 const (
@@ -771,7 +771,7 @@ func NewChainApp(
 		ibctm.NewAppModule(),
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 		// custom
-		cadamodule.NewAppModule(appCodec, app.CadaKeeper),
+		cadamodule.NewAppModule(appCodec, app.CadaKeeper, app.AccountKeeper, app.BankKeeper),
 		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
 	)
 
@@ -893,7 +893,7 @@ func NewChainApp(
 	// NOTE: this is not required apps that don't use the simulator for fuzz testing
 	// transactions
 	overrideModules := map[string]module.AppModuleSimulation{
-		authtypes.ModuleName: auth.NewAppModule(app.appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
+		authtypes.ModuleName: auth.NewAppModule(app.appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, nil),
 	}
 	app.sm = module.NewSimulationManagerFromAppModules(app.ModuleManager.Modules, overrideModules)
 

@@ -1,0 +1,9 @@
+syntax = "proto3";
+package cada.v1beta1;
+
+option go_package = "github.com/vitwit/avail-da-module/x/cada/types";
+
+// GenesisState defines the avail da module's genesis state.
+message GenesisState { 
+   
+}

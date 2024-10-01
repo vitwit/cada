@@ -4,7 +4,7 @@ CADA is a module designed to connect Cosmos sovereign chains with the Avail netw
 
 # Integration Guide
 
-To integrate the CADA module into your application, follow the steps outlined in the [integration guide](./integration_docs/README.md)
+To integrate the CADA module into your application, follow the steps outlined in the [integration guide](./x/cada/integration_docs/README.md)
 
 Note: Ensure that the Avail light client URL is correctly configured for the module to function as expected. For instructions on setup Avail locally, please refer to [this documentation](https://github.com/rollkit/avail-da?tab=readme-ov-file#avail-da).
 
@@ -31,6 +31,7 @@ These are main components in the workflow:
 The core functionality of the **CADA** module is integrated with and operates on the Cosmos blockchain.
 
 In the CADA module:
+
 - At each block interval, the `PreBlocker` ABCI method sends a request to the `Relayer`, specifying the range of block heights that are ready to be posted to the **Avail** Data Availability (DA) network.
 ![Data Submission](https://github.com/user-attachments/assets/fc4d23cc-f6bd-4210-8407-47a57adcc290)
 
@@ -40,6 +41,7 @@ In the CADA module:
 ![Vote Extension](https://github.com/user-attachments/assets/ea5b10ab-fb64-4ed0-8761-44675a852a01)
 
 ## 2. Relayer
+
 The **Relayer** facilitates communication between the Cosmos Chain, the Avail light client, and the Cosmos Provider.
 
 - **Data Submission**: The relayer is responsible for fetching block data from the Cosmos provider and posting it to the Avail light client via an HTTP request.
@@ -48,8 +50,8 @@ The **Relayer** facilitates communication between the Cosmos Chain, the Avail li
 - **Data Verification**: During verification, the relayer communicates with the Avail light client to confirm whether the data is truly available at the specified height.
 
 
-
 ## 3. Avail Light Node
+
 The **Avail Light Client** allows interaction with the Avail DA network without requiring a full node, and without having to trust remote peers. It leverages **Data Availability Sampling (DAS)**, which the light client performs on every newly created block.
 
 - The chain communicates with the Avail light client via the relayer during the data submission and data availability verification processes.
@@ -57,11 +59,11 @@ The **Avail Light Client** allows interaction with the Avail DA network without 
 Find more details about the Avail Light Client [here](https://docs.availproject.org/docs/operate-a-node/run-a-light-client/Overview).
 
 ## 4. Cosmos Provider
+
 The **Cosmos Provider** is responsible for fetching block data via RPC so that the data can be posted to Avail for availability checks.
 
 
 # Workflow
-
 
 - At each block interval, a request is sent from the `PreBlocker` ABCI method to the Keeper, specifying the range of block heights that are ready to be posted to the `Avail` DA network.
 - The range of block heights should be from `provenHeight + 1` to `min(provenHeight + MaxBlocksLimitForBlob, CurrentBlockHeight)`.

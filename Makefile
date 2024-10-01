@@ -3,6 +3,8 @@
 DOCKER := $(shell which docker)
 
 export GO111MODULE = on
+SIMAPP = ./simapp/app/
+BINDIR ?= $(GOPATH)/bin
 
 ###############################################################################
 ###                                     e2e                                 ###
@@ -75,6 +77,7 @@ lint-fix:
 GO := go
 TARGET := cada
 BINDIR ?= $(GOPATH)/bin
+CURRENT_DIR = $(shell pwd)
 
 .PHONY: all build install clean
 
@@ -90,7 +93,6 @@ install: build
 clean:
 	@echo "Cleaning up"
 	rm -f $(TARGET)
-
 
 
 ###############################################################################
@@ -109,11 +111,20 @@ set-testnet-configs:
 ###                           Tests & Simulation                            ###
 ###############################################################################
 
+# make init-simapp initializes a single local node network
+# it is useful for testing and development
+# Usage: make install && make init-simapp && simd start
+# Warning: make init-simapp will remove all data in simapp home directory
+init-simapp:
+	./simapp/init-chain.sh
+
 test: test-unit
 test-all: test-unit test-ledger-mock test-race test-cover
 
 TEST_PACKAGES=./...
 TEST_TARGETS := test-unit test-unit-proto test-ledger-mock test-race test-ledger test-race
+
+include tools/Makefile
 
 # Test runs-specific rules. To add a new test target, just add
 # a new rule, customise ARGS or TEST_PACKAGES ad libitum, and
@@ -140,3 +151,80 @@ else
 endif
 
 .PHONY: run-tests test test-all $(TEST_TARGETS)
+
+test-sim-nondeterminism:
+	@echo "Running non-determinism test..."
+	@cd ${CURRENT_DIR}/simapp/app && go test -mod=readonly -run TestAppStateDeterminism -Enabled=true \
+		-NumBlocks=20 -BlockSize=200 -Commit=true -Period=0 -v -timeout 24h
+
+test-sim-custom-genesis-fast:
+	@echo "Running custom genesis simulation..."
+	@echo "By default, ${HOME}/.cada/config/genesis.json will be used."
+	@cd ${CURRENT_DIR}/simapp/app && go test -mod=readonly -run TestFullAppSimulation -Genesis=${HOME}/.cada/config/genesis.json \
+		-Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
+
+test-sim-import-export: runsim
+	@echo "Running application import/export simulation. This may take several minutes..."
+	@cd ${CURRENT_DIR}/simapp/app && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 5 TestAppImportExport
+
+test-sim-after-import: runsim
+	@echo "Running application simulation-after-import. This may take several minutes..."
+	@cd ${CURRENT_DIR}/simapp/app && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 5 TestAppSimulationAfterImport
+
+test-sim-custom-genesis-multi-seed: runsim
+	@echo "Running multi-seed custom genesis simulation..."
+	@echo "By default, ${HOME}/.cada/config/genesis.json will be used."
+	@cd ${CURRENT_DIR}/simapp/app && $(BINDIR)/runsim -Genesis=${HOME}/.cada/config/genesis.json -SimAppPkg=. -ExitOnFail 400 5 TestFullAppSimulation
+
+test-sim-multi-seed-long: runsim
+	@echo "Running long multi-seed application simulation. This may take awhile!"
+	@cd ${CURRENT_DIR}/simapp/app && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 500 50 TestFullAppSimulation
+
+test-sim-multi-seed-short: runsim
+	@echo "Running short multi-seed application simulation. This may take awhile!"
+	@cd ${CURRENT_DIR}/simapp/app && $(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 10 TestFullAppSimulation
+
+test-sim-benchmark-invariants:
+	@echo "Running simulation invariant benchmarks..."
+	cd ${CURRENT_DIR}/simapp/app && @go test -mod=readonly -benchmem -bench=BenchmarkInvariants -run=^$ \
+	-Enabled=true -NumBlocks=1000 -BlockSize=200 \
+	-Period=1 -Commit=true -Seed=57 -v -timeout 24h
+
+.PHONY: \
+test-sim-nondeterminism \
+test-sim-custom-genesis-fast \
+test-sim-import-export \
+test-sim-after-import \
+test-sim-custom-genesis-multi-seed \
+test-sim-multi-seed-short \
+test-sim-multi-seed-long \
+test-sim-benchmark-invariants
+
+SIM_NUM_BLOCKS ?= 500
+SIM_BLOCK_SIZE ?= 200
+SIM_COMMIT ?= true
+
+test-sim-benchmark:
+	@echo "Running application benchmark for numBlocks=$(SIM_NUM_BLOCKS), blockSize=$(SIM_BLOCK_SIZE). This may take awhile!"
+	@go test -mod=readonly -benchmem -run=^$$ $(APP) -bench ^BenchmarkFullAppSimulation$$  \
+		-Enabled=true -NumBlocks=$(SIM_NUM_BLOCKS) -BlockSize=$(SIM_BLOCK_SIZE) -Commit=$(SIM_COMMIT) -timeout 24h
+
+test-sim-profile:
+	@echo "Running application benchmark for numBlocks=$(SIM_NUM_BLOCKS), blockSize=$(SIM_BLOCK_SIZE). This may take awhile!"
+	@go test -mod=readonly -benchmem -run=^$$ $(APP) -bench ^BenchmarkFullAppSimulation$$ \
+		-Enabled=true -NumBlocks=$(SIM_NUM_BLOCKS) -BlockSize=$(SIM_BLOCK_SIZE) -Commit=$(SIM_COMMIT) -timeout 24h -cpuprofile cpu.out -memprofile mem.out
+
+.PHONY: test-sim-profile test-sim-benchmark
+
+test-cover:
+	@export VERSION=$(VERSION); bash -x scripts/test_cover.sh
+.PHONY: test-cover
+
+test-rosetta:
+	docker build -t rosetta-ci:latest -f contrib/rosetta/node/Dockerfile .
+	docker-compose -f contrib/rosetta/docker-compose.yaml up --abort-on-container-exit --exit-code-from test_rosetta --build
+.PHONY: test-rosetta
+
+benchmark:
+	@go test -mod=readonly -bench=. $(PACKAGES_NOSIMULATION)
+.PHONY: benchmark
