@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/vitwit/avail-da-module/relayer/avail"
 	"github.com/vitwit/avail-da-module/relayer/local"
-	"github.com/vitwit/avail-da-module/types"
+	"github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 // Relayer is responsible for posting new blocks to Avail
@@ -19,13 +19,12 @@ type Relayer struct {
 
 	submittedBlocksCache map[int64]bool
 
-	LocalProvider local.CosmosProvider
-	AvailDAClient avail.DA
-	clientCtx     client.Context
+	CosmosProvider local.CosmosProvider
+	AvailDAClient  avail.DA
+	clientCtx      client.Context
 
-	availChainID string
-	AvailConfig  types.AvailConfiguration
-	NodeDir      string
+	AvailConfig types.AvailConfiguration
+	NodeDir     string
 }
 
 // NewRelayer creates a new Relayer instance
@@ -48,8 +47,8 @@ func NewRelayer(
 		provenHeights: make(chan int64, 10000),
 		commitHeights: make(chan int64, 10000),
 
-		LocalProvider:        localProvider,
-		availChainID:         cfg.ChainID,
+		CosmosProvider: localProvider,
+		// availChainID:         cfg.ChainID,
 		submittedBlocksCache: make(map[int64]bool),
 		NodeDir:              nodeDir,
 		AvailConfig:          cfg,

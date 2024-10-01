@@ -23,8 +23,6 @@ const (
 	defaultGasLimit      = 300000
 )
 
-// var availdHomePath = xfilepath.JoinFromHome(xfilepath.Path("availsdk"))
-
 func NewClientCtx(kr keyring.Keyring, c *cometrpc.HTTP, chainID string,
 	cdc codec.BinaryCodec, homepath string, fromAddress sdk.AccAddress,
 ) client.Context {

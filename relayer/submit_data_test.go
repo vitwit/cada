@@ -8,7 +8,7 @@ import (
 	relayer "github.com/vitwit/avail-da-module/relayer"
 	"github.com/vitwit/avail-da-module/relayer/avail"
 	mocks "github.com/vitwit/avail-da-module/relayer/avail/mocks"
-	cadatypes "github.com/vitwit/avail-da-module/types"
+	cadatypes "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 func TestSubmitDataToAvailClient(t *testing.T) {

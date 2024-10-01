@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	dacli "github.com/vitwit/avail-da-module/chainclient"
-	"github.com/vitwit/avail-da-module/types"
+	"github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 // PostBlocks is called in the PreBlocker. The proposer will publish the blocks at this point
@@ -26,7 +26,7 @@ func (r *Relayer) GetBlocksDataFromLocal(ctx sdk.Context, blocks []int64) []byte
 	var bb []byte
 
 	for _, height := range blocks {
-		res, err := r.LocalProvider.GetBlockAtHeight(ctx, height)
+		res, err := r.CosmosProvider.GetBlockAtHeight(ctx, height)
 		if err != nil {
 			r.Logger.Error("Error getting block", "height:", height, "error", err)
 			return []byte{}
