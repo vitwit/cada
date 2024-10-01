@@ -14,12 +14,11 @@ import (
 
     // ......
 
-	cadakeeper "github.com/vitwit/avail-da-module/keeper"
-	cadamodule "github.com/vitwit/avail-da-module/module"
+	cadakeeper "github.com/vitwit/avail-da-module/x/cada/keeper"
+	cadamodule "github.com/vitwit/avail-da-module/x/cada/module"
 	cadarelayer "github.com/vitwit/avail-da-module/relayer"
-	"github.com/vitwit/avail-da-module/relayer/avail"
 	httpclient "github.com/vitwit/avail-da-module/relayer/http"
-	cadatypes "github.com/vitwit/avail-da-module/types"
+	cadatypes "github.com/vitwit/avail-da-module/x/cada/types"
 )
 
 ```
@@ -203,8 +202,8 @@ Within the imported packages, add the cada module
 import (
     // ...
 	"github.com/vitwit/avail-da-module/simapp/app"
-    cadacli "github.com/vitwit/avail-da-module/client/cli"
-	cadatypes "github.com/vitwit/avail-da-module/types"
+    cadacli "github.com/vitwit/avail-da-module/x/cada/client/cli"
+	cadatypes "github.com/vitwit/avail-da-module/x/cada/types"
 )
 ```
 

@@ -2,6 +2,7 @@
 # `x/cada`
 
 ## Table of Conetents
+
 - [Abstract](#abstract)
 - [Concepts](01_concepts.md#concepts)
 - [State](02_state.md#state)
@@ -10,8 +11,6 @@
 - [PrepareProposal Abci method](05_prepare_proposal.md#proofofblobproposalhandler-prepareproposal-method)
 - [PreBlocker Abci method](06_preblocker.md#proofofblobproposalhandler-preblocker-method)
 - [Vote Extensions](07_vote_extension.md#vote-extensions)
-- [Architecture](#architecture)
-
 
 ## Abstract
 

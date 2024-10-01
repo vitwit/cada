@@ -28,6 +28,7 @@ Validators: Vote to confirm the data availability, updating the blob status to "
 These are main components in the workflow:
 
 ## 1. CADA
+
 The core functionality of the **CADA** module is integrated with and operates on the Cosmos blockchain.
 
 In the CADA module:
@@ -68,7 +69,7 @@ The **Cosmos Provider** is responsible for fetching block data via RPC so that t
 - At each block interval, a request is sent from the `PreBlocker` ABCI method to the Keeper, specifying the range of block heights that are ready to be posted to the `Avail` DA network.
 - The range of block heights should be from `provenHeight + 1` to `min(provenHeight + MaxBlocksLimitForBlob, CurrentBlockHeight)`.
 
-- If the status of the previous blocks is either `READY` or `FAILURE`, the status can be updated to `PENDING`.
+- If the status of the previous blocks is either `SUCCESS` or `FAILURE`, the status can be updated to `PENDING`.
      
      ``` 
      range = [fromBlock, toBlock] // (fromBlock < toBlock < CurrentBlock)
