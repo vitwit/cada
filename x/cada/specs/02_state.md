@@ -28,12 +28,15 @@ It is stored in the state as follows:
 
 ## Blocks Submission Status
 
-Indicates the status of the current blocks submission (`READY`, `PENDING`, `IN_VOTING`, `FAILURE`).
+Indicates the status of the current blocks submission (`SUCCESS`, `PENDING`, `IN_VOTING`, `FAILURE`).
 
-** PENDING ** : Blocks data submission has been initiated and is awaiting confirmation
-** IN_VOTING ** : Blocks data has been posted to `Avail` and is now pending validators' verification
-** FAILURE ** : Blocks data submission or verification has failed and needs to be resubmitted
-** READY ** : blocks data submission is successful; the next set of blocks is ready to be posted
+**PENDING** : Blocks data submission has been initiated and is awaiting confirmation
+
+**IN_VOTING** : Blocks data has been posted to `Avail` and is now pending validators' verification
+
+**FAILURE** : Blocks data submission or verification has failed and needs to be resubmitted
+
+**SUCCESS** : blocks data submission is successful; the next set of blocks is ready to be posted
 
 It is stored in the state as follows:
 

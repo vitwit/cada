@@ -14,7 +14,7 @@ The `PreBlocker` method is responsible for two primary tasks: processing votes f
 
 When the current block height matches the voting end height and the status is `IN_VOTING`, the method processes the voting results and updates the state accordingly.
 
-- **Success Condition:** If the collective voting power exceeds 66%, the status is updated to `READY`, and the `provenHeight` is set to the end of the current block range.
+- **Success Condition:** If the collective voting power exceeds 66%, the status is updated to `SUCCESS`, and the `provenHeight` is set to the end of the current block range.
 - **Failure Condition:** If the voting power is 66% or less, the status is updated to `FAILURE`.
 
 ```go
@@ -40,7 +40,7 @@ if len(req.Txs) > 0 && currentHeight == int64(votingEndHeight) && blobStatus == 
 
 ### 2. Initiate Block Data Availability (DA) Submission
 
-If the current block height aligns with a voting interval and the status is either `READY` or `FAILURE`, the method updates the block range and sets the status to `PENDING` for the next round of blocks data submission.
+If the current block height aligns with a voting interval and the status is either `SUCCESS` or `FAILURE`, the method updates the block range and sets the status to `PENDING` for the next round of blocks data submission.
 
 - **Range Calculation:** The pending block range to be submitted is calculated based on the last proven height and the current block height.
 - **Status Update:** The status is set to `PENDING` to mark the start of the data submission process.
