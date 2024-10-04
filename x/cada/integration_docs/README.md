@@ -54,4 +54,11 @@ After the initialization process is complete, you can start the chain by running
 cada start
 ```
 
+**Note** : In the [script](/simapp/init-chain.sh), the vote_extensions_enable_height value in genesis.json is set to 1. If you are running the node manually without using the script, ensure that this value is also set to 1 in genesis.json.
+
+It is necessary to modify this value to 1 even when integrating CADA into your desired Cosmos SDK chain.
+
+Failing to set this value to 1 may cause issues with vote extension decoding, such as the error ERR failed to decode vote extension err="unexpected end of JSON input", because vote extensions will only be processed starting from height 1.
+These steps will get the chain up and running in your local environment and post the data to avail light client. Be sure to run the avail light node and modify the configuration as mentioned above.
+
 These steps will get the chain up and running in your local environment and post the data to avail light client. Be sure to run the avail light node and modify the configuration as mentioned above.
